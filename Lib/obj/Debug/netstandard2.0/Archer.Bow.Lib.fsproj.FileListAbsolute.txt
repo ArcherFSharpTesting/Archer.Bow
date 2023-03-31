@@ -1,0 +1,11 @@
+C:\Development\github\Archer.Bow\Lib\bin\Debug\netstandard2.0\Archer.Bow.Lib.deps.json
+C:\Development\github\Archer.Bow\Lib\bin\Debug\netstandard2.0\Archer.Bow.Lib.dll
+C:\Development\github\Archer.Bow\Lib\bin\Debug\netstandard2.0\Archer.Bow.Lib.pdb
+C:\Development\github\Archer.Bow\Lib\bin\Debug\netstandard2.0\Archer.Bow.Lib.xml
+C:\Development\github\Archer.Bow\Lib\obj\Debug\netstandard2.0\Archer.Bow.Lib.fsproj.AssemblyReference.cache
+C:\Development\github\Archer.Bow\Lib\obj\Debug\netstandard2.0\Archer.Bow.Lib.AssemblyInfoInputs.cache
+C:\Development\github\Archer.Bow\Lib\obj\Debug\netstandard2.0\Archer.Bow.Lib.AssemblyInfo.fs
+C:\Development\github\Archer.Bow\Lib\obj\Debug\netstandard2.0\Archer.Bow.Lib.fsproj.CoreCompileInputs.cache
+C:\Development\github\Archer.Bow\Lib\obj\Debug\netstandard2.0\Archer.Bow.Lib.dll
+C:\Development\github\Archer.Bow\Lib\obj\Debug\netstandard2.0\Archer.Bow.Lib.xml
+C:\Development\github\Archer.Bow\Lib\obj\Debug\netstandard2.0\Archer.Bow.Lib.pdb
