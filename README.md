@@ -1,2 +1,2 @@
 # Archer.Bow
-A Test Adapter For Archer Testing
+A Test Executor For Archer Testing
