@@ -58,8 +58,8 @@ let ``return a successful result when one test passes`` =
     container
     |> newTest (fun container -> container.Test ("return a successful result when one test passes", fun () ->
             let framework = archer.Framework ()
-            let container = suite.Container ("A Test Suite", "with passing tests")
-            let test = container.Test ("First Passing Test", fun () -> TestSuccess)
+            let container = suite.Container ("A Test Suite", "with a passing test")
+            let test = container.Test ("A Passing Test", fun () -> TestSuccess)
 
             framework.AddTest test
             let result = framework.Run (getDefaultSeed)
@@ -72,4 +72,25 @@ let ``return a successful result when one test passes`` =
 
             result |> verifyWith expected
         )
+    )
+
+let ``return a successful result when two tests pass`` =
+    container.Test ("return a successful result when two tests pass", fun () ->
+        let framework = archer.Framework ()
+        let container = suite.Container ("A test Suite", "with two passing tests")
+        
+        let test1 = container.Test ("Fist Passing Test", fun () -> TestSuccess)
+        let test2 = container.Test ("Second Passing Test", fun () -> TestSuccess)
+
+        let expected = {
+                Failures = []
+                Successes = [test1; test2]
+                Seed = defaultSeed
+            }
+
+        framework.AddTest test1
+        framework.AddTest test2
+        let result = framework.Run (getDefaultSeed)
+
+        result |> verifyWith expected
     )

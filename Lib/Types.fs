@@ -11,20 +11,18 @@ type RunResults = {
 }
 
 type Framework () =
-    let mutable test : ITest option = None
+    let mutable tests = System.Collections.Generic.List<ITest>()
     
     member this.Run () =
         this.Run(fun () -> System.Random().Next ())
     member _.Run (getSeed: unit -> int) =
         {
             Failures = []
-            Successes = 
-                match test with
-                | None -> []
-                | Some test -> [test]
+            Successes = tests |> List.ofSeq
             Seed = getSeed ()
         }
-    member _.AddTest (newTest: ITest) = test <- Some newTest
+    member _.AddTest (newTest: ITest) = 
+        tests.Add newTest
         
         
 type Archer () =

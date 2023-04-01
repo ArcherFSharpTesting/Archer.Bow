@@ -8,13 +8,17 @@ let results =
         Archer.Tests.Scripts.``Framework Run Should``.``return empty results when it has no tests``
         Archer.Tests.Scripts.``Framework Run Should``.``return empty results with specific seed when it has no tests``
         Archer.Tests.Scripts.``Framework Run Should``.``return a successful result when one test passes``
+        Archer.Tests.Scripts.``Framework Run Should``.``return a successful result when two tests pass``
     ]
     |> List.map (fun t -> t.LineNumber, t.TestFullName, t.GetExecutor().Execute())
     
+printfn "\n"
 results
 |> List.iter (fun (lineNumber, testName, result) ->
         printfn $"%A{result} <- %s{testName} : %d{lineNumber}"
     )
+
+printfn "\n\n\n"
 
 exit (results
       |> List.filter (fun (_, _, result) -> result = TestSuccess |> not)
