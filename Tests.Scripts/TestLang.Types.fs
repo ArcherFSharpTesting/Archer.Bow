@@ -125,12 +125,12 @@ type UnitTest (containerFullName: string, containerName: string, testName: strin
         test.TestFullName
         
     interface ITest with
-        member this.ContainerFullName = containerFullName
-        member this.ContainerName = containerName
-        member this.LineNumber = lineNumber
-        member this.Tags = tags
-        member this.TestFullName = testFullName
-        member this.TestName = testName
+        member _.ContainerFullName = containerFullName
+        member _.ContainerName = containerName
+        member _.LineNumber = lineNumber
+        member _.Tags = tags
+        member _.TestFullName = testFullName
+        member _.TestName = testName
         
         member this.GetExecutor() =
             UnitTestExecuter (this, setup, test, tearDown)
