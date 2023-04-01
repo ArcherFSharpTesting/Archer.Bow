@@ -7,8 +7,10 @@ open Archer.Tests.Scripts.TestLang
 let defaultSeed = 42
 let getDefaultSeed () = defaultSeed
 
+let private container = suite.Container ("", "Framework Run Should")
+
 let ``return empty results when it has no tests`` =
-    suite.Container ("", "Framework Run Should")
+    container
     |> newTest (fun container ->
             container.Test ("return empty results when it has no tests", fun () ->
                 let seed = 5
@@ -31,7 +33,7 @@ let ``return empty results when it has no tests`` =
         )
     
 let ``return empty results with specific seed when it has no tests`` =
-    suite.Container ("", "Framework Run Should")
+    container
     |> newTest (fun container ->
             container.Test ("return empty results when it has no tests", fun () ->
                 let seed = 258
@@ -54,7 +56,7 @@ let ``return empty results with specific seed when it has no tests`` =
         )
 
 let ``return a successful result when one test passes`` =
-    suite.Container ("", "Framework Run Should")
+    container
     |> newTest (fun container -> container.Test ("return a successful result when one test passes", fun () ->
         let framework = archer.Framework ()
         let container = suite.Container ("A Test Suite", "with passing tests")
