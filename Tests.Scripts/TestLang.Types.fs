@@ -8,56 +8,42 @@ open Archer.CoreTypes.Lib.InternalTypes
 
 module TypeSupport =
     let success () = TestSuccess
-    let continueCancel (cancel: unit -> bool) fb r =
-        match r with
-        | TestSuccess ->
-            match cancel () with
-            | false -> fb ()
-            | true -> CancelFailure |> TestFailure
-        | error -> error
-        
-    let continueResult fb r =
-        continueCancel (fun () -> false) fb r
-        
-    let joinCancel (getCancelArgs: unit -> 'a when 'a :> CancelEventArgs ) f1 f2 r =
-        let c = getCancelArgs ()
-        continueResult (fun () -> f1 c) r
-        |> continueCancel (fun () -> c.Cancel) f2
-        
-    let join f1 f2 r =
-        continueResult f1 r
-        |> continueResult f2
-        
-    let wrapCancelEvent (getCancel: unit -> 'a :> CancelEventArgs) f (e: Event<'b, 'a>) sender (r: TestResult) =
-        let triggerEvent (cancel: 'a :> CancelEventArgs) =
-            e.Trigger (sender, cancel)
-            r
-            
-        joinCancel getCancel triggerEvent f r
-        
-    let wrapCancelResult f (e: Event<'a, TestCancelEventArgsWithResults>) sender (r: TestResult) =
-        let getCancelArgs () = TestCancelEventArgsWithResults r
-        
-        wrapCancelEvent getCancelArgs f e sender r
-        
-    let wrapSimpleCancelResult e sender r =
-        wrapCancelResult success e sender r
-        
-    let wrapCancel f (e: Event<'a, CancelEventArgs>) sender (r: TestResult) =
-        wrapCancelEvent CancelEventArgs f e sender r
-        
-    let wrapSimpleCancel e sender r =
-        wrapCancel success e sender r
-        
-    let wrap f (e: Event<'a, TestEventArgs>) sender (r: TestResult) =
-        let triggerEvent () =
-            e.Trigger (sender, TestEventArgs r)
-            r
-            
-        join triggerEvent f r
-        
-    let wrapSimple e sender r =
-        wrap success e sender r
+    let maybeTriggerCancel sender (event: Event<'a, 'b :> CancelEventArgs>) (getCancel: unit -> 'b) previousResult =
+        let cancelArgs = getCancel ()
+        event.Trigger (sender, cancelArgs)
+
+        match cancelArgs.Cancel with
+        | true -> CancelFailure |> TestFailure
+        | _ -> previousResult
+
+    let trigger sender (event: Event<'a, TestEventArgs>) previousResult =
+        match previousResult with
+        | TestFailure CancelFailure -> previousResult
+        | _ ->
+            let args = TestEventArgs previousResult
+            event.Trigger (sender, args)
+            previousResult
+
+    let wrapEvent event sender previousResult = 
+        trigger sender event previousResult
+
+    let wrapCancel event sender previousResult =
+        maybeTriggerCancel sender event CancelEventArgs previousResult
+
+    let wrapCancelResult event sender previousResult =
+        maybeTriggerCancel sender event (fun () -> TestCancelEventArgsWithResults previousResult) previousResult
+
+    let joinCancelEventResult event action sender previousResult =
+        let result = wrapCancelResult event sender previousResult
+        match result with
+        | TestFailure _ -> result
+        | _ -> action ()
+
+    let joinCancelEvent event action sender previousResult =
+        let result = wrapCancel event sender previousResult
+        match result with
+        | TestFailure _ -> result
+        | _ -> action ()
         
 open TypeSupport
         
@@ -87,16 +73,16 @@ type UnitTestExecuter (parent: ITest, setup: unit -> TestResult, test: unit -> T
         member _.StartTearDown = startTearDown.Publish
         [<CLIEvent>]
         member _.EndExecution = endExecution.Publish
-        member this.Parent = this.Parent
-        member this.Execute () =
+        member _.Parent = parent
+        member _.Execute () =
             TestSuccess
-            |> wrapSimpleCancel startExecution this.Parent
-            |> wrapCancel setup startSetup this.Parent
-            |> wrapSimpleCancelResult endSetup this.Parent
-            |> wrapCancel test startTest this.Parent
-            |> wrapSimpleCancelResult endTest this.Parent
-            |> wrapCancel tearDown startTearDown this.Parent
-            |> wrapSimple endExecution this.Parent
+            |> wrapCancel startExecution parent
+            |> joinCancelEvent startSetup setup parent
+            |> wrapCancelResult endSetup parent
+            |> joinCancelEvent startTest test parent
+            |> wrapCancelResult endTest parent
+            |> joinCancelEvent startTearDown tearDown parent
+            |> wrapEvent endExecution parent
             
 type TestPart =
     | EmptyPart
