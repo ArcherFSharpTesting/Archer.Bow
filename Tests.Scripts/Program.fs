@@ -9,6 +9,7 @@ let results =
         Archer.Tests.Scripts.``Framework Run Should``.``return empty results with specific seed when it has no tests``
         Archer.Tests.Scripts.``Framework Run Should``.``return a successful result when one test passes``
         Archer.Tests.Scripts.``Framework Run Should``.``return a successful result when two tests pass``
+        Archer.Tests.Scripts.``Framework Run Should``.``return failure when a test fails``
     ]
     |> List.map (fun t -> t.LineNumber, t.TestFullName, t.GetExecutor().Execute())
     
