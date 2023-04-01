@@ -74,19 +74,19 @@ type UnitTestExecuter (parent: ITest, setup: unit -> TestResult, test: unit -> T
     
     interface ITestExecutor with
         [<CLIEvent>]
-        member this.StartExecution = startExecution.Publish
+        member _.StartExecution = startExecution.Publish
         [<CLIEvent>]
-        member this.StartSetup = startSetup.Publish
+        member _.StartSetup = startSetup.Publish
         [<CLIEvent>]
-        member this.EndSetup = endSetup.Publish
+        member _.EndSetup = endSetup.Publish
         [<CLIEvent>]
-        member this.StartTest = startTest.Publish
+        member _.StartTest = startTest.Publish
         [<CLIEvent>]
-        member this.EndTest = endTest.Publish
+        member _.EndTest = endTest.Publish
         [<CLIEvent>]
         member this.StartTearDown = startTearDown.Publish
         [<CLIEvent>]
-        member this.EndExecution = endExecution.Publish
+        member _.EndExecution = endExecution.Publish
         member this.Parent = this.Parent
         member this.Execute() =
             TestSuccess
