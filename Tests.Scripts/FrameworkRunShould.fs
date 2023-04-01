@@ -109,3 +109,26 @@ let ``return failure when a test fails`` =
 
         result |> verifyWith expected
     )
+
+let ``return failure when second test fails`` =
+    container.Test ("return failure when second test fails", fun () -> 
+        let framework = archer.Framework ()
+        let container = suite.Container ("A test Suite", "to hold tests")
+
+        let failure = "Boom Again" |> GeneralFailure |> TestFailure
+        let test1 = container.Test ("First Test Passes", fun () -> TestSuccess)
+        let testF = container.Test ("Second Test Fails", fun () -> failure)
+
+        let expected = {
+                Failures = [failure, testF]
+                Successes = [test1]
+                Seed = defaultSeed
+            }
+
+        framework.AddTest test1
+        framework.AddTest testF
+
+        let result = framework.Run (getDefaultSeed)
+
+        result |> verifyWith expected
+    )

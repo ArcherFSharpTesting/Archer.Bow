@@ -16,22 +16,22 @@ type Framework () =
     member this.Run () =
         this.Run(fun () -> System.Random().Next ())
     member _.Run (getSeed: unit -> int) =
-        let failures =
-            if tests.Count < 1 then []
-            else
-                let test = tests |> Seq.head
-                let ex = test.GetExecutor ()
-                let result = ex.Execute ()
+        let runTest (test: ITest) =
+            let ex = test.GetExecutor ()
+            let result = ex.Execute ()
+            result, test
 
-                match result with
-                | TestSuccess -> []
-                | failure -> [failure, test]
-
+        let results = tests |> Seq.map (runTest)
         let successes =
-            if (failures |> List.length) < 1 then
-                tests |> List.ofSeq
-            else
-                tests |> Seq.skip 1 |> List.ofSeq
+            results
+            |> Seq.filter (fun (r, _) -> r = TestSuccess)
+            |> Seq.map (fun (_, t) -> t)
+            |> List.ofSeq
+
+        let failures =
+            results
+            |> Seq.filter (fun (r, _) -> r |> (=) TestSuccess |> not)
+            |> List.ofSeq
 
         {
             Failures = failures
