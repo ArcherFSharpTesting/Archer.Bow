@@ -119,6 +119,10 @@ type UnitTest (containerFullName: string, containerName: string, testName: strin
         | SetupPart setup -> setup, success
         | TearDownPart tearDown -> success, tearDown
         | Both (setup, tearDown) -> setup, tearDown
+
+    override this.ToString () =
+        let test = this :> ITest
+        test.TestFullName
         
     interface ITest with
         member this.ContainerFullName = containerFullName

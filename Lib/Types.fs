@@ -11,14 +11,21 @@ type RunResults = {
 }
 
 type Framework () =
+    let mutable test : ITest option = None
+    
     member this.Run () =
         this.Run(fun () -> System.Random().Next ())
     member _.Run (getSeed: unit -> int) =
         {
             Failures = []
-            Successes = []
+            Successes = 
+                match test with
+                | None -> []
+                | Some test -> [test]
             Seed = getSeed ()
         }
+    member _.AddTest (newTest: ITest) = test <- Some newTest
+        
         
 type Archer () =
     member _.Framework () = Framework ()
