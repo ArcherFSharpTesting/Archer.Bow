@@ -17,61 +17,53 @@ let verifyWith expected result =
         |> TestFailure
 
 let ``return empty results when it has no tests`` =
-    container
-    |> newTest (fun container ->
-            container.Test ("return empty results when it has no tests", fun () ->
-                let seed = 5
+    container.Test ("return empty results when it has no tests", fun () ->
+        let seed = 5
                 
-                let framework = archer.Framework ()
-                let result = framework.Run (fun () -> seed)
+        let framework = archer.Framework ()
+        let result = framework.Run (fun () -> seed)
                 
-                let expected = {
-                    Failures = []
-                    Successes = []
-                    Seed = seed
-                }
+        let expected = {
+            Failures = []
+            Successes = []
+            Seed = seed
+        }
                 
-                result |> verifyWith expected
-            )
-        )
+        result |> verifyWith expected
+    )
     
 let ``return empty results with specific seed when it has no tests`` =
-    container
-    |> newTest (fun container ->
-            container.Test ("return empty results when it has no tests", fun () ->
-                let seed = 258
+    container.Test ("return empty results when it has no tests", fun () ->
+        let seed = 258
                 
-                let framework = archer.Framework ()
-                let result = framework.Run (fun () -> seed)
+        let framework = archer.Framework ()
+        let result = framework.Run (fun () -> seed)
                 
-                let expected = {
-                    Failures = []
-                    Successes = []
-                    Seed = seed
-                }
+        let expected = {
+            Failures = []
+            Successes = []
+            Seed = seed
+        }
                 
-                result |> verifyWith expected
-            )
-        )
+        result |> verifyWith expected
+    )
 
 let ``return a successful result when one test passes`` =
-    container
-    |> newTest (fun container -> container.Test ("return a successful result when one test passes", fun () ->
-            let framework = archer.Framework ()
-            let container = suite.Container ("A Test Suite", "with a passing test")
-            let test = container.Test ("A Passing Test", fun () -> TestSuccess)
+    container.Test ("return a successful result when one test passes", fun () ->
+        let framework = archer.Framework ()
+        let container = suite.Container ("A Test Suite", "with a passing test")
+        let test = container.Test ("A Passing Test", fun () -> TestSuccess)
 
-            framework.AddTest test
-            let result = framework.Run (getDefaultSeed)
+        framework.AddTest test
+        let result = framework.Run (getDefaultSeed)
         
-            let expected = {
-                Failures = []
-                Successes = [test]
-                Seed = defaultSeed
-            }
+        let expected = {
+            Failures = []
+            Successes = [test]
+            Seed = defaultSeed
+        }
 
-            result |> verifyWith expected
-        )
+        result |> verifyWith expected
     )
 
 let ``return a successful result when two tests pass`` =
