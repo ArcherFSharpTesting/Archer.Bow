@@ -84,11 +84,11 @@ type UnitTestExecuter (parent: ITest, setup: unit -> TestResult, test: unit -> T
         [<CLIEvent>]
         member _.EndTest = endTest.Publish
         [<CLIEvent>]
-        member this.StartTearDown = startTearDown.Publish
+        member _.StartTearDown = startTearDown.Publish
         [<CLIEvent>]
         member _.EndExecution = endExecution.Publish
         member this.Parent = this.Parent
-        member this.Execute() =
+        member this.Execute () =
             TestSuccess
             |> wrapSimpleCancel startExecution this.Parent
             |> wrapCancel setup startSetup this.Parent
