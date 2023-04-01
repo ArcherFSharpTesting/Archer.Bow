@@ -22,7 +22,7 @@ printfn $"\nTests Passing: %d{results.Successes |> List.length}, Failing: %d{res
 
 results.Failures
 |> List.iter (fun (result, test) ->
-        printfn $"%A{result} <- %s{test.TestName} : %d{test.LineNumber}"
+        printfn $"%A{result} <- %s{test.TestFullName} : %d{test.LineNumber}"
     )
 
 printfn "\n\n\n"
