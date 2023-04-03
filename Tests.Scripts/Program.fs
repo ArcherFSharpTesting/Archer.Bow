@@ -6,12 +6,13 @@ open Archer.Bow.Lib
 let framework = archer.Framework ()
 
 [
-    Archer.Tests.Scripts.``Framework Run Should``.``return empty results when it has no tests``
-    Archer.Tests.Scripts.``Framework Run Should``.``return empty results with specific seed when it has no tests``
-    Archer.Tests.Scripts.``Framework Run Should``.``return a successful result when one test passes``
-    Archer.Tests.Scripts.``Framework Run Should``.``return a successful result when two tests pass``
-    Archer.Tests.Scripts.``Framework Run Should``.``return failure when a test fails``
-    Archer.Tests.Scripts.``Framework Run Should``.``return failure when second test fails``
+    ``Framework Run Should``.``return empty results when it has no tests``
+    ``Framework Run Should``.``return empty results with specific seed when it has no tests``
+    ``Framework Run Should``.``return a successful result when one test passes``
+    ``Framework Run Should``.``return a successful result when two tests pass``
+    ``Framework Run Should``.``return failure when a test fails``
+    ``Framework Run Should``.``return failure when second test fails``
+    ``Framework Run Should``.``return failure when both tests fail``
 ]
 |> framework.AddTests
 
