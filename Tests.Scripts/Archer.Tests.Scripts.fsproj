@@ -10,6 +10,7 @@
     <Compile Include="TestLang.Types.fs" />
     <Compile Include="TestLang.fs" />
     <Compile Include="FrameworkRunShould.fs" />
+    <Compile Include="EventsShouldHappyPath.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 

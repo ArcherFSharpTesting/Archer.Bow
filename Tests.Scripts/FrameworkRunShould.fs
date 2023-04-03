@@ -9,13 +9,6 @@ let getDefaultSeed () = defaultSeed
 
 let private container = suite.Container ("", "Framework Run Should")
 
-let verifyWith expected result =
-    if expected = result then TestSuccess
-    else
-        $"expected \"%A{result}\" to be \"%A{expected}\""
-        |> VerificationFailure
-        |> TestFailure
-
 let ``return empty results when it has no tests`` =
     container.Test ("return empty results when it has no tests", fun () ->
         let seed = 5
