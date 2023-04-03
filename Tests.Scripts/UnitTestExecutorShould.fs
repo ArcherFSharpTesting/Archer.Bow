@@ -6,7 +6,7 @@ open Archer.Tests.Scripts.TestLang
 open Archer.Tests.Scripts.TestLang.Types
 
 let private container = suite.Container ("Scripting", "UnitTestExecutor Should")
-let private dummyTest = UnitTest (ignoreString (), ignoreString (), ignoreString (), ignoreInt (), [], successfulTest, EmptyPart) :> ITest
+let private dummyTest = suite.Container(ignoreString (), ignoreString ()).Test(ignoreString (), successfulTest)
 let private notRunError = "Not Run" |> GeneralFailure |> TestFailure
 
 let ``Should have the creating test as its parent`` =
