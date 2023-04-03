@@ -6,12 +6,12 @@ open Archer.Tests.Scripts.TestLang
 open Archer.Tests.Scripts.TestLang.Types
 
 let private container = suite.Container ("Scripting", "UnitTestExecutor Should")
-let private dummyTest = suite.Container(ignoreString (), ignoreString ()).Test(ignoreString (), successfulTest)
+let private dummyTest () = suite.Container(ignoreString (), ignoreString ()).Test(ignoreString (), successfulTest)
 let private notRunError = "Not Run" |> GeneralFailure |> TestFailure
 
 let ``Should have the creating test as its parent`` =
     container.Test("Should have the creating test as its parent", fun () ->
-            let test = dummyTest
+            let test = dummyTest ()
             
             let executor = test.GetExecutor ()
             
@@ -21,7 +21,7 @@ let ``Should have the creating test as its parent`` =
     
 let ``Should return success if test action returns success`` =
     container.Test ("Should return success if test action returns success", fun () ->
-            let test = dummyTest
+            let test = dummyTest ()
             
             test.GetExecutor().Execute ()
         )
@@ -39,7 +39,7 @@ let ``Should return failure if the test action returns failure`` =
     
 let ``Should raise ExecutionStart`` =
     container.Test ("Should raise StartExecution", fun () ->
-            let test = dummyTest
+            let test = dummyTest ()
             
             let executor = test.GetExecutor ()
             
@@ -55,7 +55,7 @@ let ``Should raise ExecutionStart`` =
     
 let ``Should raise StartSetup`` =
     container.Test ("Should raise StartSetup", fun () ->
-            let test = dummyTest
+            let test = dummyTest ()
             
             let executor = test.GetExecutor ()
             
@@ -72,7 +72,7 @@ let ``Should raise StartSetup`` =
     
 let ``Should raise EndSetup`` =
     container.Test ("Should raise EndSetup", fun () ->
-        let test = dummyTest
+        let test = dummyTest ()
         
         let executor = test.GetExecutor ()
         
@@ -89,7 +89,7 @@ let ``Should raise EndSetup`` =
     
 let ``Should raise StartTest`` =
     container.Test ("Should raise StartTest", fun () ->
-        let test = dummyTest
+        let test = dummyTest ()
         
         let executor = test.GetExecutor ()
         
@@ -106,7 +106,7 @@ let ``Should raise StartTest`` =
     
 let ``Should raise EndTest`` =
     container.Test ("Should raise EndTest", fun () ->
-        let test = dummyTest
+        let test = dummyTest ()
         
         let executor = test.GetExecutor ()
         let mutable result = notRunError 
@@ -122,7 +122,7 @@ let ``Should raise EndTest`` =
     
 let ``Should raise StartTearDown`` =
     container.Test ("Should raise StartTearDown", fun () ->
-        let test = dummyTest
+        let test = dummyTest ()
         
         let executor = test.GetExecutor ()
         let mutable result = notRunError
@@ -138,7 +138,7 @@ let ``Should raise StartTearDown`` =
     
 let ``Should raise EndExecution`` =
     container.Test ("Should raise EndExecution", fun () ->
-        let test = dummyTest
+        let test = dummyTest ()
         
         let executor = test.GetExecutor ()
         let mutable result = notRunError
