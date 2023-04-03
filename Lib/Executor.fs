@@ -29,7 +29,7 @@ module Executor =
             |> List.ofSeq
 
         {
-            Failures = failures
-            Successes = successes
+            Failures = failures |> List.sortBy (fun (_, test) -> test.TestFullName)
+            Successes = successes |> List.sortBy (fun test -> test.TestFullName)
             Seed = getSeed ()
         }

@@ -8,7 +8,7 @@
   <ItemGroup>
     <Compile Include="Executor.fs" />
     <Compile Include="Types.fs" />
-    <Compile Include="TypeHelpers.fs" />
+    <Compile Include="Values.fs" />
   </ItemGroup>
 
   <ItemGroup>

@@ -125,7 +125,7 @@ let ``return failure when second test fails`` =
 
         framework.AddTests [test1; testF]
 
-        let result = framework.Run (getDefaultSeed)
+        let result = framework.Run getDefaultSeed
 
         result |> verifyWith expected
     )

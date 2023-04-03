@@ -1,4 +1,4 @@
 ﻿[<AutoOpen>]
-module Archer.Bow.Lib.TypeHelpers
+module Archer.Bow.Lib.Values
 
 let archer = Archer ()
