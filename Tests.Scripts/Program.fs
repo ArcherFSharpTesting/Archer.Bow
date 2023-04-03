@@ -13,6 +13,9 @@ let framework = archer.Framework ()
     ``UnitTest should``.``have the container fullname``
     ``UnitTest should``.``have the test fullname``
     ``UnitTest should``.``have tags``
+    ``UnitTest should``.``have well formed string representation``
+    
+    ``UnitTestExecutor Should``.``Should have the creating test as its parent``
     
     // Testing Archer Framework
     ``Framework Run Should``.``return empty results when it has no tests``

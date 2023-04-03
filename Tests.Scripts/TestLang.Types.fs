@@ -47,7 +47,7 @@ module TypeSupport =
         
 open TypeSupport
         
-type UnitTestExecuter (parent: ITest, setup: unit -> TestResult, test: unit -> TestResult, tearDown: unit -> TestResult) =
+type UnitTestExecutor (parent: ITest, setup: unit -> TestResult, test: unit -> TestResult, tearDown: unit -> TestResult) =
     let startExecution = Event<CancelDelegate, CancelEventArgs> ()
     let startSetup = Event<CancelDelegate, CancelEventArgs> ()
     let endSetup = Event<CancelTestDelegate, TestCancelEventArgsWithResults> ()
@@ -119,7 +119,7 @@ type UnitTest (containerFullName: string, containerName: string, testName: strin
         member _.TestName = testName
         
         member this.GetExecutor() =
-            UnitTestExecuter (this, setup, test, tearDown)
+            UnitTestExecutor (this, setup, test, tearDown)
             :> ITestExecutor
             
 type TestBuilder (containerPath: string, containerName: string) =

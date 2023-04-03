@@ -1,20 +1,10 @@
 module Archer.Tests.Scripts.Scripting.``UnitTest should``
 
-open Archer.Bow.Lib
-open Archer.CoreTypes.Lib
 open Archer.CoreTypes.Lib.InternalTypes
 open Archer.Tests.Scripts.TestLang
 open Archer.Tests.Scripts.TestLang.Types
 
-let defaultSeed = 33
-let getDefaultSeed () = defaultSeed
-
 let private container = suite.Container ("Scripting", "UnitTest should")
-
-let randomInt _ = System.Random().Next ()
-let ignoreInt _ = randomInt ()
-let ignoreString _ = $"%d{randomInt ()}%d{randomInt ()}%d{randomInt ()}"
-let successfulTest () = TestSuccess
 
 let ``have the test name`` =
     container.Test ("have the test name", fun () ->
@@ -70,4 +60,12 @@ let ``have tags`` =
             
             test.Tags
             |> expectsToBe tags
+        )
+    
+let ``have well formed string representation`` =
+    container.Test ("have well formed string representation", fun () ->
+            let test = UnitTest ("Container Full Path", ignoreString (), "Test Name", 47, [], successfulTest, EmptyPart)
+            
+            test.ToString ()
+            |> expectsToBe "Container Full Path.Test Name"
         )

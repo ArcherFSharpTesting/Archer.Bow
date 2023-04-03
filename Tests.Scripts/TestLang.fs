@@ -6,6 +6,11 @@ open Archer.Tests.Scripts.TestLang.Types
 
 let suite = TestContainerBuilder ()
 
+let randomInt _ = System.Random().Next ()
+let ignoreInt _ = randomInt ()
+let ignoreString _ = $"%d{randomInt ()}%d{randomInt ()}%d{randomInt ()}"
+let successfulTest () = TestSuccess
+
 let expectsToBe expected result =
     if expected = result then TestSuccess
     else
