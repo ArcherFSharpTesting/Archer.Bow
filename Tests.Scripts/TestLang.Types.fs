@@ -55,34 +55,51 @@ type UnitTestExecutor (parent: ITest, setup: unit -> TestResult, test: unit -> T
     let endTest = Event<CancelTestDelegate, TestCancelEventArgsWithResults> ()
     let startTearDown = Event<CancelDelegate, CancelEventArgs> ()
     let endExecution = Event<Delegate, TestEventArgs> ()
+    [<CLIEvent>]
+    member _.StartExecution = startExecution.Publish
+    [<CLIEvent>]
+    member _.StartSetup = startSetup.Publish
+    [<CLIEvent>]
+    member _.EndSetup = endSetup.Publish
+    [<CLIEvent>]
+    member _.StartTest = startTest.Publish
+    [<CLIEvent>]
+    member _.EndTest = endTest.Publish
+    [<CLIEvent>]
+    member _.StartTearDown = startTearDown.Publish
+    [<CLIEvent>]
+    member _.EndExecution = endExecution.Publish
     
     member _.Parent with get () = parent
     
+    member _.Execute () =
+        startExecution.Trigger (parent, CancelEventArgs ())
+        TestSuccess
+        |> wrapCancel startExecution parent
+        |> joinCancelEvent startSetup setup parent
+        |> wrapCancelResult endSetup parent
+        |> joinCancelEvent startTest test parent
+        |> wrapCancelResult endTest parent
+        |> joinCancelEvent startTearDown tearDown parent
+        |> wrapEvent endExecution parent
+    
     interface ITestExecutor with
         [<CLIEvent>]
-        member _.StartExecution = startExecution.Publish
+        member this.StartExecution = this.StartExecution
         [<CLIEvent>]
-        member _.StartSetup = startSetup.Publish
+        member this.StartSetup = this.StartSetup
         [<CLIEvent>]
-        member _.EndSetup = endSetup.Publish
+        member this.EndSetup = this.EndSetup
         [<CLIEvent>]
-        member _.StartTest = startTest.Publish
+        member this.StartTest = this.StartTest
         [<CLIEvent>]
-        member _.EndTest = endTest.Publish
+        member this.EndTest = this.EndTest
         [<CLIEvent>]
-        member _.StartTearDown = startTearDown.Publish
+        member this.StartTearDown = this.StartTearDown
         [<CLIEvent>]
-        member _.EndExecution = endExecution.Publish
-        member _.Parent = parent
-        member _.Execute () =
-            TestSuccess
-            |> wrapCancel startExecution parent
-            |> joinCancelEvent startSetup setup parent
-            |> wrapCancelResult endSetup parent
-            |> joinCancelEvent startTest test parent
-            |> wrapCancelResult endTest parent
-            |> joinCancelEvent startTearDown tearDown parent
-            |> wrapEvent endExecution parent
+        member this.EndExecution = this.EndExecution
+        member _.Parent with get () = parent
+        member this.Execute () = this.Execute ()
             
 type TestPart =
     | EmptyPart
@@ -110,6 +127,17 @@ type UnitTest (containerFullName: string, containerName: string, testName: strin
         let test = this :> ITest
         test.TestFullName
         
+    member _.ContainerFullName = containerFullName
+    member _.ContainerName = containerName
+    member _.LineNumber = lineNumber
+    member _.Tags = tags
+    member _.TestFullName = testFullName
+    member _.TestName = testName
+    
+    member this.GetExecutor() =
+        UnitTestExecutor (this, setup, test, tearDown)
+        :> ITestExecutor
+        
     interface ITest with
         member _.ContainerFullName = containerFullName
         member _.ContainerName = containerName
@@ -118,9 +146,7 @@ type UnitTest (containerFullName: string, containerName: string, testName: strin
         member _.TestFullName = testFullName
         member _.TestName = testName
         
-        member this.GetExecutor() =
-            UnitTestExecutor (this, setup, test, tearDown)
-            :> ITestExecutor
+        member this.GetExecutor() = this.GetExecutor ()
             
 type TestBuilder (containerPath: string, containerName: string) =
     member _.Test (testName: string, action: unit -> TestResult, [<CallerFilePath; Optional; DefaultParameterValue("")>] path: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>]lineNumber: int) =

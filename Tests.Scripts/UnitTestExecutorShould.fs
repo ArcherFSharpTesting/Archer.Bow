@@ -34,3 +34,19 @@ let ``Should return failure if the test action returns failure`` =
             result
             |> expectsToBe expectedResult
         )
+    
+let ``Should raise ExecutionStart`` =
+    container.Test ("Should raise ExecutionStart", fun () ->
+            let test = UnitTest (ignoreString (), ignoreString (), ignoreString (), ignoreInt (), [], successfulTest, EmptyPart)
+            
+            let executor = test.GetExecutor ()
+            
+            let mutable result = "Not Run" |> GeneralFailure |> TestFailure
+            executor.StartExecution.AddHandler (CancelDelegate (fun tst _ ->
+                    result <- tst |> expectsToBe test
+                )
+            )
+            
+            executor.Execute () |> ignore
+            result
+        )
