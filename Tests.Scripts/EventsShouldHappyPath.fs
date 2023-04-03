@@ -52,29 +52,22 @@ let ``the FrameworkExecutionEnded event`` =
 
 // let ``the TestExecutionStarted event`` =
 //     container.Test ("the TestExecutionStarted event", fun () ->
-    //     let framework = archer.Framework ()
-    //     let test = container.Test ("My Passing Test", fun () -> TestSuccess)
-    //     framework.AddTests [test]
-    //
-    //     let mutable result = "Not Run" |> GeneralFailure |> TestFailure
-    //     let handler =
-    //         FrameworkTestCancelDelegate (fun triggered _args ->
-    //             match triggered with
-    //             | :? ITest as t ->
-    //                 let r = 
-    //                     if t = test then TestSuccess
-    //                     else
-    //                         $"expected\n\"%s{t.TestFullName} %d{test.LineNumber}\"\nto be\n\"%s{test.TestFullName} %d{test.LineNumber}\""
-    //                         |> VerificationFailure
-    //                         |> TestFailure
-    //                         
-    //                 result <- r
-    //             | _ -> ()
-    //         )
-    //         
-    //     framework.TestExecutionStarted.AddHandler handler
-    //     getDefaultSeed |> framework.Run |> ignore
-    //     
-    //     result
-    //     "Not ready" |> Some |> IgnoredFailure |> TestFailure
-    // )
+//         let framework = archer.Framework ()
+//         let test = container.Test ("My Passing Test", fun () -> TestSuccess)
+//         framework.AddTests [test]
+//
+//         let mutable result = "Not Called" |> GeneralFailure |> TestFailure
+//         
+//         framework.TestExecutionStarted.AddHandler (FrameworkTestCancelDelegate (fun fr _ ->
+//                 let r =
+//                     if fr = framework then TestSuccess
+//                     else
+//                         $"expected\n%A{fr}\nto be\n%A{framework}"
+//                         |> VerificationFailure
+//                         |> TestFailure
+//                     
+//                 result <- r
+//             ))
+//         
+//         result
+//     )

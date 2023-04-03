@@ -2,10 +2,17 @@
 // For more information see https://aka.ms/fsharp-console-apps
 
 open Archer.Bow.Lib
+open Archer.Tests.Scripts.Scripting
 
 let framework = archer.Framework ()
 
 [
+    // Testing The framework built in the tests
+    ``UnitTest should``.``have the test name``
+    ``UnitTest should``.``have the container name``
+    ``UnitTest should``.``have the container fullname``
+    
+    // Testing Archer Framework
     ``Framework Run Should``.``return empty results when it has no tests``
     ``Framework Run Should``.``return empty results with specific seed when it has no tests``
     ``Framework Run Should``.``return a successful result when one test passes``

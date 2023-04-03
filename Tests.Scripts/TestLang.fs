@@ -6,12 +6,14 @@ open Archer.Tests.Scripts.TestLang.Types
 
 let suite = TestContainerBuilder ()
 
-let verifyWith expected result =
+let expectsToBe expected result =
     if expected = result then TestSuccess
     else
         $"expected \"%A{result}\" to be \"%A{expected}\""
         |> VerificationFailure
         |> TestFailure
+
+let verifyWith = expectsToBe
         
 let expectsToBeTrue result =
     if result then TestSuccess
