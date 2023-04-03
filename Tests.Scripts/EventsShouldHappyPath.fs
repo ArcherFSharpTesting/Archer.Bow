@@ -16,7 +16,6 @@ let ``the FrameworkExecutionStarted event`` =
         let container = suite.Container ("A Test Suite", "with a passing test")
 
         let mutable called = false
-        // framework.FrameworkExecutionStarted.Add (fun _ -> called <- true)
         framework.FrameworkExecutionStarted.AddHandler (FrameworkDelegate (fun _ _ -> called <- true))
         framework.Run getDefaultSeed |> ignore
         
@@ -29,7 +28,7 @@ let ``the FrameworkExecutionEnded event`` =
         let framework = archer.Framework ()
 
         let mutable called = false
-        framework.FrameworkExecutionEnded.Add (fun _ -> called <- true)
+        framework.FrameworkExecutionEnded.AddHandler (FrameworkDelegate (fun _ _ -> called <- true))
         framework.Run getDefaultSeed |> ignore
         
         called
