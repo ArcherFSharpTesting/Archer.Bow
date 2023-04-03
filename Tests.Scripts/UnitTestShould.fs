@@ -62,3 +62,12 @@ let ``have the line number`` =
             test.LineNumber
             |> expectsToBe expectedLineNumber
         )
+    
+let ``have tags`` =
+    container.Test ("have tags", fun () ->
+            let tags = [Category "My Test"]
+            let test = UnitTest (ignoreString (), ignoreString (), ignoreString (), ignoreInt (), tags, successfulTest, EmptyPart) :> ITest
+            
+            test.Tags
+            |> expectsToBe tags
+        )

@@ -12,6 +12,7 @@ let framework = archer.Framework ()
     ``UnitTest should``.``have the container name``
     ``UnitTest should``.``have the container fullname``
     ``UnitTest should``.``have the test fullname``
+    ``UnitTest should``.``have tags``
     
     // Testing Archer Framework
     ``Framework Run Should``.``return empty results when it has no tests``
