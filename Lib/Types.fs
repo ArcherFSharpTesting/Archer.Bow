@@ -8,6 +8,8 @@ type FrameworkDelegate = delegate of obj * EventArgs -> unit
 
 type Framework () =
     let frameworkStart = Event<FrameworkDelegate, EventArgs> ()
+    let frameworkEnd = Event<FrameworkDelegate, EventArgs> ()
+    
     let mutable tests = System.Collections.Generic.List<ITest>()
     
     member this.Run () =
@@ -15,13 +17,18 @@ type Framework () =
         
     member this.Run (getSeed: unit -> int) =
         frameworkStart.Trigger (this, EventArgs.Empty)
-        runTests getSeed tests
+        let result = runTests getSeed tests
+        frameworkEnd.Trigger (this, EventArgs.Empty)
+        result
         
     member _.AddTests (newTests: ITest seq) =
         tests.AddRange newTests
         
     [<CLIEvent>]
     member _.FrameworkExecutionStarted = frameworkStart.Publish
+    
+    [<CLIEvent>]
+    member _.FrameworkExecutionEnded = frameworkEnd.Publish
         
 type Archer () =
     member _.Framework () = Framework ()

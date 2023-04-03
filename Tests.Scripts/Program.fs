@@ -15,6 +15,7 @@ let framework = archer.Framework ()
     ``Framework Run Should``.``return failure when both tests fail``
     
     ``When tests execute normally framework should raise``.``the FrameworkExecutionStarted event``
+    ``When tests execute normally framework should raise``.``the FrameworkExecutionEnded event``
 ]
 |> framework.AddTests
 

@@ -20,3 +20,15 @@ let ``the FrameworkExecutionStarted event`` =
         called
         |> expectsToBeTrue
     )
+
+let ``the FrameworkExecutionEnded event`` =
+    container.Test ("the FrameworkExecutionEnded event", fun () ->
+        let framework = archer.Framework ()
+
+        let mutable called = false
+        framework.FrameworkExecutionEnded.Add (fun _ -> called <- true)
+        framework.Run getDefaultSeed |> ignore
+        
+        called
+        |> expectsToBeTrue
+    )
