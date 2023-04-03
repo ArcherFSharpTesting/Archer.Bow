@@ -10,12 +10,11 @@ type RunResults = {
 }
 
 module Executor =
-    let runTest (test: ITest) =
-        let ex = test.GetExecutor ()
-        let result = ex.Execute ()
-        result, test
+    let runTest (test: ITestExecutor) =
+        let result = test.Execute ()
+        result, test.Parent
         
-    let runTests getSeed (tests: ITest seq) =
+    let runTests getSeed (tests: ITestExecutor seq) =
         let results = tests |> Seq.map runTest
         let successes =
             results

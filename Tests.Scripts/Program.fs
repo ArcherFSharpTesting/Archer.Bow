@@ -16,6 +16,7 @@ let framework = archer.Framework ()
     
     ``When tests execute normally framework should raise``.``the FrameworkExecutionStarted event``
     ``When tests execute normally framework should raise``.``the FrameworkExecutionEnded event``
+    // ``When tests execute normally framework should raise``.``the TestExecutionStarted event``
 ]
 |> framework.AddTests
 
