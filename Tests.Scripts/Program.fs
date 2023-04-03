@@ -23,6 +23,8 @@ let framework = archer.Framework ()
     ``UnitTestExecutor Should``.``Should raise EndSetup``
     ``UnitTestExecutor Should``.``Should raise StartTest``
     ``UnitTestExecutor Should``.``Should raise EndTest``
+    ``UnitTestExecutor Should``.``Should raise StartTearDown``
+    ``UnitTestExecutor Should``.``Should raise EndExecution``
     
     // Testing Archer Framework
     ``Framework Run Should``.``return empty results when it has no tests``

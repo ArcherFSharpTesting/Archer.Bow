@@ -119,3 +119,35 @@ let ``Should raise EndTest`` =
         
         result
     )
+    
+let ``Should raise StartTearDown`` =
+    container.Test ("Should raise StartTearDown", fun () ->
+        let test = dummyTest
+        
+        let executor = test.GetExecutor ()
+        let mutable result = notRunError
+        executor.StartTearDown.AddHandler (fun tst _ ->
+            result <- tst |> expectsToBe test
+        )
+        
+        executor.Execute ()
+        |> ignore
+        
+        result
+    )
+    
+let ``Should raise EndExecution`` =
+    container.Test ("Should raise EndExecution", fun () ->
+        let test = dummyTest
+        
+        let executor = test.GetExecutor ()
+        let mutable result = notRunError
+        executor.EndExecution.AddHandler (fun tst _ ->
+            result <- tst |> expectsToBe test
+        )
+        
+        executor.Execute ()
+        |> ignore
+        
+        result
+    )
