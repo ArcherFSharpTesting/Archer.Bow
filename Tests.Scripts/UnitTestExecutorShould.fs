@@ -72,17 +72,34 @@ let ``Should raise StartSetup`` =
     
 let ``Should raise EndSetup`` =
     container.Test ("Should raise EndSetup", fun () ->
-            let test = dummyTest
-            
-            let executor = test.GetExecutor ()
-            
-            let mutable result = notRunError
-            executor.EndSetup.AddHandler (fun tst _ ->
-                result <- tst |> expectsToBe test
-            )
-            
-            executor.Execute ()
-            |> ignore
-            
-            result
+        let test = dummyTest
+        
+        let executor = test.GetExecutor ()
+        
+        let mutable result = notRunError
+        executor.EndSetup.AddHandler (fun tst _ ->
+            result <- tst |> expectsToBe test
         )
+        
+        executor.Execute ()
+        |> ignore
+        
+        result
+    )
+    
+let ``Should raise StartTest`` =
+    container.Test ("Should raise StartTest", fun () ->
+        let test = dummyTest
+        
+        let executor = test.GetExecutor ()
+        
+        let mutable result = notRunError
+        executor.StartTest.AddHandler (fun tst _ ->
+            result <- tst |> expectsToBe test
+        )
+        
+        executor.Execute ()
+        |> ignore
+        
+        result
+    )
