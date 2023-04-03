@@ -1,7 +1,6 @@
 ﻿module Archer.Tests.Scripts.Program
 // For more information see https://aka.ms/fsharp-console-apps
 
-open Archer.CoreTypes.Lib
 open Archer.Bow.Lib
 
 let framework = archer.Framework ()
