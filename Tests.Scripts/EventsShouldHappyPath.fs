@@ -20,7 +20,7 @@ let ``the FrameworkExecutionStarted event`` =
                 if fr = framework then TestSuccess
                 else
                     $"expected\n%A{fr}\nto be\n%A{framework}"
-                    |> GeneralFailure
+                    |> VerificationFailure
                     |> TestFailure
                     
             result <- r
@@ -34,12 +34,20 @@ let ``the FrameworkExecutionEnded event`` =
     container.Test ("the FrameworkExecutionEnded event", fun () ->
         let framework = archer.Framework ()
 
-        let mutable called = false
-        framework.FrameworkExecutionEnded.AddHandler (FrameworkDelegate (fun _ _ -> called <- true))
+        let mutable result = "Not Called" |> GeneralFailure |> TestFailure
+        framework.FrameworkExecutionEnded.AddHandler (FrameworkDelegate (fun fr _ ->
+            let r =
+                if fr = framework then TestSuccess
+                else
+                    $"expected\n%A{fr}\nto be\n%A{framework}"
+                    |> VerificationFailure
+                    |> TestFailure
+                    
+            result <- r
+        ))
         framework.Run getDefaultSeed |> ignore
         
-        called
-        |> expectsToBeTrue
+        result
     )
 
 // let ``the TestExecutionStarted event`` =
