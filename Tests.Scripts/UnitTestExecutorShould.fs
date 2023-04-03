@@ -103,3 +103,19 @@ let ``Should raise StartTest`` =
         
         result
     )
+    
+let ``Should raise EndTest`` =
+    container.Test ("Should raise EndTest", fun () ->
+        let test = dummyTest
+        
+        let executor = test.GetExecutor ()
+        let mutable result = notRunError 
+        executor.EndTest.AddHandler (fun tst _ ->
+            result <- tst |> expectsToBe test
+        )
+        
+        executor.Execute ()
+        |> ignore
+        
+        result
+    )
