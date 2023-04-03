@@ -19,6 +19,8 @@ let framework = archer.Framework ()
     ``UnitTestExecutor Should``.``Should return success if test action returns success``
     ``UnitTestExecutor Should``.``Should return failure if the test action returns failure``
     ``UnitTestExecutor Should``.``Should raise ExecutionStart``
+    ``UnitTestExecutor Should``.``Should raise StartSetup``
+    ``UnitTestExecutor Should``.``Should raise EndSetup``
     
     // Testing Archer Framework
     ``Framework Run Should``.``return empty results when it has no tests``
