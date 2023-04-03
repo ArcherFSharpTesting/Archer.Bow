@@ -36,8 +36,8 @@ let ``Should return failure if the test action returns failure`` =
         )
     
 let ``Should raise ExecutionStart`` =
-    container.Test ("Should raise ExecutionStart", fun () ->
-            let test = UnitTest (ignoreString (), ignoreString (), ignoreString (), ignoreInt (), [], successfulTest, EmptyPart)
+    container.Test ("Should raise StartExecution", fun () ->
+            let test = UnitTest (ignoreString (), ignoreString (), ignoreString (), ignoreInt (), [], successfulTest, EmptyPart) :> ITest
             
             let executor = test.GetExecutor ()
             

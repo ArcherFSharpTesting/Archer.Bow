@@ -18,13 +18,13 @@ module Executor =
         let results = tests |> Seq.map runTest
         let successes =
             results
-            |> Seq.filter (fun (r, _) -> r = TestSuccess)
+            |> Seq.filter (fst >> (=) TestSuccess)
             |> Seq.map snd
             |> List.ofSeq
 
         let failures =
             results
-            |> Seq.filter (fun (r, _) -> r |> (=) TestSuccess |> not)
+            |> Seq.filter (fst >> (=) TestSuccess >> not)
             |> List.ofSeq
 
         {

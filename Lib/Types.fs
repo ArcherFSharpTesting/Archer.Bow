@@ -27,15 +27,15 @@ type FrameworkDelegate = delegate of obj * EventArgs -> unit
 type FrameworkTestCancelDelegate = delegate of obj * FrameworkTestCancelArgs -> unit
 type FrameworkTestResultCancelDelegate = delegate of obj * FrameworkTestResultCancelArgs -> unit
 
-type Framework () =
+type Framework () as this =
     let frameworkStart = Event<FrameworkDelegate, EventArgs> ()
     let frameworkEnd = Event<FrameworkDelegate, EventArgs> ()
     let testExecutionStarted = Event<FrameworkTestCancelDelegate, FrameworkTestCancelArgs> () 
     
     let mutable tests = System.Collections.Generic.List<ITestExecutor>()
     
-    let handleTestExecutionStarted (this: Framework) =
-        CancelDelegate (fun (testObj: obj) (cancelArgs: CancelEventArgs) -> 
+    let handleTestExecutionStarted =
+        CancelDelegate (fun testObj cancelArgs -> 
             match testObj with
             | :? ITest as test ->
                 let args = FrameworkTestCancelArgs (cancelArgs.Cancel, test)
@@ -57,13 +57,9 @@ type Framework () =
             newTests
             |> Seq.map (fun test -> test.GetExecutor ())
             
-        let handler =
-            this
-            |> handleTestExecutionStarted
-            
         executors
-        |> Seq.iter (fun test ->
-                test.StartExecution.AddHandler handler
+        |> Seq.iter (fun ex ->
+                ex.StartExecution.AddHandler handleTestExecutionStarted
             )
             
         executors

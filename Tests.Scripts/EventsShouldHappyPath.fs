@@ -58,7 +58,7 @@ let ``the FrameworkExecutionEnded event`` =
 //
 //         let mutable result = "Not Called" |> GeneralFailure |> TestFailure
 //         
-//         framework.TestExecutionStarted.AddHandler (FrameworkTestCancelDelegate (fun fr _ ->
+//         framework.TestExecutionStarted.AddHandler (fun fr _ ->
 //                 let r =
 //                     if fr = framework then TestSuccess
 //                     else
@@ -67,7 +67,11 @@ let ``the FrameworkExecutionEnded event`` =
 //                         |> TestFailure
 //                     
 //                 result <- r
-//             ))
+//             )
+//         
+//         getDefaultSeed
+//         |> framework.Run
+//         |> ignore
 //         
 //         result
 //     )
