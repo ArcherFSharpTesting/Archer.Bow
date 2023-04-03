@@ -73,7 +73,6 @@ type UnitTestExecutor (parent: ITest, setup: unit -> TestResult, test: unit -> T
     member _.Parent with get () = parent
     
     member _.Execute () =
-        startExecution.Trigger (parent, CancelEventArgs ())
         TestSuccess
         |> wrapCancel startExecution parent
         |> joinCancelEvent startSetup setup parent
