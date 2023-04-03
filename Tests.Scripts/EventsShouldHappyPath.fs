@@ -13,14 +13,21 @@ let private container = suite.Container ("", "Framework Run Should")
 let ``the FrameworkExecutionStarted event`` =
     container.Test ("the FrameWorkExecutionStarted event", fun () ->
         let framework = archer.Framework ()
-        let container = suite.Container ("A Test Suite", "with a passing test")
 
-        let mutable called = false
-        framework.FrameworkExecutionStarted.AddHandler (FrameworkDelegate (fun _ _ -> called <- true))
+        let mutable result = "Not Run" |> GeneralFailure |> TestFailure
+        framework.FrameworkExecutionStarted.AddHandler (FrameworkDelegate (fun fr _ ->
+            let r = 
+                if fr = framework then TestSuccess
+                else
+                    $"expected\n%A{fr}\nto be\n%A{framework}"
+                    |> GeneralFailure
+                    |> TestFailure
+                    
+            result <- r
+        ))
         framework.Run getDefaultSeed |> ignore
-        
-        called
-        |> expectsToBeTrue
+
+        result        
     )
 
 let ``the FrameworkExecutionEnded event`` =
