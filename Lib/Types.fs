@@ -12,8 +12,8 @@ type Framework () =
     member _.Run (getSeed: unit -> int) =
         runTests getSeed tests
         
-    member _.AddTest (newTest: ITest) = 
-        tests.Add newTest
+    member _.AddTests (newTests: ITest seq) =
+        tests.AddRange newTests
         
 type Archer () =
     member _.Framework () = Framework ()

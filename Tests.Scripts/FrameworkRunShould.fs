@@ -54,7 +54,7 @@ let ``return a successful result when one test passes`` =
         let container = suite.Container ("A Test Suite", "with a passing test")
         let test = container.Test ("A Passing Test", fun () -> TestSuccess)
 
-        framework.AddTest test
+        framework.AddTests [test]
         let result = framework.Run (getDefaultSeed)
         
         let expected = {
@@ -80,9 +80,8 @@ let ``return a successful result when two tests pass`` =
                 Seed = defaultSeed
             }
 
-        framework.AddTest test1
-        framework.AddTest test2
-        let result = framework.Run (getDefaultSeed)
+        framework.AddTests [test1; test2]
+        let result = framework.Run getDefaultSeed
 
         result |> verifyWith expected
     )
@@ -102,8 +101,7 @@ let ``return failure when a test fails`` =
                 Seed = defaultSeed
             }
 
-        framework.AddTest testF
-        framework.AddTest test2
+        framework.AddTests [testF; test2]
 
         let result = framework.Run (getDefaultSeed)
 
@@ -125,8 +123,7 @@ let ``return failure when second test fails`` =
                 Seed = defaultSeed
             }
 
-        framework.AddTest test1
-        framework.AddTest testF
+        framework.AddTests [test1; testF]
 
         let result = framework.Run (getDefaultSeed)
 

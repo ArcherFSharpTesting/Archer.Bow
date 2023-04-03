@@ -13,7 +13,7 @@ let framework = archer.Framework ()
     Archer.Tests.Scripts.``Framework Run Should``.``return failure when a test fails``
     Archer.Tests.Scripts.``Framework Run Should``.``return failure when second test fails``
 ]
-|> List.iter framework.AddTest
+|> framework.AddTests
 
 let results = framework.Run ()
     
