@@ -53,3 +53,12 @@ let ``have the test fullname`` =
             test.TestFullName
             |> expectsToBe expectedName
         )
+    
+let ``have the line number`` =
+    container.Test ("have the line number", fun () ->
+            let expectedLineNumber = 66
+            let test = UnitTest (ignoreString (), ignoreString(), ignoreString (), expectedLineNumber, [], successfulTest, EmptyPart) :> ITest
+            
+            test.LineNumber
+            |> expectsToBe expectedLineNumber
+        )
