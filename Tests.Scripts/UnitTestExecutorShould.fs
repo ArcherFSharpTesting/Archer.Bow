@@ -23,3 +23,14 @@ let ``Should return success if test action returns success`` =
             
             test.GetExecutor().Execute ()
         )
+    
+let ``Should return failure if the test action returns failure`` =
+    container.Test ("Should return failure if the test action returns failure", fun () ->
+            let expectedResult = "Things don't add up" |> VerificationFailure |> TestFailure
+            let test = UnitTest (ignoreString (), ignoreString (), ignoreString (), ignoreInt (), [], (fun () -> expectedResult), EmptyPart) :> ITest
+            
+            let result = test.GetExecutor().Execute ()
+            
+            result
+            |> expectsToBe expectedResult
+        )
