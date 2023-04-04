@@ -61,7 +61,6 @@ let ``the TestExecutionStarted event`` =
          let mutable result = "Not Called" |> GeneralFailure |> TestFailure
          
          framework.TestExecutionStarted.AddHandler (fun fr args ->
-                 args.Cancel <- true
                  let r =
                      if fr = framework then TestSuccess
                      else
@@ -69,7 +68,7 @@ let ``the TestExecutionStarted event`` =
                          |> VerificationFailure
                          |> TestFailure
                      
-                 result <- r
+                 result <- r |> combineResultIgnoring TestSuccess (args.Test |> expectsToBe test)
              )
          
          getDefaultSeed
