@@ -19,21 +19,6 @@ let ``Should return success if test action returns success`` =
         test.Execute ()
     )
     
-let ``Should raise StartTearDown`` =
-    container.Test ("Should raise StartTearDown", fun () ->
-        let executor = dummyExecutor None None
-        
-        let mutable result = notRunError
-        executor.StartTearDown.AddHandler (fun tst _ ->
-            result <- tst |> expectsToBe executor.Parent
-        )
-        
-        executor.Execute ()
-        |> ignore
-        
-        result
-    )
-    
 let ``Should raise EndExecution`` =
     container.Test ("Should raise EndExecution", fun () ->
         let executor = dummyExecutor None None
