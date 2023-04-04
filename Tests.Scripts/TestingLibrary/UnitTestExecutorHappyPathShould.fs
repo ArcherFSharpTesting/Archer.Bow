@@ -19,21 +19,6 @@ let ``Should return success if test action returns success`` =
         test.Execute ()
     )
     
-let ``Should raise EndExecution`` =
-    container.Test ("Should raise EndExecution", fun () ->
-        let executor = dummyExecutor None None
-        
-        let mutable result = notRunError
-        executor.EndExecution.AddHandler (fun tst _ ->
-            result <- tst |> expectsToBe executor.Parent
-        )
-        
-        executor.Execute ()
-        |> ignore
-        
-        result
-    )
-    
 let ``Should raise all events in correct order`` =
     container.Test("Should raise all events in correct order", fun () ->
         let executor = dummyExecutor None None
