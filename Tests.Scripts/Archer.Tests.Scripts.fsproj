@@ -13,7 +13,11 @@
     <Compile Include="UnitTestExecutorHappyPathShould.fs" />
     <Compile Include="UnitTestExecutorFailingTestShould.fs" />
     <Compile Include="FrameworkRunShould.fs" />
-    <Compile Include="EventsShouldHappyPath.fs" />
+    <Compile Include="FrameworkExecutionStartedShould.fs" />
+    <Compile Include="FrameworkExecutionEndedShould.fs" />
+    <Compile Include="TestExecutionStartedShould.fs" />
+    <Compile Include="TestStartSetupShould.fs" />
+    <Compile Include="TestEndSetupShould.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 

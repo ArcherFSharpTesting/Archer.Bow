@@ -44,11 +44,15 @@ let frameWorkTests =
         ``Framework Run Should``.``return failure when second test fails``
         ``Framework Run Should``.``return failure when both tests fail``
         
-        ``When tests execute normally framework should raise``.``the FrameworkExecutionStarted event``
-        ``When tests execute normally framework should raise``.``the FrameworkExecutionEnded event``
-        ``When tests execute normally framework should raise``.``the TestExecutionStarted event``
-        ``When tests execute normally framework should raise``.``the TestStartSetup event``
-        ``When tests execute normally framework should raise``.``the TestEndSetup event``
+        ``FrameworkExecutionStarted should``.``be raised when framework is run``
+        
+        ``FrameworkExecutionEnded should``.``be raised when the framework is run``
+        
+        ``TestExecutionStarted should``.``be raised from the given test when framework is run``
+        
+        ``TestStartSetup should``.``be raised from the given test when the framework is run``
+        
+        ``TestEndSetup should``.``be raised from the given test when the framework is run``
     ]
     
 [
