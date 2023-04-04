@@ -1,4 +1,4 @@
-module Archer.Tests.Scripts.Scripting.``UnitTestExecutor Should``
+module Archer.Tests.Scripts.Scripting.UnitTestExecutor
 
 open Archer.CoreTypes.Lib
 open Archer.CoreTypes.Lib.InternalTypes
@@ -149,5 +149,89 @@ let ``Should raise EndExecution`` =
         executor.Execute ()
         |> ignore
         
+        result
+    )
+    
+let ``Should raise all events in correct order`` =
+    container.Test("Should raise all events in correct order", fun () ->
+        let test = dummyTest ()
+        let executor = test.GetExecutor ()
+        
+        let mutable cnt = 0
+        let mutable result = notRunError
+        
+        let combineResult a b =
+            match a, b with
+            | var, _ when var = notRunError -> b
+            | _, var when var = notRunError -> a
+            | TestSuccess, _ -> b
+            | _, TestSuccess -> a
+            | TestFailure tfa, TestFailure tfb -> CombinationFailure (tfa, tfb) |> TestFailure
+            
+            
+        executor.StartExecution.AddHandler (fun _ _ ->
+            let r =
+                cnt
+                |> expectsToBeWithMessage 0 "Start Execution out of order"
+                
+            cnt <- cnt + 1
+            result <- r |> combineResult result
+        )
+        
+        executor.StartSetup.AddHandler (fun _ _ ->
+            let r =
+                cnt
+                |> expectsToBeWithMessage 1 "Start Setup out of order"
+                
+            cnt <- cnt + 1
+            result <- r |> combineResult result
+        )
+        
+        executor.EndSetup.AddHandler (fun _ _ ->
+            let r =
+                cnt
+                |> expectsToBeWithMessage 2 "End Setup out of order"
+                
+            cnt <- cnt + 1
+            result <- r |> combineResult result
+        )
+        
+        executor.StartTest.AddHandler (fun _ _ ->
+            let r =
+                cnt
+                |> expectsToBeWithMessage 3 "Start Test out of order"
+                
+            cnt <- cnt + 1
+            result <- r |> combineResult result
+        )
+        
+        executor.EndTest.AddHandler (fun _ _ ->
+            let r =
+                cnt
+                |> expectsToBeWithMessage 4 "End Test out of order"
+                
+            cnt <- cnt + 1
+            result <- r |> combineResult result
+        )
+        
+        executor.StartTearDown.AddHandler (fun _ _ ->
+            let r =
+                cnt
+                |> expectsToBeWithMessage 5 "Start Tear Down out of order"
+                
+            cnt <- cnt + 1
+            result <- r |> combineResult result
+        )
+        
+        executor.EndExecution.AddHandler (fun _ _ ->
+            let r =
+                cnt
+                |> expectsToBeWithMessage 6 "End Execution out of order"
+                
+            cnt <- cnt + 1
+            result <- r |> combineResult result
+        )
+            
+        executor.Execute () |> ignore
         result
     )

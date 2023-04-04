@@ -17,6 +17,15 @@ let expectsToBe expected result =
         $"expected \"%A{result}\" to be \"%A{expected}\""
         |> VerificationFailure
         |> TestFailure
+        
+let expectsToBeWithMessage expected message result =
+    let r =
+        result
+        |> expectsToBe expected
+        
+    match r with
+    | TestSuccess -> r
+    | TestFailure f -> FailureWithMessage (message, f) |> TestFailure
 
 let verifyWith = expectsToBe
         

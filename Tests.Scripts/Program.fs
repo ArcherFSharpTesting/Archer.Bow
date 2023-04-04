@@ -15,16 +15,17 @@ let framework = archer.Framework ()
     ``UnitTest should``.``have tags``
     ``UnitTest should``.``have well formed string representation``
     
-    ``UnitTestExecutor Should``.``Should have the creating test as its parent``
-    ``UnitTestExecutor Should``.``Should return success if test action returns success``
-    ``UnitTestExecutor Should``.``Should return failure if the test action returns failure``
-    ``UnitTestExecutor Should``.``Should raise ExecutionStart``
-    ``UnitTestExecutor Should``.``Should raise StartSetup``
-    ``UnitTestExecutor Should``.``Should raise EndSetup``
-    ``UnitTestExecutor Should``.``Should raise StartTest``
-    ``UnitTestExecutor Should``.``Should raise EndTest``
-    ``UnitTestExecutor Should``.``Should raise StartTearDown``
-    ``UnitTestExecutor Should``.``Should raise EndExecution``
+    UnitTestExecutor.``Should have the creating test as its parent``
+    UnitTestExecutor.``Should return success if test action returns success``
+    UnitTestExecutor.``Should return failure if the test action returns failure``
+    UnitTestExecutor.``Should raise ExecutionStart``
+    UnitTestExecutor.``Should raise StartSetup``
+    UnitTestExecutor.``Should raise EndSetup``
+    UnitTestExecutor.``Should raise StartTest``
+    UnitTestExecutor.``Should raise EndTest``
+    UnitTestExecutor.``Should raise StartTearDown``
+    UnitTestExecutor.``Should raise EndExecution``
+    UnitTestExecutor.``Should raise all events in correct order``
     
     // Testing Archer Framework
     ``Framework Run Should``.``return empty results when it has no tests``
