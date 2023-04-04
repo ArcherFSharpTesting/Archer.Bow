@@ -23,8 +23,12 @@
     "verboseMode": false,
     "aliases": [
         {
+            "name": "check",
+            "command": "cls; gittey build && dotnet run --project ./Tests.Scripts"
+        },
+        {
             "name": "test",
-            "command": "cls; dotnet build && dotnet run --project ./Tests.Scripts && gittey commit"
+            "command": "gittey check && gittey commit"
         },
         {
             "name": "push",

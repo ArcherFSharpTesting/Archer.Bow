@@ -34,14 +34,12 @@ type Framework () as this =
     
     let mutable tests = System.Collections.Generic.List<ITestExecutor>()
     
-    let handleTestExecutionStarted =
-        CancelDelegate (fun testObj cancelArgs -> 
-            match testObj with
-            | :? ITest as test ->
-                let args = FrameworkTestCancelArgs (cancelArgs.Cancel, test)
-                testExecutionStarted.Trigger (this, args)
-            | _ -> ()
-        )
+    let handleTestExecutionStarted (testObj: obj) (cancelArgs: CancelEventArgs) =
+        match testObj with
+        | :? ITest as test ->
+            let args = FrameworkTestCancelArgs (cancelArgs.Cancel, test)
+            testExecutionStarted.Trigger (this, args)
+        | _ -> ()
     
     member this.Run () =
         this.Run(fun () -> Random().Next ())
@@ -53,14 +51,15 @@ type Framework () as this =
         result
     
     member this.AddTests (newTests: ITest seq) =
+        let hookEvents (executor: ITestExecutor) =
+            executor.StartExecution.AddHandler handleTestExecutionStarted
+            executor
+            
+        let getExecutor (test: ITest) = test.GetExecutor ()
+            
         let executors =
             newTests
-            |> Seq.map (fun test -> test.GetExecutor ())
-            
-        executors
-        |> Seq.iter (fun ex ->
-                ex.StartExecution.AddHandler handleTestExecutionStarted
-            )
+            |> Seq.map (getExecutor >> hookEvents)
             
         executors
         |> tests.AddRange

@@ -46,7 +46,7 @@ let frameWorkTests =
         
         ``When tests execute normally framework should raise``.``the FrameworkExecutionStarted event``
         ``When tests execute normally framework should raise``.``the FrameworkExecutionEnded event``
-        // ``When tests execute normally framework should raise``.``the TestExecutionStarted event``
+        ``When tests execute normally framework should raise``.``the TestExecutionStarted event``
     ]
     
 [

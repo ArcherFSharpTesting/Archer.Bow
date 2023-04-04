@@ -50,28 +50,31 @@ let ``the FrameworkExecutionEnded event`` =
         result
     )
 
-// let ``the TestExecutionStarted event`` =
-//     container.Test ("the TestExecutionStarted event", fun () ->
-//         let framework = archer.Framework ()
-//         let test = container.Test ("My Passing Test", fun () -> TestSuccess)
-//         framework.AddTests [test]
-//
-//         let mutable result = "Not Called" |> GeneralFailure |> TestFailure
-//         
-//         framework.TestExecutionStarted.AddHandler (fun fr _ ->
-//                 let r =
-//                     if fr = framework then TestSuccess
-//                     else
-//                         $"expected\n%A{fr}\nto be\n%A{framework}"
-//                         |> VerificationFailure
-//                         |> TestFailure
-//                     
-//                 result <- r
-//             )
-//         
-//         getDefaultSeed
-//         |> framework.Run
-//         |> ignore
-//         
-//         result
-//     )
+let ``the TestExecutionStarted event`` =
+     container.Test ("the TestExecutionStarted event", fun () ->
+         let framework = archer.Framework ()
+         let c = suite.Container ("Framework Run Should", "the TestExecutionStarted event")
+         let test = c.Test ("My Passing Test", fun () -> TestSuccess)
+         
+         framework.AddTests [test]
+
+         let mutable result = "Not Called" |> GeneralFailure |> TestFailure
+         
+         framework.TestExecutionStarted.AddHandler (fun fr args ->
+                 args.Cancel <- true
+                 let r =
+                     if fr = framework then TestSuccess
+                     else
+                         $"expected\n%A{fr}\nto be\n%A{framework}"
+                         |> VerificationFailure
+                         |> TestFailure
+                     
+                 result <- r
+             )
+         
+         getDefaultSeed
+         |> framework.Run
+         |> ignore
+         
+         result
+     )
