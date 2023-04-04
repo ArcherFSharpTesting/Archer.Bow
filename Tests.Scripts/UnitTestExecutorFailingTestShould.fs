@@ -54,3 +54,14 @@ let ``Should raise all events even if setup fails`` =
         cnt
         |> expectsToBe 7
     )
+    
+let ``Should return failure if setup fails`` =
+    container.Test ("Should raise all events even if setup fails", fun () ->
+        let failure = "Setup Fail" |> generateFailure SetupFailure
+        let test = dummyTest None (Some (SetupPart (fun () -> failure)))
+        
+        let result = test.Execute ()
+        
+        result
+        |> expectsToBe failure
+    )
