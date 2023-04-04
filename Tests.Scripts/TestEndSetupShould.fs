@@ -12,8 +12,7 @@ let private container = suite.Container ("", "TestEndSetup should")
 let ``be raised from the given test when the framework is run`` =
      container.Test ("be raised from the given test when the framework is run", fun () ->
          let framework = archer.Framework ()
-         let c = suite.Container ("Framework Run Should", "the TestExecutionStarted event")
-         let test = c.Test ("My Passing Test", fun () -> TestSuccess)
+         let test = dummyTest None None
          
          framework.AddTests [test]
 
