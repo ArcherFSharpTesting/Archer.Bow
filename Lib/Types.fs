@@ -21,7 +21,7 @@ type FrameworkTestResultCancelArgs (cancel: bool, test: ITest, result: TestResul
     new (test: ITest, result: TestResult) = FrameworkTestResultCancelArgs (false, test, result)
     
     member _.Test with get () = test
-    member _.Result with get () = result
+    member _.TestResult with get () = result
     
 type FrameworkDelegate = delegate of obj * EventArgs -> unit
 type FrameworkTestCancelDelegate = delegate of obj * FrameworkTestCancelArgs -> unit
@@ -31,6 +31,7 @@ type Framework () as this =
     let frameworkStart = Event<FrameworkDelegate, EventArgs> ()
     let testExecutionStarted = Event<FrameworkTestCancelDelegate, FrameworkTestCancelArgs> () 
     let testStartSetup = Event<FrameworkTestCancelDelegate, FrameworkTestCancelArgs> ()
+    let testEndSetup = Event<FrameworkTestResultCancelDelegate, FrameworkTestResultCancelArgs> ()
     let frameworkEnd = Event<FrameworkDelegate, EventArgs> ()
     
     let mutable tests = System.Collections.Generic.List<ITestExecutor>()
@@ -41,10 +42,19 @@ type Framework () as this =
             let args = FrameworkTestCancelArgs (cancelArgs.Cancel, test)
             event.Trigger (this, args)
         | _ -> ()
+        
+    let handleTestResultCancelEvent (event: Event<'a, FrameworkTestResultCancelArgs>) (testObj: obj) (cancelArgs: TestCancelEventArgsWithResults) =
+        match testObj with
+        | :? ITest as test ->
+            let args = FrameworkTestResultCancelArgs (cancelArgs.Cancel, test, cancelArgs.TestResult)
+            event.Trigger (this, args)
+        | _ -> ()
     
     let handleTestExecutionStarted = handleTestCancelEvent testExecutionStarted
         
     let handleTestSetupStarted = handleTestCancelEvent testStartSetup
+    
+    let handleTestSetupEnded = handleTestResultCancelEvent testEndSetup
         
     member this.Run () =
         this.Run(fun () -> Random().Next ())
@@ -59,6 +69,7 @@ type Framework () as this =
         let hookEvents (executor: ITestExecutor) =
             executor.StartExecution.AddHandler handleTestExecutionStarted
             executor.StartSetup.AddHandler handleTestSetupStarted
+            executor.EndSetup.AddHandler handleTestSetupEnded
             executor
             
         let getExecutor (test: ITest) = test.GetExecutor ()
@@ -81,6 +92,9 @@ type Framework () as this =
     
     [<CLIEvent>]
     member _.TestStartSetup = testStartSetup.Publish
+    
+    [<CLIEvent>]
+    member _.TestEndSetup = testEndSetup.Publish
 
         
 type Archer () =

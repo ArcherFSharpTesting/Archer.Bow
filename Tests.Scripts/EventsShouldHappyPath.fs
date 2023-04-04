@@ -108,3 +108,33 @@ let ``the TestStartSetup event`` =
          
          result
      )
+
+let ``the TestEndSetup event`` =
+     container.Test ("the TestEndSetup event", fun () ->
+         let framework = archer.Framework ()
+         let c = suite.Container ("Framework Run Should", "the TestExecutionStarted event")
+         let test = c.Test ("My Passing Test", fun () -> TestSuccess)
+         
+         framework.AddTests [test]
+
+         let mutable result = "Not Called" |> GeneralFailure |> TestFailure
+         
+         framework.TestEndSetup.AddHandler (fun fr args ->
+                 let r =
+                     if fr = framework then TestSuccess
+                     else
+                         $"expected\n%A{fr}\nto be\n%A{framework}"
+                         |> VerificationFailure
+                         |> TestFailure
+                     
+                 result <- args.Test
+                           |> expectsToBe test
+                           |> combineError r
+             )
+         
+         getDefaultSeed
+         |> framework.Run
+         |> ignore
+         
+         result
+     )
