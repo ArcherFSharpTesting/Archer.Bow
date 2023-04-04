@@ -3,10 +3,10 @@ module Archer.Tests.Scripts.TestingLibrary.``UnitTestExecutor StartExecution sho
 open Archer.CoreTypes.Lib.InternalTypes
 open Archer.Tests.Scripts.TestLang
 
-let private container = suite.Container ("Scripting", "UnitTestExecutor StartExecution should")
+let private container = suite.Container ("TestingLibrary", "UnitTestExecutor StartExecution should")
 
-let ``be raised when test is executed`` =
-    container.Test ("Should raise StartExecution", fun () ->
+let ``be raised when the test is executed`` =
+    container.Test ("be raised when test is executed", fun () ->
         let executor = dummyExecutor None None
         
         let mutable result = notRunError

@@ -14,6 +14,7 @@
     <Compile Include="TestingLibrary\UnitTestExecutorFailingTestShould.fs" />
     <Compile Include="TestingLibrary\UnitTestExecutorStartExecutionShould.fs" />
     <Compile Include="TestingLibrary\UnitTestExecutorStartSetupShould.fs" />
+    <Compile Include="TestingLibrary\UnitTestExecutorEndSetupShould.fs" />
     <Compile Include="FrameworkRunShould.fs" />
     <Compile Include="FrameworkExecutionStartedShould.fs" />
     <Compile Include="FrameworkExecutionEndedShould.fs" />
