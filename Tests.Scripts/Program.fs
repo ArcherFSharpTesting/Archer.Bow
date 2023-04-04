@@ -30,7 +30,8 @@ let testDoublesTests =
         ``UnitTestExecutor Failing Test``.``Should return failure if the test action returns failure``
         ``UnitTestExecutor Failing Test``.``Should raise all events even if setup fails``
         ``UnitTestExecutor Failing Test``.``Should return failure if setup fails``
-        ``UnitTestExecutor Failing Test``.``Should carry the error in future events``
+        ``UnitTestExecutor Failing Test``.``Should carry the setup error in future events``
+        ``UnitTestExecutor Failing Test``.``Should not run test action``
     ]
 
 let frameWorkTests = 
