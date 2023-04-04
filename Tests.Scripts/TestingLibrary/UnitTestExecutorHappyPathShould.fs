@@ -1,4 +1,4 @@
-module Archer.Tests.Scripts.Scripting.``UnitTestExecutor Happy Path``
+module Archer.Tests.Scripts.TestingLibrary.``UnitTestExecutor Happy Path``
 
 open Archer.CoreTypes.Lib
 open Archer.CoreTypes.Lib.InternalTypes
@@ -23,22 +23,6 @@ let ``Should return success if test action returns success`` =
         let test = dummyTest ()
         
         test.GetExecutor().Execute ()
-    )
-    
-let ``Should raise ExecutionStart`` =
-    container.Test ("Should raise StartExecution", fun () ->
-        let test = dummyTest ()
-        
-        let executor = test.GetExecutor ()
-        
-        let mutable result = notRunError
-        executor.StartExecution.AddHandler (CancelDelegate (fun tst _ ->
-                result <- tst |> expectsToBe test
-            )
-        )
-        
-        executor.Execute () |> ignore
-        result
     )
     
 let ``Should raise StartSetup`` =

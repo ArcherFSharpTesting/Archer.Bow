@@ -56,4 +56,9 @@ let dummyTest (testAction: (unit -> TestResult) option) (parts: TestPart option)
     | Some part, None -> c.Test (ignoreString (), successfulTest, part, ignoreString (), ignoreInt ())
     | Some part, Some action -> c.Test (ignoreString (), action, part, ignoreString (), ignoreInt ())
     
+let dummyExecutor (testAction: (unit -> TestResult) option) (parts: TestPart option) =
+    let test = dummyTest testAction parts
+    
+    test.GetExecutor ()
+    
 let notRunError = "Not Run" |> GeneralFailure |> TestFailure

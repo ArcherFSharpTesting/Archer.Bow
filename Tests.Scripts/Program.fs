@@ -2,7 +2,7 @@
 // For more information see https://aka.ms/fsharp-console-apps
 
 open Archer.Bow.Lib
-open Archer.Tests.Scripts.Scripting
+open Archer.Tests.Scripts.TestingLibrary
 
 let framework = archer.Framework ()
 
@@ -18,7 +18,6 @@ let testDoublesTests =
         
         ``UnitTestExecutor Happy Path``.``Should have the creating test as its parent``
         ``UnitTestExecutor Happy Path``.``Should return success if test action returns success``
-        ``UnitTestExecutor Happy Path``.``Should raise ExecutionStart``
         ``UnitTestExecutor Happy Path``.``Should raise StartSetup``
         ``UnitTestExecutor Happy Path``.``Should raise EndSetup``
         ``UnitTestExecutor Happy Path``.``Should raise StartTest``
@@ -32,6 +31,8 @@ let testDoublesTests =
         ``UnitTestExecutor Failing Test``.``Should return failure if setup fails``
         ``UnitTestExecutor Failing Test``.``Should carry the setup error in future events``
         ``UnitTestExecutor Failing Test``.``Should not run test action``
+        
+        ``UnitTestExecutor StartExecution should``.``be raised when test is executed``
     ]
 
 let frameWorkTests = 

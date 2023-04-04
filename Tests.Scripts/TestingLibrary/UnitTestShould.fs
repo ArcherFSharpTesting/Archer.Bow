@@ -1,4 +1,4 @@
-module Archer.Tests.Scripts.Scripting.``UnitTest should``
+module Archer.Tests.Scripts.TestingLibrary.``UnitTest should``
 
 open Archer.CoreTypes.Lib.InternalTypes
 open Archer.Tests.Scripts.TestLang

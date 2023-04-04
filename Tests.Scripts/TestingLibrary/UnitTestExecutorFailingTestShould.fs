@@ -1,4 +1,4 @@
-module Archer.Tests.Scripts.``UnitTestExecutor Failing Test``
+module Archer.Tests.Scripts.TestingLibrary.``UnitTestExecutor Failing Test``
 
 open Archer.CoreTypes.Lib
 open Archer.CoreTypes.Lib.InternalTypes
