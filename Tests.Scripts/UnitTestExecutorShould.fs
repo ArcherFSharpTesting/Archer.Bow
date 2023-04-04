@@ -1,11 +1,11 @@
-module Archer.Tests.Scripts.Scripting.UnitTestExecutor
+module Archer.Tests.Scripts.Scripting.``UnitTestExecutor happy path``
 
 open Archer.CoreTypes.Lib
 open Archer.CoreTypes.Lib.InternalTypes
 open Archer.Tests.Scripts.TestLang
 open Archer.Tests.Scripts.TestLang.Types
 
-let private container = suite.Container ("Scripting", "UnitTestExecutor Should")
+let private container = suite.Container ("Scripting", "UnitTestExecutor happy path")
 let private dummyTest () = suite.Container(ignoreString (), ignoreString ()).Test(ignoreString (), successfulTest)
 let private notRunError = "Not Run" |> GeneralFailure |> TestFailure
 
