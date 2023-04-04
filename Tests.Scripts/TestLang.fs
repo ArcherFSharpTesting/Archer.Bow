@@ -55,3 +55,5 @@ let dummyTest (testAction: (unit -> TestResult) option) (parts: TestPart option)
     | None, Some action -> c.Test (ignoreString (), action, EmptyPart, ignoreString (), ignoreInt ())
     | Some part, None -> c.Test (ignoreString (), successfulTest, part, ignoreString (), ignoreInt ())
     | Some part, Some action -> c.Test (ignoreString (), action, part, ignoreString (), ignoreInt ())
+    
+let notRunError = "Not Run" |> GeneralFailure |> TestFailure

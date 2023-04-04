@@ -14,8 +14,6 @@ let private dummyExecutor (testAction: (unit -> TestResult) option) (parts: Test
         
     test.GetExecutor ()
     
-let private notRunError = "Not Run" |> GeneralFailure |> TestFailure
-    
 let ``Should return failure if the test action returns failure`` =
     container.Test ("Should return failure if the test action returns failure", fun () ->
         let expectedResult = "Things don't add up" |> generateFailure VerificationFailure
