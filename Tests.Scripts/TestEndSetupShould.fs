@@ -62,3 +62,24 @@ let ``should not be raised if FrameworkExecutionStart canceled`` =
         
         result
     )
+    
+let ``should not be raised if TestStartExecution is canceled`` =
+    container.Test ("should not be raised if TestStartExecution is canceled", fun () ->
+        let framework, test = buildTestFramework ()
+        
+        let mutable result = TestSuccess
+        
+        framework.TestEndSetup.AddHandler (fun _ _ ->
+            result <- "Event should not have fired" |> VerificationFailure |> TestFailure
+        )
+        
+        framework.TestStartExecution.AddHandler (fun _ args ->
+            args.Cancel <- true
+        )
+        
+        getDefaultSeed
+        |> framework.Run
+        |> ignore
+        
+        result
+    )

@@ -42,6 +42,7 @@ type Framework () as this =
         | :? ITest as test ->
             let args = FrameworkTestCancelArgs (cancelArgs.Cancel, test)
             event.Trigger (this, args)
+            cancelArgs.Cancel <- args.Cancel
         | _ -> ()
         
     let handleTestResultCancelEvent (event: Event<'a, FrameworkTestResultCancelArgs>) (testObj: obj) (cancelArgs: TestCancelEventArgsWithResults) =
