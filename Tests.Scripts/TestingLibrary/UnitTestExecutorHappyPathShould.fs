@@ -2,7 +2,7 @@ module Archer.Tests.Scripts.TestingLibrary.``UnitTestExecutor Happy Path``
 
 open Archer.Tests.Scripts.TestLang
 
-let private container = suite.Container ("Scripting", "UnitTestExecutor happy path")
+let private container = suite.Container ("TestLibrary", "UnitTestExecutor happy path")
 
 let ``Should have the creating test as its parent`` =
     container.Test("Should have the creating test as its parent", fun () ->
@@ -17,21 +17,6 @@ let ``Should return success if test action returns success`` =
         let test = dummyExecutor None None
         
         test.Execute ()
-    )
-    
-let ``Should raise StartTest`` =
-    container.Test ("Should raise StartTest", fun () ->
-        let executor = dummyExecutor None None
-        
-        let mutable result = notRunError
-        executor.StartTest.AddHandler (fun tst _ ->
-            result <- tst |> expectsToBe executor.Parent
-        )
-        
-        executor.Execute ()
-        |> ignore
-        
-        result
     )
     
 let ``Should raise EndTest`` =

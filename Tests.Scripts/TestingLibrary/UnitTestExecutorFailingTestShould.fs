@@ -5,7 +5,7 @@ open Archer.CoreTypes.Lib.InternalTypes
 open Archer.Tests.Scripts.TestLang
 open Archer.Tests.Scripts.TestLang.Types
 
-let private container = suite.Container ("Scripting", "UnitTestExecutor Failing Test")
+let private container = suite.Container ("TestingLibrary", "UnitTestExecutor Failing Test")
 let generateFailure failureType details =
     details |> failureType |> TestFailure
     

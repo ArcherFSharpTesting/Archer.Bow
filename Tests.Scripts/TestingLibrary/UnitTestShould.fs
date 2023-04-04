@@ -4,7 +4,7 @@ open Archer.CoreTypes.Lib.InternalTypes
 open Archer.Tests.Scripts.TestLang
 open Archer.Tests.Scripts.TestLang.Types
 
-let private container = suite.Container ("Scripting", "UnitTest should")
+let private container = suite.Container ("TestingLibrary", "UnitTest should")
 
 let ``have the test name`` =
     container.Test ("have the test name", fun () ->
