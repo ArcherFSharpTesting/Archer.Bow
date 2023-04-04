@@ -18,7 +18,6 @@ let testDoublesTests =
         
         ``UnitTestExecutor Happy Path``.``Should have the creating test as its parent``
         ``UnitTestExecutor Happy Path``.``Should return success if test action returns success``
-        ``UnitTestExecutor Happy Path``.``Should raise StartSetup``
         ``UnitTestExecutor Happy Path``.``Should raise EndSetup``
         ``UnitTestExecutor Happy Path``.``Should raise StartTest``
         ``UnitTestExecutor Happy Path``.``Should raise EndTest``
@@ -33,6 +32,8 @@ let testDoublesTests =
         ``UnitTestExecutor Failing Test``.``Should not run test action``
         
         ``UnitTestExecutor StartExecution should``.``be raised when test is executed``
+        
+        ``UnitTestExecutor StartSetup should``.``be raised when test is executed``
     ]
 
 let frameWorkTests = 
