@@ -27,6 +27,7 @@ let framework = archer.Framework ()
     ``UnitTestExecutor Happy Path``.``Should raise all events in correct order``
     
     ``UnitTestExecutor Failing Test``.``Should return failure if the test action returns failure``
+    ``UnitTestExecutor Failing Test``.``Should raise all events even if setup fails``
     
     // Testing Archer Framework
     ``Framework Run Should``.``return empty results when it has no tests``
