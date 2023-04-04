@@ -1,4 +1,4 @@
-module Archer.Tests.Scripts.Scripting.``UnitTestExecutor happy path``
+module Archer.Tests.Scripts.Scripting.``UnitTestExecutor Happy Path``
 
 open Archer.CoreTypes.Lib
 open Archer.CoreTypes.Lib.InternalTypes
@@ -21,54 +21,43 @@ let ``Should have the creating test as its parent`` =
     
 let ``Should return success if test action returns success`` =
     container.Test ("Should return success if test action returns success", fun () ->
-            let test = dummyTest ()
-            
-            test.GetExecutor().Execute ()
-        )
-    
-let ``Should return failure if the test action returns failure`` =
-    container.Test ("Should return failure if the test action returns failure", fun () ->
-            let expectedResult = "Things don't add up" |> VerificationFailure |> TestFailure
-            let test = UnitTest (ignoreString (), ignoreString (), ignoreString (), ignoreInt (), [], (fun () -> expectedResult), EmptyPart) :> ITest
-            
-            let result = test.GetExecutor().Execute ()
-            
-            result
-            |> expectsToBe expectedResult
-        )
+        let test = dummyTest ()
+        
+        test.GetExecutor().Execute ()
+    )
     
 let ``Should raise ExecutionStart`` =
     container.Test ("Should raise StartExecution", fun () ->
-            let test = dummyTest ()
-            
-            let executor = test.GetExecutor ()
-            
-            let mutable result = notRunError
-            executor.StartExecution.AddHandler (CancelDelegate (fun tst _ ->
-                    result <- tst |> expectsToBe test
-                )
+        let test = dummyTest ()
+        
+        let executor = test.GetExecutor ()
+        
+        let mutable result = notRunError
+        executor.StartExecution.AddHandler (CancelDelegate (fun tst _ ->
+                result <- tst |> expectsToBe test
             )
-            
-            executor.Execute () |> ignore
-            result
         )
+        
+        executor.Execute () |> ignore
+        result
+    )
     
 let ``Should raise StartSetup`` =
     container.Test ("Should raise StartSetup", fun () ->
-            let test = dummyTest ()
-            
-            let executor = test.GetExecutor ()
-            
-            let mutable result = notRunError
-            executor.StartSetup.AddHandler (fun tst _ ->
-                result <- tst |> expectsToBe test
-            )
-            
-            executor.Execute ()
-            |> ignore
-            
-            result
+        let test = dummyTest ()
+        
+        let executor = test.GetExecutor ()
+        
+        let mutable result = notRunError
+        executor.StartSetup.AddHandler (fun tst _ ->
+            result <- tst |> expectsToBe test
         )
+        
+        executor.Execute ()
+        |> ignore
+        
+        result
+    )
     
 let ``Should raise EndSetup`` =
     container.Test ("Should raise EndSetup", fun () ->
