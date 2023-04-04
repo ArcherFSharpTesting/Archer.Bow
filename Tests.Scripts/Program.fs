@@ -6,6 +6,7 @@ open Archer.Tests.Scripts.Scripting
 
 let framework = archer.Framework ()
 
+// These tests test the testing environment used to test the framework
 let testDoublesTests =
     [
         ``UnitTest should``.``have the test name``
@@ -29,6 +30,7 @@ let testDoublesTests =
         ``UnitTestExecutor Failing Test``.``Should return failure if the test action returns failure``
         ``UnitTestExecutor Failing Test``.``Should raise all events even if setup fails``
         ``UnitTestExecutor Failing Test``.``Should return failure if setup fails``
+        ``UnitTestExecutor Failing Test``.``Should carry the error in future events``
     ]
 
 let frameWorkTests = 

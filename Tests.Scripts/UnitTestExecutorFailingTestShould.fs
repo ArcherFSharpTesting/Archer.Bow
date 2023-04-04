@@ -1,5 +1,6 @@
 module Archer.Tests.Scripts.``UnitTestExecutor Failing Test``
 
+open System
 open Archer.CoreTypes.Lib
 open Archer.CoreTypes.Lib.InternalTypes
 open Archer.Tests.Scripts.TestLang
@@ -64,4 +65,36 @@ let ``Should return failure if setup fails`` =
         
         result
         |> expectsToBe failure
+    )
+    
+let ``Should carry the error in future events`` =
+    container.Test ("Should raise all events even if setup fails", fun () ->
+        let failure = "Setup Fail" |> generateFailure SetupFailure
+        let test = dummyTest None (Some (SetupPart (fun () -> failure)))
+        
+        let mutable result = notRunError
+        
+        let combineResult = combineResultIgnoring notRunError
+        
+        let testTheResult _ (args: obj) =
+            let a =
+                match args with
+                | :? TestCancelEventArgsWithResults as a -> a.TestResult
+                | :? TestEventArgs as b -> b.TestResult
+                | _ -> failure
+
+            let r =
+                a
+                |> expectsToBe failure
+                |> combineResult result
+                
+            result <- r
+            
+        test.EndSetup.AddHandler testTheResult
+        test.EndTest.AddHandler testTheResult
+        test.EndExecution.AddHandler testTheResult
+        
+        test.Execute () |> ignore 
+        
+        result
     )

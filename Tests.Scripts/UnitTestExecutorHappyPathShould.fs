@@ -3,7 +3,6 @@ module Archer.Tests.Scripts.Scripting.``UnitTestExecutor Happy Path``
 open Archer.CoreTypes.Lib
 open Archer.CoreTypes.Lib.InternalTypes
 open Archer.Tests.Scripts.TestLang
-open Archer.Tests.Scripts.TestLang.Types
 
 let private container = suite.Container ("Scripting", "UnitTestExecutor happy path")
 let private dummyTest () = suite.Container(ignoreString (), ignoreString ()).Test(ignoreString (), successfulTest)
@@ -149,14 +148,7 @@ let ``Should raise all events in correct order`` =
         let mutable cnt = 0
         let mutable result = notRunError
         
-        let combineResult a b =
-            match a, b with
-            | var, _ when var = notRunError -> b
-            | _, var when var = notRunError -> a
-            | TestSuccess, _ -> b
-            | _, TestSuccess -> a
-            | TestFailure tfa, TestFailure tfb -> CombinationFailure (tfa, tfb) |> TestFailure
-            
+        let combineResult = combineResultIgnoring notRunError
             
         executor.StartExecution.AddHandler (fun _ _ ->
             let r =

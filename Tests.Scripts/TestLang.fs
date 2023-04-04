@@ -9,6 +9,15 @@ let suite = TestContainerBuilder ()
 let randomInt _ = System.Random().Next ()
 let ignoreInt _ = randomInt ()
 let ignoreString _ = $"%d{randomInt ()}%d{randomInt ()}%d{randomInt ()}"
+
+let combineResultIgnoring defaultError a b =
+    match a, b with
+    | var, _ when var = defaultError -> b
+    | _, var when var = defaultError -> a
+    | TestSuccess, _ -> b
+    | _, TestSuccess -> a
+    | TestFailure tfa, TestFailure tfb -> CombinationFailure (tfa, tfb) |> TestFailure
+
 let successfulTest () = TestSuccess
 
 let expectsToBe expected result =
