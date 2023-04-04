@@ -18,6 +18,8 @@ let combineResultIgnoring defaultError a b =
     | _, TestSuccess -> a
     | TestFailure tfa, TestFailure tfb -> CombinationFailure (tfa, tfb) |> TestFailure
 
+let combineError = combineResultIgnoring TestSuccess
+
 let successfulTest () = TestSuccess
 
 let expectsToBe expected result =

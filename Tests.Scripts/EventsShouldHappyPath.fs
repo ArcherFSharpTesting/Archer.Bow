@@ -2,7 +2,6 @@ module Archer.Tests.Scripts.``When tests execute normally framework should raise
 
 open Archer.Bow.Lib
 open Archer.CoreTypes.Lib
-open Archer.CoreTypes.Lib.InternalTypes
 open Archer.Tests.Scripts.TestLang
 
 let defaultSeed = 33
@@ -15,7 +14,7 @@ let ``the FrameworkExecutionStarted event`` =
         let framework = archer.Framework ()
 
         let mutable result = "Not Run" |> GeneralFailure |> TestFailure
-        framework.FrameworkExecutionStarted.AddHandler (FrameworkDelegate (fun fr _ ->
+        framework.FrameworkStartExecution.AddHandler (FrameworkDelegate (fun fr _ ->
             let r = 
                 if fr = framework then TestSuccess
                 else
@@ -35,7 +34,7 @@ let ``the FrameworkExecutionEnded event`` =
         let framework = archer.Framework ()
 
         let mutable result = "Not Called" |> GeneralFailure |> TestFailure
-        framework.FrameworkExecutionEnded.AddHandler (FrameworkDelegate (fun fr _ ->
+        framework.FrameworkEndExecution.AddHandler (FrameworkDelegate (fun fr _ ->
             let r =
                 if fr = framework then TestSuccess
                 else
@@ -60,7 +59,7 @@ let ``the TestExecutionStarted event`` =
 
          let mutable result = "Not Called" |> GeneralFailure |> TestFailure
          
-         framework.TestExecutionStarted.AddHandler (fun fr args ->
+         framework.TestStartExecution.AddHandler (fun fr args ->
                  let r =
                      if fr = framework then TestSuccess
                      else
@@ -68,7 +67,39 @@ let ``the TestExecutionStarted event`` =
                          |> VerificationFailure
                          |> TestFailure
                      
-                 result <- r |> combineResultIgnoring TestSuccess (args.Test |> expectsToBe test)
+                 result <- args.Test
+                           |> expectsToBe test
+                           |> combineError r
+             )
+         
+         getDefaultSeed
+         |> framework.Run
+         |> ignore
+         
+         result
+     )
+
+let ``the TestStartSetup event`` =
+     container.Test ("the TestStartSetup event", fun () ->
+         let framework = archer.Framework ()
+         let c = suite.Container ("Framework Run Should", "the TestExecutionStarted event")
+         let test = c.Test ("My Passing Test", fun () -> TestSuccess)
+         
+         framework.AddTests [test]
+
+         let mutable result = "Not Called" |> GeneralFailure |> TestFailure
+         
+         framework.TestStartSetup.AddHandler (fun fr args ->
+                 let r =
+                     if fr = framework then TestSuccess
+                     else
+                         $"expected\n%A{fr}\nto be\n%A{framework}"
+                         |> VerificationFailure
+                         |> TestFailure
+                     
+                 result <- args.Test
+                           |> expectsToBe test
+                           |> combineError r
              )
          
          getDefaultSeed

@@ -29,8 +29,9 @@ type FrameworkTestResultCancelDelegate = delegate of obj * FrameworkTestResultCa
 
 type Framework () as this =
     let frameworkStart = Event<FrameworkDelegate, EventArgs> ()
-    let frameworkEnd = Event<FrameworkDelegate, EventArgs> ()
     let testExecutionStarted = Event<FrameworkTestCancelDelegate, FrameworkTestCancelArgs> () 
+    let testStartSetup = Event<FrameworkTestCancelDelegate, FrameworkTestCancelArgs> ()
+    let frameworkEnd = Event<FrameworkDelegate, EventArgs> ()
     
     let mutable tests = System.Collections.Generic.List<ITestExecutor>()
     
@@ -40,7 +41,14 @@ type Framework () as this =
             let args = FrameworkTestCancelArgs (cancelArgs.Cancel, test)
             testExecutionStarted.Trigger (this, args)
         | _ -> ()
-    
+        
+    let handleTestSetupStarted (testObj: obj) (cancelArgs: CancelEventArgs) =
+        match testObj with
+        | :? ITest as test ->
+            let args = FrameworkTestCancelArgs (cancelArgs.Cancel, test)
+            testStartSetup.Trigger (this, args)
+        | _ -> ()
+        
     member this.Run () =
         this.Run(fun () -> Random().Next ())
         
@@ -53,6 +61,7 @@ type Framework () as this =
     member this.AddTests (newTests: ITest seq) =
         let hookEvents (executor: ITestExecutor) =
             executor.StartExecution.AddHandler handleTestExecutionStarted
+            executor.StartSetup.AddHandler handleTestSetupStarted
             executor
             
         let getExecutor (test: ITest) = test.GetExecutor ()
@@ -65,13 +74,16 @@ type Framework () as this =
         |> tests.AddRange
         
     [<CLIEvent>]
-    member _.FrameworkExecutionStarted = frameworkStart.Publish
+    member _.FrameworkStartExecution = frameworkStart.Publish
     
     [<CLIEvent>]
-    member _.FrameworkExecutionEnded = frameworkEnd.Publish
+    member _.FrameworkEndExecution = frameworkEnd.Publish
     
     [<CLIEvent>]
-    member _.TestExecutionStarted = testExecutionStarted.Publish
+    member _.TestStartExecution = testExecutionStarted.Publish
+    
+    [<CLIEvent>]
+    member _.TestStartSetup = testStartSetup.Publish
 
         
 type Archer () =
