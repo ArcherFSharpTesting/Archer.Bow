@@ -46,3 +46,12 @@ let expectsToBeTrue result =
         "expected true and got false"
         |> VerificationFailure
         |> TestFailure
+        
+let dummyTest (testAction: (unit -> TestResult) option) (parts: TestPart option) =
+    let c = suite.Container (ignoreString (), ignoreString ())
+        
+    match parts, testAction with
+    | None, None -> c.Test (ignoreString (), successfulTest, EmptyPart, ignoreString (), ignoreInt ())
+    | None, Some action -> c.Test (ignoreString (), action, EmptyPart, ignoreString (), ignoreInt ())
+    | Some part, None -> c.Test (ignoreString (), successfulTest, part, ignoreString (), ignoreInt ())
+    | Some part, Some action -> c.Test (ignoreString (), action, part, ignoreString (), ignoreInt ())

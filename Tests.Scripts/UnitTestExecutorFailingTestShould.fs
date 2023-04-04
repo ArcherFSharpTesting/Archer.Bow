@@ -9,14 +9,8 @@ let private container = suite.Container ("Scripting", "UnitTestExecutor Failing 
 let generateFailure failureType details =
     details |> failureType |> TestFailure
     
-let private dummyTest (testAction: (unit -> TestResult) option) (parts: TestPart option) =
-    let c = suite.Container (ignoreString (), ignoreString ())
-    let test =
-        match parts, testAction with
-        | None, None -> c.Test (ignoreString (), successfulTest, EmptyPart, ignoreString (), ignoreInt ())
-        | None, Some action -> c.Test (ignoreString (), action, EmptyPart, ignoreString (), ignoreInt ())
-        | Some part, None -> c.Test (ignoreString (), successfulTest, part, ignoreString (), ignoreInt ())
-        | Some part, Some action -> c.Test (ignoreString (), action, part, ignoreString (), ignoreInt ())
+let private dummyExecutor (testAction: (unit -> TestResult) option) (parts: TestPart option) =
+    let test = dummyTest testAction parts
         
     test.GetExecutor ()
     
@@ -25,7 +19,7 @@ let private notRunError = "Not Run" |> GeneralFailure |> TestFailure
 let ``Should return failure if the test action returns failure`` =
     container.Test ("Should return failure if the test action returns failure", fun () ->
         let expectedResult = "Things don't add up" |> generateFailure VerificationFailure
-        let test = dummyTest (Some (fun () -> expectedResult)) None
+        let test = dummyExecutor (Some (fun () -> expectedResult)) None
         
         let result = test.Execute ()
         
@@ -36,7 +30,7 @@ let ``Should return failure if the test action returns failure`` =
 let ``Should raise all events even if setup fails`` =
     container.Test ("Should raise all events even if setup fails", fun () ->
         let failure = "Setup Fail" |> generateFailure SetupFailure
-        let test = dummyTest None (Some (SetupPart (fun () -> failure)))
+        let test = dummyExecutor None (Some (SetupPart (fun () -> failure)))
         
         let mutable cnt = 0
         let increment _ _ = cnt <- cnt + 1
@@ -58,7 +52,7 @@ let ``Should raise all events even if setup fails`` =
 let ``Should return failure if setup fails`` =
     container.Test ("Should raise all events even if setup fails", fun () ->
         let failure = "Setup Fail" |> generateFailure SetupFailure
-        let test = dummyTest None (Some (SetupPart (fun () -> failure)))
+        let test = dummyExecutor None (Some (SetupPart (fun () -> failure)))
         
         let result = test.Execute ()
         
@@ -69,7 +63,7 @@ let ``Should return failure if setup fails`` =
 let ``Should carry the setup error in future events`` =
     container.Test ("Should raise all events even if setup fails", fun () ->
         let failure = "Setup Fail" |> generateFailure SetupFailure
-        let test = dummyTest None (Some (SetupPart (fun () -> failure)))
+        let test = dummyExecutor None (Some (SetupPart (fun () -> failure)))
         
         let mutable result = notRunError
         
@@ -107,7 +101,7 @@ let ``Should not run test action`` =
             result <- "Test should not have run" |> VerificationFailure |> TestFailure
             result
         
-        let test = dummyTest (Some testAction) (Some (SetupPart (fun () -> failure)))
+        let test = dummyExecutor (Some testAction) (Some (SetupPart (fun () -> failure)))
         
         test.Execute () |> ignore
         
