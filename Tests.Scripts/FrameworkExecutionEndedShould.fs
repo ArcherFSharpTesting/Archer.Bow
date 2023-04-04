@@ -14,7 +14,7 @@ let ``be raised when the framework is run`` =
         let framework = archer.Framework ()
 
         let mutable result = "Not Called" |> GeneralFailure |> TestFailure
-        framework.FrameworkEndExecution.AddHandler (FrameworkDelegate (fun fr _ ->
+        framework.FrameworkEndExecution.AddHandler (fun fr _ ->
             let r =
                 if fr = framework then TestSuccess
                 else
@@ -23,7 +23,7 @@ let ``be raised when the framework is run`` =
                     |> TestFailure
                     
             result <- r
-        ))
+        )
         framework.Run getDefaultSeed |> ignore
         
         result

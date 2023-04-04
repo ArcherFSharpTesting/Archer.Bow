@@ -24,11 +24,12 @@ type FrameworkTestResultCancelArgs (cancel: bool, test: ITest, result: TestResul
     member _.TestResult with get () = result
     
 type FrameworkDelegate = delegate of obj * EventArgs -> unit
+type FrameworkCancelDelegate = delegate of obj * CancelEventArgs -> unit
 type FrameworkTestCancelDelegate = delegate of obj * FrameworkTestCancelArgs -> unit
 type FrameworkTestResultCancelDelegate = delegate of obj * FrameworkTestResultCancelArgs -> unit
 
 type Framework () as this =
-    let frameworkStart = Event<FrameworkDelegate, EventArgs> ()
+    let frameworkStart = Event<FrameworkCancelDelegate, CancelEventArgs> ()
     let testExecutionStarted = Event<FrameworkTestCancelDelegate, FrameworkTestCancelArgs> () 
     let testStartSetup = Event<FrameworkTestCancelDelegate, FrameworkTestCancelArgs> ()
     let testEndSetup = Event<FrameworkTestResultCancelDelegate, FrameworkTestResultCancelArgs> ()
@@ -60,10 +61,16 @@ type Framework () as this =
         this.Run(fun () -> Random().Next ())
         
     member this.Run (getSeed: unit -> int) =
-        frameworkStart.Trigger (this, EventArgs.Empty)
-        let result = runTests getSeed tests
-        frameworkEnd.Trigger (this, EventArgs.Empty)
-        result
+        let seed = getSeed ()
+        let startArgs = CancelEventArgs ()
+        frameworkStart.Trigger (this, startArgs)
+
+        if startArgs.Cancel then
+            buildReport [] [] seed
+        else
+            let result = runTests seed tests
+            frameworkEnd.Trigger (this, EventArgs.Empty)
+            result
     
     member this.AddTests (newTests: ITest seq) =
         let hookEvents (executor: ITestExecutor) =

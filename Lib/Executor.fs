@@ -14,7 +14,15 @@ module Executor =
         let result = test.Execute ()
         result, test.Parent
         
-    let runTests getSeed (tests: ITestExecutor seq) =
+    let buildReport failures successes seed =
+        {
+            Failures = failures |> List.sortBy (fun (_, test) -> test.TestFullName)
+            Successes = successes |> List.sortBy (fun test -> test.TestFullName)
+            Seed = seed
+        }
+    
+        
+    let runTests seed (tests: ITestExecutor seq) =
         let results = tests |> Seq.map runTest
         let successes =
             results
@@ -27,8 +35,4 @@ module Executor =
             |> Seq.filter (fst >> (=) TestSuccess >> not)
             |> List.ofSeq
 
-        {
-            Failures = failures |> List.sortBy (fun (_, test) -> test.TestFullName)
-            Successes = successes |> List.sortBy (fun test -> test.TestFullName)
-            Seed = getSeed ()
-        }
+        buildReport failures successes seed
