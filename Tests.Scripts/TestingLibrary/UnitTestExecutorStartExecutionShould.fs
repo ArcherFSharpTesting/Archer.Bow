@@ -31,13 +31,25 @@ let ``Test Cases`` = [
             )
             |> Some
             
-            
         let executor = dummyExecutor None setupPart
         
         executor.StartExecution.Add (fun args ->
             args.Cancel <- true
         )
         
+        executor.Execute ()  |> ignore
+        
         result
+    )
+    
+    container.Test ("should cause execution to return a CancelError if canceled", fun () ->
+        let executor = dummyExecutor None None
+        
+        executor.StartExecution.Add (fun args ->
+            args.Cancel <- true
+        )
+        
+        executor.Execute ()
+        |> expectsToBe (TestFailure CancelFailure)
     )
 ]
