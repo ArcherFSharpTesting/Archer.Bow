@@ -15,9 +15,8 @@ let testDoublesTests =
         ``UnitTestExecutor StartExecution``.``Test Cases``
         ``UnitTestExecutor StartSetup``.``Test Cases``
         ``UnitTestExecutor EndSetup``.``Test Cases``
+        ``UnitTestExecutor StartTest``.``Test Cases``
         [
-            ``UnitTestExecutor StartTest should``.``be raised when the test is executed``
-            
             ``UnitTestExecutor EndTest should``.``be raised when the test is executed``
             
             ``UnitTestExecutor StartTearDown should``.``be raised when the test is executed``
