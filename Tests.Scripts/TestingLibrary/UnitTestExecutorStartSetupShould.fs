@@ -21,16 +21,23 @@ let ``Test Cases`` = [
         result
     )
     
-    // container.Test ("prevent the call of the test setup if canceled", fun () ->
-    //     let setupPart =
-    //         SetupPart (fun () ->
-    //             "Should not be called"
-    //             |> VerificationFailure
-    //             |> TestFailure
-    //         )
-    //         |> Some
-    //     let executor = dummyExecutor None setupPart
-    //     
-    //     executor.Execute ()
-    // )
+    container.Test ("prevent the call of the test setup if canceled", fun () ->
+        let mutable result = TestSuccess
+        
+        let setupPart =
+            SetupPart (fun () ->
+                result <- "Should not be called" |> VerificationFailure |> TestFailure
+                TestSuccess
+            )
+            |> Some
+            
+            
+        let executor = dummyExecutor None setupPart
+        
+        executor.StartExecution.Add (fun args ->
+            args.Cancel <- true
+        )
+        
+        result
+    )
 ]
