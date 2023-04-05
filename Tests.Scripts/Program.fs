@@ -13,9 +13,8 @@ let testDoublesTests =
         ``UnitTestExecutor Happy Path``.``Test Cases``
         ``UnitTestExecutor With a Failing Test``.``Test Cases``
         ``UnitTestExecutor StartExecution``.``Test Cases``
+        ``UnitTestExecutor StartSetup``.``Test Cases``
         [
-            ``UnitTestExecutor StartSetup should``.``be raised when the test is executed``
-            
             ``UnitTestExecutor EndSetup should``.``be raised when the test is executed``
             ``UnitTestExecutor EndSetup should``.``carry the result of the Setup Function``
             
