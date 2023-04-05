@@ -1,5 +1,7 @@
 module Archer.Tests.Scripts.TestingLibrary.``UnitTestExecutor StartExecution``
 
+open Archer.Tests.Scripts.TestLang.Types
+open Archer.CoreTypes
 open Archer.CoreTypes.InternalTypes
 open Archer.Tests.Scripts.TestLang
 
@@ -16,6 +18,26 @@ let ``Test Cases`` = [
         )
         
         executor.Execute () |> ignore
+        result
+    )
+    
+    container.Test ("prevent the call of the test setup if canceled", fun () ->
+        let mutable result = TestSuccess
+        
+        let setupPart =
+            SetupPart (fun () ->
+                result <- "Should not be called" |> VerificationFailure |> TestFailure
+                TestSuccess
+            )
+            |> Some
+            
+            
+        let executor = dummyExecutor None setupPart
+        
+        executor.StartExecution.Add (fun args ->
+            args.Cancel <- true
+        )
+        
         result
     )
 ]
