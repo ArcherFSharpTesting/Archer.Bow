@@ -12,9 +12,8 @@ let testDoublesTests =
         ``UnitTest Base Case``.``Test Cases``
         ``UnitTestExecutor Happy Path``.``Test Cases``
         ``UnitTestExecutor With a Failing Test``.``Test Cases``
+        ``UnitTestExecutor StartExecution``.``Test Cases``
         [
-            ``UnitTestExecutor StartExecution should``.``be raised when the test is executed``
-            
             ``UnitTestExecutor StartSetup should``.``be raised when the test is executed``
             
             ``UnitTestExecutor EndSetup should``.``be raised when the test is executed``
