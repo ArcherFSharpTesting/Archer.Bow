@@ -1,15 +1,15 @@
-module Archer.Tests.Scripts.``FrameworkExecutionEnded should``
+module Archer.Tests.Scripts.``FrameworkExecutionEnded Event``
 
 open Archer.Bow.Lib
 open Archer.CoreTypes.Lib
 open Archer.Tests.Scripts.TestLang
 
-let defaultSeed = 33
-let getDefaultSeed () = defaultSeed
+let private defaultSeed = 33
+let private getDefaultSeed () = defaultSeed
 
-let private container = suite.Container ("", "FrameworkExecutionEnded should")
+let private container = suite.Container ("", "FrameworkExecutionEnded Event should")
 
-let ``be raised when the framework is run`` =
+let ``Test Cases`` = [
     container.Test ("be raised when the framework is run", fun () ->
         let framework = archer.Framework ()
 
@@ -28,4 +28,4 @@ let ``be raised when the framework is run`` =
         
         result
     )
-
+]
