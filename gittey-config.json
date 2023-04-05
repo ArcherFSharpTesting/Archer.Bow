@@ -40,7 +40,7 @@
         },
         {
             "name": "undo",
-            "command": "git reset . && git checkout . && git clean -xfd"
+            "command": "git reset . && git checkout . && git clean -xfd && gittey check"
         }
     ],
     "collaborators": []
