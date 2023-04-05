@@ -10,7 +10,7 @@ let generateFailure failureType details =
     details |> failureType |> TestFailure
     
 let private dummyExecutor (testAction: (unit -> TestResult) option) (parts: TestPart option) =
-    let test = dummyTest testAction parts
+    let test = buildDummyTest testAction parts
         
     test.GetExecutor ()
     

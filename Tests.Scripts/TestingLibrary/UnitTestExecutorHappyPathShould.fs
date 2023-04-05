@@ -6,20 +6,20 @@ let private container = suite.Container ("TestLibrary", "UnitTestExecutor happy 
 
 let ``Test Cases`` = [
     container.Test("Should have the creating test as its parent", fun () ->
-        let executor = dummyExecutor None None
+        let executor = buildDummyExecutor None None
         
         executor.Parent
         |> expectsToBe executor.Parent
     )
     
     container.Test ("Should return success if test action returns success", fun () ->
-        let test = dummyExecutor None None
+        let test = buildDummyExecutor None None
         
         test.Execute ()
     )
     
     container.Test("Should raise all events in correct order", fun () ->
-        let executor = dummyExecutor None None
+        let executor = buildDummyExecutor None None
         
         let mutable cnt = 0
         let mutable result = notRunError

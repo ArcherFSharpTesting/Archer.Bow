@@ -2,6 +2,7 @@
 module Archer.Tests.Scripts.TestLang.Lang
 
 open Archer.CoreTypes
+open Archer.Bow.Lib
 open Archer.Tests.Scripts.TestLang.Types
 
 let suite = TestContainerBuilder ()
@@ -47,7 +48,7 @@ let expectsToBeTrue result =
         |> VerificationFailure
         |> TestFailure
         
-let dummyTest (testAction: (unit -> TestResult) option) (parts: TestPart option) =
+let buildDummyTest (testAction: (unit -> TestResult) option) (parts: TestPart option) =
     let c = suite.Container (ignoreString (), ignoreString ())
         
     match parts, testAction with
@@ -56,9 +57,16 @@ let dummyTest (testAction: (unit -> TestResult) option) (parts: TestPart option)
     | Some part, None -> c.Test (ignoreString (), successfulTest, part, ignoreString (), ignoreInt ())
     | Some part, Some action -> c.Test (ignoreString (), action, part, ignoreString (), ignoreInt ())
     
-let dummyExecutor (testAction: (unit -> TestResult) option) (parts: TestPart option) =
-    let test = dummyTest testAction parts
+let buildDummyExecutor (testAction: (unit -> TestResult) option) (parts: TestPart option) =
+    let test = buildDummyTest testAction parts
     
     test.GetExecutor ()
+    
+let buildTestFramework (testAction: (unit -> TestResult) option) (parts: TestPart option) =
+    let framework = archer.Framework ()
+    let test = buildDummyTest None None
+
+    framework.AddTests [test]
+    framework, test
     
 let notRunError = "Not Run" |> GeneralFailure |> TestFailure

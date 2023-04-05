@@ -6,7 +6,7 @@ let private container = suite.Container ("TestLibrary", "UnitTestExecutor EndTes
 
 let ``Test Cases`` = [
     container.Test ("be raised when the test is executed", fun () ->
-        let executor = dummyExecutor None None
+        let executor = buildDummyExecutor None None
         
         let mutable result = notRunError 
         executor.EndTest.AddHandler (fun tst _ ->

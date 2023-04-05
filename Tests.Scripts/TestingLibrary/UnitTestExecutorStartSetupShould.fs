@@ -8,7 +8,7 @@ let private container = suite.Container ("TestingLibrary", "UnitTestExecutor Sta
 
 let ``Test Cases`` = [
     container.Test ("be raised when test is executed", fun () ->
-        let executor = dummyExecutor None None
+        let executor = buildDummyExecutor None None
         
         let mutable result = notRunError
         executor.StartSetup.AddHandler (fun tst _ ->
@@ -31,7 +31,7 @@ let ``Test Cases`` = [
             )
             |> Some
             
-        let executor = dummyExecutor None setupPart
+        let executor = buildDummyExecutor None setupPart
         
         executor.StartSetup.Add (fun args ->
             args.Cancel <- true
@@ -49,7 +49,7 @@ let ``Test Cases`` = [
             result <- "Should not be called" |> VerificationFailure |> TestFailure
             TestSuccess
             
-        let executor = dummyExecutor (Some testAction) None
+        let executor = buildDummyExecutor (Some testAction) None
         
         executor.StartSetup.Add (fun args ->
             args.Cancel <- true
@@ -69,7 +69,7 @@ let ``Test Cases`` = [
             |> SetupFailure
             |> TestFailure
             
-        let executor = dummyExecutor (Some testAction) None
+        let executor = buildDummyExecutor (Some testAction) None
         
         executor.StartSetup.Add (fun args ->
             args.Cancel <- true
@@ -81,7 +81,7 @@ let ``Test Cases`` = [
     )
     
     container.Test ("should cause execution to return a CancelError if canceled", fun () ->
-        let executor = dummyExecutor None None
+        let executor = buildDummyExecutor None None
         
         executor.StartSetup.Add (fun args ->
             args.Cancel <- true

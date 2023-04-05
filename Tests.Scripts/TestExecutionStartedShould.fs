@@ -11,10 +11,7 @@ let private container = suite.Container ("", "TestExecutionStarted Event should"
 
 let ``Test Cases`` = [
     container.Test ("be raised from the given test when framework is run", fun () ->
-         let framework = archer.Framework ()
-         let test = dummyTest None None
-         
-         framework.AddTests [test]
+         let framework, test = buildTestFramework None None
 
          let mutable result = "Not Called" |> GeneralFailure |> TestFailure
          

@@ -3,22 +3,16 @@ module Archer.Tests.Scripts.``TestEndSetup Event``
 open Archer.Bow.Lib
 open Archer.CoreTypes
 open Archer.Tests.Scripts.TestLang
+open Archer.Tests.Scripts.TestLang.Types
 
 let private defaultSeed = 33
 let private getDefaultSeed () = defaultSeed
 
 let private container = suite.Container ("", "TestEndSetup should")
 
-let private buildTestFramework () =
-    let framework = archer.Framework ()
-    let test = dummyTest None None
-
-    framework.AddTests [test]
-    framework, test
-
 let ``Test Cases`` = [
     container.Test ("be raised from the given test when the framework is run", fun () ->
-        let framework, test = buildTestFramework ()
+        let framework, test = buildTestFramework None None
 
         let mutable result = notRunError
 
@@ -43,7 +37,7 @@ let ``Test Cases`` = [
     )
     
     container.Test ("should not be raised if FrameworkExecutionStart canceled", fun () ->
-        let framework, _test = buildTestFramework ()
+        let framework, _test = buildTestFramework None None
         
         let mutable result = TestSuccess
         
@@ -61,4 +55,8 @@ let ``Test Cases`` = [
         
         result
     )
+    
+    // container.Test ("should carry the result of the setup method", fun () ->
+    //     let framework, test = buildTestFramework ()
+    // )
 ]
