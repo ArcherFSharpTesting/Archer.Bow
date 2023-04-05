@@ -37,4 +37,33 @@ let ``Test Cases`` = [
         result
         |> expectsToBe expectedFailure
     )
+    
+    container.Test ("prevent the call of the test action if canceled", fun () ->
+        let mutable result = TestSuccess
+        
+        let testAction () =
+            result <- "Should not be called" |> VerificationFailure |> TestFailure
+            TestSuccess
+            
+        let executor = dummyExecutor (Some testAction) None
+        
+        executor.EndSetup.Add (fun args ->
+            args.Cancel <- true
+        )
+        
+        executor.Execute ()  |> ignore
+        
+        result
+    )
+    
+    container.Test ("should cause execution to return a CancelError if canceled", fun () ->
+        let executor = dummyExecutor None None
+        
+        executor.EndSetup.Add (fun args ->
+            args.Cancel <- true
+        )
+        
+        executor.Execute ()
+        |> expectsToBe (TestFailure CancelFailure)
+    )
 ]
