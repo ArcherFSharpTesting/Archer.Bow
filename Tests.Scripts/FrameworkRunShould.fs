@@ -1,15 +1,15 @@
-﻿module Archer.Tests.Scripts.``Framework Run Should``
+﻿module Archer.Tests.Scripts.``Framework Run``
 
 open Archer.Bow.Lib
 open Archer.CoreTypes.Lib
 open Archer.Tests.Scripts.TestLang
 
-let defaultSeed = 42
-let getDefaultSeed () = defaultSeed
+let private defaultSeed = 42
+let private getDefaultSeed () = defaultSeed
 
 let private container = suite.Container ("", "Framework Run Should")
 
-let ``return empty results when it has no tests`` =
+let ``Test Cases`` = [
     container.Test ("return empty results when it has no tests", fun () ->
         let seed = 5
                 
@@ -25,7 +25,6 @@ let ``return empty results when it has no tests`` =
         result |> verifyWith expected
     )
     
-let ``return empty results with specific seed when it has no tests`` =
     container.Test ("return empty results when it has no tests", fun () ->
         let seed = 258
                 
@@ -40,8 +39,7 @@ let ``return empty results with specific seed when it has no tests`` =
                 
         result |> verifyWith expected
     )
-
-let ``return a successful result when one test passes`` =
+    
     container.Test ("return a successful result when one test passes", fun () ->
         let framework = archer.Framework ()
         let container = suite.Container ("A Test Suite", "with a passing test")
@@ -58,8 +56,7 @@ let ``return a successful result when one test passes`` =
 
         result |> verifyWith expected
     )
-
-let ``return a successful result when two tests pass`` =
+    
     container.Test ("return a successful result when two tests pass", fun () ->
         let framework = archer.Framework ()
         let container = suite.Container ("A test Suite", "with two passing tests")
@@ -78,8 +75,7 @@ let ``return a successful result when two tests pass`` =
 
         result |> verifyWith expected
     )
-
-let ``return failure when a test fails`` =
+    
     container.Test ("return failure when a test fails", fun () -> 
         let framework = archer.Framework ()
         let container = suite.Container ("A test Suite", "to hold tests")
@@ -100,8 +96,7 @@ let ``return failure when a test fails`` =
 
         result |> verifyWith expected
     )
-
-let ``return failure when second test fails`` =
+    
     container.Test ("return failure when second test fails", fun () -> 
         let framework = archer.Framework ()
         let container = suite.Container ("A test Suite", "to hold tests")
@@ -122,8 +117,7 @@ let ``return failure when second test fails`` =
 
         result |> verifyWith expected
     )
-
-let ``return failure when both tests fail`` =
+    
     container.Test ("return failure when second test fails", fun () -> 
         let framework = archer.Framework ()
         let container = suite.Container ("A test Suite", "to hold tests")
@@ -145,3 +139,4 @@ let ``return failure when both tests fail`` =
 
         result |> verifyWith expected
     )
+]

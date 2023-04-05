@@ -22,30 +22,24 @@ let testDoublesTests =
     ]
     |> List.concat
 
-let frameWorkTests = 
+let frameWorkTests =
     [
-        ``Framework Run Should``.``return empty results when it has no tests``
-        ``Framework Run Should``.``return empty results with specific seed when it has no tests``
-        ``Framework Run Should``.``return a successful result when one test passes``
-        ``Framework Run Should``.``return a successful result when two tests pass``
-        ``Framework Run Should``.``return failure when a test fails``
-        ``Framework Run Should``.``return failure when second test fails``
-        ``Framework Run Should``.``return failure when both tests fail``
-        
-        ``FrameworkExecutionStarted should``.``be raised when framework is run``
-        
-        ``FrameworkExecutionEnded should``.``be raised when the framework is run``
-        
-        ``TestExecutionStarted should``.``be raised from the given test when framework is run``
-        
-        ``TestStartSetup should``.``be raised from the given test when the framework is run``
-        ``TestStartSetup should``.``not be raised if FrameworkExecutionStarted was canceled``
-        
-        ``TestEndSetup should``.``be raised from the given test when the framework is run``
-        ``TestEndSetup should``.``should not be raised if FrameworkExecutionStart canceled``
-        // ``TestEndSetup should``.``should not be raised if TestStartExecution is canceled``
-    ]   
-    
+        ``Framework Run``.``Test Cases``
+        [
+            ``FrameworkExecutionStarted should``.``be raised when framework is run``
+            
+            ``FrameworkExecutionEnded should``.``be raised when the framework is run``
+            
+            ``TestExecutionStarted should``.``be raised from the given test when framework is run``
+            
+            ``TestStartSetup should``.``be raised from the given test when the framework is run``
+            ``TestStartSetup should``.``not be raised if FrameworkExecutionStarted was canceled``
+            
+            ``TestEndSetup should``.``be raised from the given test when the framework is run``
+            ``TestEndSetup should``.``should not be raised if FrameworkExecutionStart canceled``
+        ]   
+    ]
+    |> List.concat
 [
     testDoublesTests
     frameWorkTests
