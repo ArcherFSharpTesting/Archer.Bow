@@ -110,7 +110,6 @@ type Framework () as this =
     
     [<CLIEvent>]
     member _.TestStart = testStart.Publish
-
         
 type Archer () =
     member _.Framework () = Framework ()

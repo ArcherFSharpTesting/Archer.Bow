@@ -24,4 +24,22 @@ let ``Test Cases`` = [
         
         result
     )
+    
+    container.Test ("be raised with the given test when the framework is run", fun () ->
+        let framework, test = buildTestFramework None None
+        
+        let mutable result = notRunError
+        
+        framework.TestStart.AddHandler (fun _ args ->
+            result <-
+                args.Test
+                |> expectsToBe test
+        )
+        
+        ()
+        |> framework.Run
+        |> ignore
+        
+        result
+    )
 ]
