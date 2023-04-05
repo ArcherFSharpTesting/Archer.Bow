@@ -60,6 +60,26 @@ let ``Test Cases`` = [
         result
     )
     
+    container.Test ("prevent the call of the test action if failed", fun () ->
+        let mutable result = TestSuccess
+        
+        let testAction () =
+            result <- "Should not be called" |> VerificationFailure |> TestFailure
+            "some setup failure"
+            |> SetupFailure
+            |> TestFailure
+            
+        let executor = dummyExecutor (Some testAction) None
+        
+        executor.StartSetup.Add (fun args ->
+            args.Cancel <- true
+        )
+        
+        executor.Execute ()  |> ignore
+        
+        result
+    )
+    
     container.Test ("should cause execution to return a CancelError if canceled", fun () ->
         let executor = dummyExecutor None None
         
