@@ -66,4 +66,26 @@ let ``Test Cases`` = [
         executor.Execute ()
         |> expectsToBe (TestFailure CancelFailure)
     )
+    
+    container.Test ("should not be called if the setup action fails", fun () ->
+        let expectedFailure = "This is an intended failure" |> SetupFailure |> TestFailure
+        let setupAction =
+            (fun () -> expectedFailure)
+            |> SetupPart
+            |> Some
+            
+        let mutable result = notRunError
+        
+        let executor = dummyExecutor None setupAction
+        
+        executor.EndSetup.Add (fun args ->
+            result <-
+                args.TestResult
+                |> expectsToBe expectedFailure
+        )
+        
+        executor.Execute () |> ignore
+        
+        result
+    )
 ]
