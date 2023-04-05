@@ -24,9 +24,10 @@ let ``Test Cases`` = [
                     |> VerificationFailure
                     |> TestFailure
 
-            result <- args.Test
-            |> expectsToBe test
-            |> combineError r
+            result <-
+                args.Test
+                |> expectsToBe test
+                |> combineError r
         )
 
         getDefaultSeed
