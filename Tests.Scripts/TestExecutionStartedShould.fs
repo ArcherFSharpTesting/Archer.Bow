@@ -1,4 +1,4 @@
-module Archer.Tests.Scripts.``TestExecutionStarted should``
+module Archer.Tests.Scripts.``TestExecutionStarted Event``
 
 open Archer.Bow.Lib
 open Archer.CoreTypes.Lib
@@ -7,10 +7,10 @@ open Archer.Tests.Scripts.TestLang
 let private defaultSeed = 33
 let private getDefaultSeed () = defaultSeed
 
-let private container = suite.Container ("", "TestExecutionStarted should")
+let private container = suite.Container ("", "TestExecutionStarted Event should")
 
-let ``be raised from the given test when framework is run`` =
-     container.Test ("be raised from the given test when framework is run", fun () ->
+let ``Test Cases`` = [
+    container.Test ("be raised from the given test when framework is run", fun () ->
          let framework = archer.Framework ()
          let test = dummyTest None None
          
@@ -37,3 +37,4 @@ let ``be raised from the given test when framework is run`` =
          
          result
      )
+]

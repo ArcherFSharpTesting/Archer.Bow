@@ -27,9 +27,8 @@ let frameWorkTests =
         ``Framework Run``.``Test Cases``
         ``FrameworkExecutionStarted Event``.``Test Cases``
         ``FrameworkExecutionEnded Event``.``Test Cases``
+        ``TestExecutionStarted Event``.``Test Cases``
         [
-            ``TestExecutionStarted should``.``be raised from the given test when framework is run``
-            
             ``TestStartSetup should``.``be raised from the given test when the framework is run``
             ``TestStartSetup should``.``not be raised if FrameworkExecutionStarted was canceled``
             
