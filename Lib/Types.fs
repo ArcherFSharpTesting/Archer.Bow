@@ -2,8 +2,8 @@
 
 open System
 open System.ComponentModel
-open Archer.CoreTypes.Lib
-open Archer.CoreTypes.Lib.InternalTypes
+open Archer.CoreTypes
+open Archer.CoreTypes.InternalTypes
 open Archer.Bow.Lib.Executor
 
 type FrameworkTestCancelArgs (cancel: bool, test: ITest) =

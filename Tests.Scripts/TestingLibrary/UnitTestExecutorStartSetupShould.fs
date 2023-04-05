@@ -1,5 +1,7 @@
 module Archer.Tests.Scripts.TestingLibrary.``UnitTestExecutor StartSetup``
 
+open Archer.Tests.Scripts.TestLang.Types
+open Archer.CoreTypes
 open Archer.Tests.Scripts.TestLang
 
 let private container = suite.Container ("TestingLibrary", "UnitTestExecutor StartSetup should")
@@ -18,4 +20,17 @@ let ``Test Cases`` = [
         
         result
     )
+    
+    // container.Test ("prevent the call of the test setup if canceled", fun () ->
+    //     let setupPart =
+    //         SetupPart (fun () ->
+    //             "Should not be called"
+    //             |> VerificationFailure
+    //             |> TestFailure
+    //         )
+    //         |> Some
+    //     let executor = dummyExecutor None setupPart
+    //     
+    //     executor.Execute ()
+    // )
 ]

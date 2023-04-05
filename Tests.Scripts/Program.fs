@@ -3,7 +3,7 @@
 
 open Archer.Bow.Lib
 open Archer.Tests.Scripts.TestingLibrary
-open Archer.CoreTypes.Lib
+open Archer.CoreTypes
 
 let framework = archer.Framework ()
 

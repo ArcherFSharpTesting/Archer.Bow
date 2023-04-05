@@ -1,7 +1,7 @@
 namespace Archer.Bow.Lib
 
-open Archer.CoreTypes.Lib
-open Archer.CoreTypes.Lib.InternalTypes
+open Archer.CoreTypes
+open Archer.CoreTypes.InternalTypes
 
 type RunResults = {
     Failures: (Failure * ITest) list

@@ -1,7 +1,7 @@
 module Archer.Tests.Scripts.TestingLibrary.``UnitTestExecutor With a Failing Test``
 
-open Archer.CoreTypes.Lib
-open Archer.CoreTypes.Lib.InternalTypes
+open Archer.CoreTypes
+open Archer.CoreTypes.InternalTypes
 open Archer.Tests.Scripts.TestLang
 open Archer.Tests.Scripts.TestLang.Types
 

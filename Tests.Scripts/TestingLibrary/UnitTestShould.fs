@@ -1,6 +1,6 @@
 module Archer.Tests.Scripts.TestingLibrary.``UnitTest Base Case``
 
-open Archer.CoreTypes.Lib.InternalTypes
+open Archer.CoreTypes.InternalTypes
 open Archer.Tests.Scripts.TestLang
 open Archer.Tests.Scripts.TestLang.Types
 

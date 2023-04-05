@@ -1,6 +1,6 @@
 module Archer.Tests.Scripts.TestingLibrary.``UnitTestExecutor StartExecution``
 
-open Archer.CoreTypes.Lib.InternalTypes
+open Archer.CoreTypes.InternalTypes
 open Archer.Tests.Scripts.TestLang
 
 let private container = suite.Container ("TestingLibrary", "UnitTestExecutor StartExecution should")

@@ -2,7 +2,7 @@ module Archer.Tests.Scripts.TestingLibrary.``UnitTestExecutor EndSetup``
 
 open Archer.Tests.Scripts.TestLang
 open Archer.Tests.Scripts.TestLang.Types
-open Archer.CoreTypes.Lib
+open Archer.CoreTypes
 
 let private container = suite.Container ("TestingLibrary", "UnitTestExecutor EndSetup should")
 

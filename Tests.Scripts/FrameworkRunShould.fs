@@ -1,7 +1,7 @@
 ﻿module Archer.Tests.Scripts.``Framework Run``
 
 open Archer.Bow.Lib
-open Archer.CoreTypes.Lib
+open Archer.CoreTypes
 open Archer.Tests.Scripts.TestLang
 
 let private defaultSeed = 42

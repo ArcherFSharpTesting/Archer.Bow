@@ -3,8 +3,8 @@
 open System.ComponentModel
 open System.Runtime.CompilerServices
 open System.Runtime.InteropServices
-open Archer.CoreTypes.Lib
-open Archer.CoreTypes.Lib.InternalTypes
+open Archer.CoreTypes
+open Archer.CoreTypes.InternalTypes
 
 module TypeSupport =
     let success () = TestSuccess
