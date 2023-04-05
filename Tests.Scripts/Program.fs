@@ -25,9 +25,8 @@ let testDoublesTests =
 let frameWorkTests =
     [
         ``Framework Run``.``Test Cases``
+        ``FrameworkExecutionStarted Event``.``Test Cases``
         [
-            ``FrameworkExecutionStarted should``.``be raised when framework is run``
-            
             ``FrameworkExecutionEnded should``.``be raised when the framework is run``
             
             ``TestExecutionStarted should``.``be raised from the given test when framework is run``
@@ -37,9 +36,10 @@ let frameWorkTests =
             
             ``TestEndSetup should``.``be raised from the given test when the framework is run``
             ``TestEndSetup should``.``should not be raised if FrameworkExecutionStart canceled``
-        ]   
+        ]
     ]
     |> List.concat
+    
 [
     testDoublesTests
     frameWorkTests

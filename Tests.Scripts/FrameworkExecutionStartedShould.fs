@@ -1,4 +1,4 @@
-module Archer.Tests.Scripts.``FrameworkExecutionStarted should``
+module Archer.Tests.Scripts.``FrameworkExecutionStarted Event``
 
 open Archer.Bow.Lib
 open Archer.CoreTypes.Lib
@@ -9,7 +9,7 @@ let private getDefaultSeed () = defaultSeed
 
 let private container = suite.Container ("", "FrameworkExecutionStarted should")
 
-let ``be raised when framework is run`` =
+let ``Test Cases`` = [
     container.Test ("be raised when framework is run", fun () ->
         let framework = archer.Framework ()
 
@@ -28,3 +28,4 @@ let ``be raised when framework is run`` =
 
         result        
     )
+]
