@@ -1,10 +1,10 @@
-module Archer.Tests.Scripts.TestingLibrary.``UnitTestExecutor StartTearDown should``
+module Archer.Tests.Scripts.TestingLibrary.``UnitTestExecutor StartTearDown``
     
 open Archer.Tests.Scripts.TestLang
 
 let private container = suite.Container ("TestLibrary", "UnitTestExecutor StartTearDown should")
 
-let ``be raised when the test is executed`` =
+let ``Test Cases`` = [
     container.Test ("be raised when the test is executed", fun () ->
         let executor = dummyExecutor None None
         
@@ -18,3 +18,4 @@ let ``be raised when the test is executed`` =
         
         result
     )
+]
