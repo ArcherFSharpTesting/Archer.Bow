@@ -47,7 +47,8 @@ let ignored =
     results.Failures
     |> List.filter (fun (result, _) ->
         match result with
-        | IgnoredFailure _ -> true
+        | IgnoredFailure _
+        | CancelFailure -> true
         | _ -> false
     )
     
@@ -55,7 +56,8 @@ let failures =
     results.Failures
     |> List.filter (fun (result, _) ->
         match result with
-        | IgnoredFailure _ -> false
+        | IgnoredFailure _
+        | CancelFailure -> false
         | _ -> true
     )
     
