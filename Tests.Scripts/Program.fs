@@ -18,9 +18,7 @@ let testDoublesTests =
         ``UnitTestExecutor StartTest``.``Test Cases``
         ``UnitTestExecutor EndTest``.``Test Cases``
         ``UnitTestExecutor StartTearDown``.``Test Cases``
-        [
-            ``UnitTestExecutor EndExecution should``.``be raised when the test is executed``
-        ]
+        ``UnitTestExecutor EndExecution``.``Test Cases``
     ]
     |> List.concat
 
