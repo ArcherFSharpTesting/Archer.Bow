@@ -1,25 +1,23 @@
-module Archer.Tests.Scripts.TestingLibrary.``UnitTestExecutor Happy Path``
+module Archer.Tests.Scripts.TestingLibrary.UnitTestExecutor
 
 open Archer.Tests.Scripts.TestLang
 
 let private container = suite.Container ("TestLibrary", "UnitTestExecutor happy path")
 
-let ``Should have the creating test as its parent`` =
+let ``Happy Path Test Cases`` = [
     container.Test("Should have the creating test as its parent", fun () ->
-            let executor = dummyExecutor None None
-            
-            executor.Parent
-            |> expectsToBe executor.Parent
-        )
+        let executor = dummyExecutor None None
+        
+        executor.Parent
+        |> expectsToBe executor.Parent
+    )
     
-let ``Should return success if test action returns success`` =
     container.Test ("Should return success if test action returns success", fun () ->
         let test = dummyExecutor None None
         
         test.Execute ()
     )
     
-let ``Should raise all events in correct order`` =
     container.Test("Should raise all events in correct order", fun () ->
         let executor = dummyExecutor None None
         
@@ -94,3 +92,4 @@ let ``Should raise all events in correct order`` =
         executor.Execute () |> ignore
         result
     )
+]

@@ -10,11 +10,8 @@ let framework = archer.Framework ()
 let testDoublesTests =
     [
         UnitTest.``Base Test Cases``
+        UnitTestExecutor.``Happy Path Test Cases``
         [
-            ``UnitTestExecutor Happy Path``.``Should have the creating test as its parent``
-            ``UnitTestExecutor Happy Path``.``Should return success if test action returns success``
-            ``UnitTestExecutor Happy Path``.``Should raise all events in correct order``
-            
             ``UnitTestExecutor Failing Test``.``Should return failure if the test action returns failure``
             ``UnitTestExecutor Failing Test``.``Should raise all events even if setup fails``
             ``UnitTestExecutor Failing Test``.``Should return failure if setup fails``
