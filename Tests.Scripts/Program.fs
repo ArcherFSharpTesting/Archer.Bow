@@ -31,6 +31,7 @@ let testDoublesTests =
         ``UnitTestExecutor StartSetup should``.``be raised when the test is executed``
         
         ``UnitTestExecutor EndSetup should``.``be raised when the test is executed``
+        ``UnitTestExecutor EndSetup should``.``carry the result of the Setup Function``
         
         ``UnitTestExecutor StartTest should``.``be raised when the test is executed``
         
