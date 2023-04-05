@@ -1,5 +1,6 @@
 ﻿namespace Archer.Tests.Scripts.TestLang.Types
 
+open System
 open System.ComponentModel
 open System.Runtime.CompilerServices
 open System.Runtime.InteropServices
@@ -45,6 +46,17 @@ module TypeSupport =
         | TestFailure _ -> result
         | _ -> action ()
         
+    let joinEvent (event: Event<TestDelegate, EventArgs>) action sender previousResult =
+        event.Trigger (sender, EventArgs.Empty)
+        
+        let result = action ()
+        
+        match previousResult, result with
+        | TestFailure a, TestFailure b -> CombinationFailure (a, b) |> TestFailure
+        | TestFailure _, _ -> previousResult
+        | _, TestFailure _ -> result
+        | _ -> TestSuccess
+        
 open TypeSupport
         
 type UnitTestExecutor (parent: ITest, setup: unit -> TestResult, test: unit -> TestResult, tearDown: unit -> TestResult) =
@@ -52,9 +64,9 @@ type UnitTestExecutor (parent: ITest, setup: unit -> TestResult, test: unit -> T
     let startSetup = Event<CancelDelegate, CancelEventArgs> ()
     let endSetup = Event<CancelTestDelegate, TestCancelEventArgsWithResults> ()
     let startTest = Event<CancelDelegate, CancelEventArgs> ()
-    let endTest = Event<CancelTestDelegate, TestCancelEventArgsWithResults> ()
-    let startTearDown = Event<CancelDelegate, CancelEventArgs> ()
-    let endExecution = Event<Delegate, TestEventArgs> ()
+    let endTest = Event<TestResultDelegate, TestEventArgs> ()
+    let startTearDown = Event<TestDelegate, EventArgs> ()
+    let endExecution = Event<TestResultDelegate, TestEventArgs> ()
     [<CLIEvent>]
     member _.StartExecution = startExecution.Publish
     [<CLIEvent>]
@@ -78,8 +90,8 @@ type UnitTestExecutor (parent: ITest, setup: unit -> TestResult, test: unit -> T
         |> joinCancelEvent startSetup setup parent
         |> wrapCancelResult endSetup parent
         |> joinCancelEvent startTest test parent
-        |> wrapCancelResult endTest parent
-        |> joinCancelEvent startTearDown tearDown parent
+        |> wrapEvent endTest parent
+        |> joinEvent startTearDown tearDown parent
         |> wrapEvent endExecution parent
     
     interface ITestExecutor with

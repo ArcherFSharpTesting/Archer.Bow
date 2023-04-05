@@ -17,7 +17,8 @@
             "style:": "Code style",
             "build:": "Build",
             "ci:": "CI configuration",
-            "perf:": "Performance improvement"
+            "perf:": "Performance improvement",
+            "holding": "Broken but storing it anyway"
         }
     },
     "verboseMode": false,
