@@ -64,7 +64,7 @@ let buildDummyExecutor (testAction: (unit -> TestResult) option) (parts: TestPar
     
 let buildTestFramework (testAction: (unit -> TestResult) option) (parts: TestPart option) =
     let framework = archer.Framework ()
-    let test = buildDummyTest None None
+    let test = buildDummyTest testAction parts
 
     framework.AddTests [test]
     framework, test

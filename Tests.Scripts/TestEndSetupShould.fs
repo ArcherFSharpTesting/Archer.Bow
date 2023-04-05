@@ -56,7 +56,24 @@ let ``Test Cases`` = [
         result
     )
     
-    // container.Test ("should carry the result of the setup method", fun () ->
-    //     let framework, test = buildTestFramework ()
-    // )
+    container.Test ("should carry the result of the setup method", fun () ->
+        let expectedResult = "Should blow up" |> SetupFailure |> TestFailure
+        let setup =
+            (fun () -> expectedResult)
+            |> SetupPart
+            |> Some
+        
+        let framework, _test = buildTestFramework None setup
+        
+        let mutable result = notRunError
+        framework.TestEndSetup.Add (fun args ->
+            result <-
+                args.TestResult
+                |> expectsToBe expectedResult
+        )
+        
+        framework.Run () |> ignore
+        
+        result
+    )
 ]
