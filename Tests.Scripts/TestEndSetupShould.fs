@@ -30,7 +30,7 @@ let ``Test Cases`` = [
                 |> combineError r
         )
 
-        getDefaultSeed
+        ()
         |> framework.Run
         |> ignore
 
@@ -50,7 +50,7 @@ let ``Test Cases`` = [
             args.Cancel <- true
         )
         
-        getDefaultSeed
+        ()
         |> framework.Run
         |> ignore
         
@@ -73,7 +73,9 @@ let ``Test Cases`` = [
                 |> expectsToBe expectedResult
         )
         
-        framework.Run () |> ignore
+        ()
+        |> framework.Run
+        |> ignore
         
         result
     )
