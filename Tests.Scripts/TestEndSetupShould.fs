@@ -61,28 +61,4 @@ let ``Test Cases`` = [
         
         result
     )
-    
-    container.Test ("should not be raised if TestStartExecution is canceled", fun () ->
-        let framework, _test = buildTestFramework ()
-        
-        let mutable result = TestSuccess
-        
-        framework.TestEndSetup.AddHandler (fun _ _ ->
-            result <- "Event should not have fired" |> VerificationFailure |> TestFailure
-        )
-        
-        framework.TestStartExecution.AddHandler (fun _ args ->
-            args.Cancel <- true
-        )
-        
-        getDefaultSeed
-        |> framework.Run
-        |> ignore
-        
-        result |> ignore
-        "Waiting for tests of test scaffolding"
-        |> Some
-        |> IgnoredFailure
-        |> TestFailure
-    )
 ]
