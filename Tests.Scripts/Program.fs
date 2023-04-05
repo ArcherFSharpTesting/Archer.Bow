@@ -3,6 +3,7 @@
 
 open Archer.Bow.Lib
 open Archer.Tests.Scripts.TestingLibrary
+open Archer.CoreTypes.Lib
 
 let framework = archer.Framework ()
 
@@ -29,10 +30,7 @@ let frameWorkTests =
         ``FrameworkExecutionEnded Event``.``Test Cases``
         ``TestExecutionStarted Event``.``Test Cases``
         ``TestStartSetup Event``.``Test Cases``
-        [
-            ``TestEndSetup should``.``be raised from the given test when the framework is run``
-            ``TestEndSetup should``.``should not be raised if FrameworkExecutionStart canceled``
-        ]
+        ``TestEndSetup Event``.``Test Cases``
     ]
     |> List.concat
     
@@ -44,14 +42,39 @@ let frameWorkTests =
 |> framework.AddTests
 
 let results = framework.Run ()
-    
-printfn $"\nTests Passing: %d{results.Successes |> List.length}, Failing: %d{results.Failures |> List.length}\n"
 
-results.Failures
+let ignored =
+    results.Failures
+    |> List.filter (fun (result, _) ->
+        match result with
+        | TestFailure (IgnoredFailure _) -> true
+        | _ -> false
+    )
+    
+let failures =
+    results.Failures
+    |> List.filter (fun (result, _) ->
+        match result with
+        | TestFailure (IgnoredFailure _) -> false
+        | _ -> true
+    )
+    
+let failureCount = failures |> List.length
+    
+printfn $"\nTests Passing: %d{results.Successes |> List.length}, Ignored: %d{ignored |> List.length} Failing: %d{failureCount}\n"
+
+failures
 |> List.iter (fun (result, test) ->
         printfn $"%A{result} <- %s{test.TestFullName} : %d{test.LineNumber}"
     )
 
+printfn ""
+
+ignored
+|> List.iter (fun (result, test) ->
+    printfn $"%A{result} <- %s{test.TestFullName} : %d{test.LineNumber}"
+)
+
 printfn "\n\n\n"
 
-exit (results.Failures |> List.length)
+exit failureCount

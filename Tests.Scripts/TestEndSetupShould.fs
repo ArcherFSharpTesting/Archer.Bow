@@ -1,4 +1,4 @@
-module Archer.Tests.Scripts.``TestEndSetup should``
+module Archer.Tests.Scripts.``TestEndSetup Event``
 
 open Archer.Bow.Lib
 open Archer.CoreTypes.Lib
@@ -16,7 +16,7 @@ let private buildTestFramework () =
     framework.AddTests [test]
     framework, test
 
-let ``be raised from the given test when the framework is run`` =
+let ``Test Cases`` = [
     container.Test ("be raised from the given test when the framework is run", fun () ->
         let framework, test = buildTestFramework ()
 
@@ -41,10 +41,9 @@ let ``be raised from the given test when the framework is run`` =
 
         result
     )
-     
-let ``should not be raised if FrameworkExecutionStart canceled`` =
+    
     container.Test ("should not be raised if FrameworkExecutionStart canceled", fun () ->
-        let framework, test = buildTestFramework ()
+        let framework, _test = buildTestFramework ()
         
         let mutable result = TestSuccess
         
@@ -63,9 +62,8 @@ let ``should not be raised if FrameworkExecutionStart canceled`` =
         result
     )
     
-let ``should not be raised if TestStartExecution is canceled`` =
     container.Test ("should not be raised if TestStartExecution is canceled", fun () ->
-        let framework, test = buildTestFramework ()
+        let framework, _test = buildTestFramework ()
         
         let mutable result = TestSuccess
         
@@ -81,5 +79,10 @@ let ``should not be raised if TestStartExecution is canceled`` =
         |> framework.Run
         |> ignore
         
-        result
+        result |> ignore
+        "Waiting for tests of test scaffolding"
+        |> Some
+        |> IgnoredFailure
+        |> TestFailure
     )
+]
