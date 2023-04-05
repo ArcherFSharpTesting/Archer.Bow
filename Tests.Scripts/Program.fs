@@ -50,6 +50,11 @@ let ignored =
         | TestFailure (IgnoredFailure _) -> true
         | _ -> false
     )
+    |> List.map (fun (result, test) ->
+        match result with
+        | TestFailure f -> f, test
+        | _ -> GeneralFailure "Successful Test matched as failure", test
+    )
     
 let failures =
     results.Failures
@@ -58,6 +63,11 @@ let failures =
         | TestFailure (IgnoredFailure _) -> false
         | _ -> true
     )
+    |> List.map (fun (result, test) ->
+        match result with
+        | TestFailure f -> f, test
+        | _ -> GeneralFailure "Successful Test matched as failure", test
+    ) 
     
 let failureCount = failures |> List.length
     
@@ -65,8 +75,8 @@ printfn $"\nTests Passing: %d{results.Successes |> List.length}, Ignored: %d{ign
 
 failures
 |> List.iter (fun (result, test) ->
-        printfn $"%A{result} <- %s{test.TestFullName} : %d{test.LineNumber}"
-    )
+    printfn $"%A{result} <- %s{test.TestFullName} : %d{test.LineNumber}"
+)
 
 printfn ""
 
