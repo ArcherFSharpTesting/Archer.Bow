@@ -42,4 +42,24 @@ let ``Test Cases`` = [
         
         result
     )
+    
+    container.Test ("should not run the test action when canceled", fun () ->
+        let mutable result = notRunError
+        
+        let testAction =
+            (fun () ->
+                result <- "Should not be run" |> VerificationFailure |> TestFailure
+                TestSuccess
+            )
+            |> Some
+            
+        let framework, _ = buildTestFramework testAction None
+        
+        framework.TestStart.Add (fun args ->
+            args.Cancel <- true
+        )
+        
+        result
+        |> expectsToBe notRunError
+    )
 ]
