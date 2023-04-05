@@ -4,7 +4,7 @@ open Archer.CoreTypes.Lib
 open Archer.CoreTypes.Lib.InternalTypes
 
 type RunResults = {
-    Failures: (TestResult * ITest) list
+    Failures: (Failure * ITest) list
     Successes: ITest list
     Seed: int
 }
@@ -33,6 +33,7 @@ module Executor =
         let failures =
             results
             |> Seq.filter (fst >> (=) TestSuccess >> not)
+            |> Seq.map (fun (TestFailure f, test) -> f, test)
             |> List.ofSeq
 
         buildReport failures successes seed

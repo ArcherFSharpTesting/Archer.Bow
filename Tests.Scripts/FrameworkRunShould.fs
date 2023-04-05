@@ -80,8 +80,8 @@ let ``Test Cases`` = [
         let framework = archer.Framework ()
         let container = suite.Container ("A test Suite", "to hold tests")
 
-        let failure = "Boom" |> GeneralFailure |> TestFailure
-        let testF = container.Test ("First Test Fails", fun () -> failure)
+        let failure = "Boom" |> GeneralFailure
+        let testF = container.Test ("First Test Fails", fun () -> failure |> TestFailure)
         let test2 = container.Test ("Second Test Passes", fun () -> TestSuccess)
 
         let expected = {
@@ -101,9 +101,9 @@ let ``Test Cases`` = [
         let framework = archer.Framework ()
         let container = suite.Container ("A test Suite", "to hold tests")
 
-        let failure = "Boom Again" |> GeneralFailure |> TestFailure
+        let failure = "Boom Again" |> GeneralFailure
         let test1 = container.Test ("First Test Passes", fun () -> TestSuccess)
-        let testF = container.Test ("Second Test Fails", fun () -> failure)
+        let testF = container.Test ("Second Test Fails", fun () -> failure |> TestFailure)
 
         let expected = {
                 Failures = [failure, testF]
@@ -122,10 +122,10 @@ let ``Test Cases`` = [
         let framework = archer.Framework ()
         let container = suite.Container ("A test Suite", "to hold tests")
 
-        let failure1 = "Boom Again" |> GeneralFailure |> TestFailure
-        let failure2 = "No good match" |> VerificationFailure |> TestFailure
-        let testF = container.Test ("Second Test Fails", fun () -> failure2)
-        let testF2 = container.Test ("First Test fails", fun () -> failure1)
+        let failure1 = "Boom Again" |> GeneralFailure
+        let failure2 = "No good match" |> VerificationFailure
+        let testF = container.Test ("Second Test Fails", fun () -> failure2 |> TestFailure)
+        let testF2 = container.Test ("First Test fails", fun () -> failure1 |> TestFailure)
 
         let expected = {
                 Failures = [failure1, testF2; failure2, testF]

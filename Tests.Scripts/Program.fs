@@ -47,27 +47,17 @@ let ignored =
     results.Failures
     |> List.filter (fun (result, _) ->
         match result with
-        | TestFailure (IgnoredFailure _) -> true
+        | IgnoredFailure _ -> true
         | _ -> false
-    )
-    |> List.map (fun (result, test) ->
-        match result with
-        | TestFailure f -> f, test
-        | _ -> GeneralFailure "Successful Test matched as failure", test
     )
     
 let failures =
     results.Failures
     |> List.filter (fun (result, _) ->
         match result with
-        | TestFailure (IgnoredFailure _) -> false
+        | IgnoredFailure _ -> false
         | _ -> true
     )
-    |> List.map (fun (result, test) ->
-        match result with
-        | TestFailure f -> f, test
-        | _ -> GeneralFailure "Successful Test matched as failure", test
-    ) 
     
 let failureCount = failures |> List.length
     
