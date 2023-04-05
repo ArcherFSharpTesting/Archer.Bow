@@ -9,38 +9,35 @@ let framework = archer.Framework ()
 // These tests test the testing environment used to test the framework
 let testDoublesTests =
     [
-        ``UnitTest should``.``have the test name``
-        ``UnitTest should``.``have the container name``
-        ``UnitTest should``.``have the container fullname``
-        ``UnitTest should``.``have the test fullname``
-        ``UnitTest should``.``have tags``
-        ``UnitTest should``.``have well formed string representation``
-        
-        ``UnitTestExecutor Happy Path``.``Should have the creating test as its parent``
-        ``UnitTestExecutor Happy Path``.``Should return success if test action returns success``
-        ``UnitTestExecutor Happy Path``.``Should raise all events in correct order``
-        
-        ``UnitTestExecutor Failing Test``.``Should return failure if the test action returns failure``
-        ``UnitTestExecutor Failing Test``.``Should raise all events even if setup fails``
-        ``UnitTestExecutor Failing Test``.``Should return failure if setup fails``
-        ``UnitTestExecutor Failing Test``.``Should carry the setup error in future events``
-        ``UnitTestExecutor Failing Test``.``Should not run test action``
-        
-        ``UnitTestExecutor StartExecution should``.``be raised when the test is executed``
-        
-        ``UnitTestExecutor StartSetup should``.``be raised when the test is executed``
-        
-        ``UnitTestExecutor EndSetup should``.``be raised when the test is executed``
-        ``UnitTestExecutor EndSetup should``.``carry the result of the Setup Function``
-        
-        ``UnitTestExecutor StartTest should``.``be raised when the test is executed``
-        
-        ``UnitTestExecutor EndTest should``.``be raised when the test is executed``
-        
-        ``UnitTestExecutor StartTearDown should``.``be raised when the test is executed``
-        
-        ``UnitTestExecutor EndExecution should``.``be raised when the test is executed``
+        UnitTest.``Base Test Cases``
+        [
+            ``UnitTestExecutor Happy Path``.``Should have the creating test as its parent``
+            ``UnitTestExecutor Happy Path``.``Should return success if test action returns success``
+            ``UnitTestExecutor Happy Path``.``Should raise all events in correct order``
+            
+            ``UnitTestExecutor Failing Test``.``Should return failure if the test action returns failure``
+            ``UnitTestExecutor Failing Test``.``Should raise all events even if setup fails``
+            ``UnitTestExecutor Failing Test``.``Should return failure if setup fails``
+            ``UnitTestExecutor Failing Test``.``Should carry the setup error in future events``
+            ``UnitTestExecutor Failing Test``.``Should not run test action``
+            
+            ``UnitTestExecutor StartExecution should``.``be raised when the test is executed``
+            
+            ``UnitTestExecutor StartSetup should``.``be raised when the test is executed``
+            
+            ``UnitTestExecutor EndSetup should``.``be raised when the test is executed``
+            ``UnitTestExecutor EndSetup should``.``carry the result of the Setup Function``
+            
+            ``UnitTestExecutor StartTest should``.``be raised when the test is executed``
+            
+            ``UnitTestExecutor EndTest should``.``be raised when the test is executed``
+            
+            ``UnitTestExecutor StartTearDown should``.``be raised when the test is executed``
+            
+            ``UnitTestExecutor EndExecution should``.``be raised when the test is executed``
+        ]
     ]
+    |> List.concat
 
 let frameWorkTests = 
     [
