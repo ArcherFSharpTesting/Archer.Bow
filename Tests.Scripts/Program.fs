@@ -9,15 +9,10 @@ let framework = archer.Framework ()
 // These tests test the testing environment used to test the framework
 let testDoublesTests =
     [
-        UnitTest.``Base Test Cases``
-        UnitTestExecutor.``Happy Path Test Cases``
+        ``UnitTest Base Case``.``Test Cases``
+        ``UnitTestExecutor Happy Path``.``Test Cases``
+        ``UnitTestExecutor With a Failing Test``.``Test Cases``
         [
-            ``UnitTestExecutor Failing Test``.``Should return failure if the test action returns failure``
-            ``UnitTestExecutor Failing Test``.``Should raise all events even if setup fails``
-            ``UnitTestExecutor Failing Test``.``Should return failure if setup fails``
-            ``UnitTestExecutor Failing Test``.``Should carry the setup error in future events``
-            ``UnitTestExecutor Failing Test``.``Should not run test action``
-            
             ``UnitTestExecutor StartExecution should``.``be raised when the test is executed``
             
             ``UnitTestExecutor StartSetup should``.``be raised when the test is executed``

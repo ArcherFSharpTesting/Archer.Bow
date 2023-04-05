@@ -1,4 +1,4 @@
-module Archer.Tests.Scripts.TestingLibrary.``UnitTestExecutor Failing Test``
+module Archer.Tests.Scripts.TestingLibrary.``UnitTestExecutor With a Failing Test``
 
 open Archer.CoreTypes.Lib
 open Archer.CoreTypes.Lib.InternalTypes
@@ -14,7 +14,7 @@ let private dummyExecutor (testAction: (unit -> TestResult) option) (parts: Test
         
     test.GetExecutor ()
     
-let ``Should return failure if the test action returns failure`` =
+let ``Test Cases`` = [
     container.Test ("Should return failure if the test action returns failure", fun () ->
         let expectedResult = "Things don't add up" |> generateFailure VerificationFailure
         let test = dummyExecutor (Some (fun () -> expectedResult)) None
@@ -25,7 +25,6 @@ let ``Should return failure if the test action returns failure`` =
         |> expectsToBe expectedResult
     )
     
-let ``Should raise all events even if setup fails`` =
     container.Test ("Should raise all events even if setup fails", fun () ->
         let failure = "Setup Fail" |> generateFailure SetupFailure
         let test = dummyExecutor None (Some (SetupPart (fun () -> failure)))
@@ -47,7 +46,6 @@ let ``Should raise all events even if setup fails`` =
         |> expectsToBe 7
     )
     
-let ``Should return failure if setup fails`` =
     container.Test ("Should raise all events even if setup fails", fun () ->
         let failure = "Setup Fail" |> generateFailure SetupFailure
         let test = dummyExecutor None (Some (SetupPart (fun () -> failure)))
@@ -58,7 +56,6 @@ let ``Should return failure if setup fails`` =
         |> expectsToBe failure
     )
     
-let ``Should carry the setup error in future events`` =
     container.Test ("Should raise all events even if setup fails", fun () ->
         let failure = "Setup Fail" |> generateFailure SetupFailure
         let test = dummyExecutor None (Some (SetupPart (fun () -> failure)))
@@ -90,7 +87,6 @@ let ``Should carry the setup error in future events`` =
         result
     )
     
-let ``Should not run test action`` =
     container.Test ("Should raise all events even if setup fails", fun () ->
         let failure = "Setup Fail" |> generateFailure SetupFailure
         let mutable result = TestSuccess
@@ -105,3 +101,4 @@ let ``Should not run test action`` =
         
         result
     )
+]

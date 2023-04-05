@@ -1,4 +1,4 @@
-module Archer.Tests.Scripts.TestingLibrary.UnitTest
+module Archer.Tests.Scripts.TestingLibrary.``UnitTest Base Case``
 
 open Archer.CoreTypes.Lib.InternalTypes
 open Archer.Tests.Scripts.TestLang
@@ -6,7 +6,7 @@ open Archer.Tests.Scripts.TestLang.Types
 
 let private container = suite.Container ("TestingLibrary", "UnitTest should")
 
-let ``Base Test Cases`` = [
+let ``Test Cases`` = [
     container.Test ("have the test name", fun () ->
         let expectedName = "My Test Name"
         let test = UnitTest (ignoreString (), ignoreString (), expectedName, ignoreInt (), [], successfulTest, EmptyPart) :> ITest

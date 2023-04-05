@@ -1,10 +1,10 @@
-module Archer.Tests.Scripts.TestingLibrary.UnitTestExecutor
+module Archer.Tests.Scripts.TestingLibrary.``UnitTestExecutor Happy Path``
 
 open Archer.Tests.Scripts.TestLang
 
 let private container = suite.Container ("TestLibrary", "UnitTestExecutor happy path")
 
-let ``Happy Path Test Cases`` = [
+let ``Test Cases`` = [
     container.Test("Should have the creating test as its parent", fun () ->
         let executor = dummyExecutor None None
         
