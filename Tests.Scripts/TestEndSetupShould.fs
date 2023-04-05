@@ -1,14 +1,10 @@
 module Archer.Tests.Scripts.``TestEndSetup Event``
 
-open Archer.Bow.Lib
 open Archer.CoreTypes
 open Archer.Tests.Scripts.TestLang
 open Archer.Tests.Scripts.TestLang.Types
 
-let private defaultSeed = 33
-let private getDefaultSeed () = defaultSeed
-
-let private container = suite.Container ("", "TestEndSetup should")
+let private container = suite.Container ("", "TestEndSetup Event should")
 
 let ``Test Cases`` = [
     container.Test ("be raised from the given test when the framework is run", fun () ->
@@ -57,7 +53,7 @@ let ``Test Cases`` = [
         result
     )
     
-    container.Test ("should carry the result of the setup method", fun () ->
+    container.Test ("should carry the result of the EndSetup event", fun () ->
         let expectedResult = "Should blow up" |> SetupFailure |> TestFailure
         let setup =
             (fun () -> expectedResult)
