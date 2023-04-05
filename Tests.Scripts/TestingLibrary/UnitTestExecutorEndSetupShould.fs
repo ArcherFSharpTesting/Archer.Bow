@@ -67,7 +67,7 @@ let ``Test Cases`` = [
         |> expectsToBe (TestFailure CancelFailure)
     )
     
-    container.Test ("should not be called if the setup action fails", fun () ->
+    container.Test ("should carry result of setup action fails", fun () ->
         let expectedFailure = "This is an intended failure" |> SetupFailure |> TestFailure
         let setupAction =
             (fun () -> expectedFailure)
