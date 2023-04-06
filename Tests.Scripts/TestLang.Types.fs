@@ -167,7 +167,13 @@ type UnitTest (filePath: string, containerFullName: string, containerName: strin
         member this.GetExecutor() = this.GetExecutor ()
             
 type TestBuilder (containerPath: string, containerName: string) =
-    let fullPath = $"%s{containerPath}.%s{containerName}"
+    let fullPath =
+        [
+            containerPath
+            containerName
+        ]
+        |> List.filter (String.IsNullOrEmpty >> not)
+        |> fun items -> String.Join (".", items)
     
     member _.Test(testName: string, action: unit -> TestResult, part: TestPart, [<CallerFilePath; Optional; DefaultParameterValue("")>] path: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>]lineNumber: int) =
         UnitTest (path, fullPath , containerName, testName, lineNumber, [], action, part) :> ITest

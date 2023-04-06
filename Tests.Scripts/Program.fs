@@ -68,14 +68,14 @@ printfn $"\nTests Passing: %d{results.Successes |> List.length}, Ignored: %d{ign
 
 failures
 |> List.iter (fun (result, test) ->
-    printfn $"%A{result} <- %s{test.TestFullName} : %d{test.LineNumber}"
+    printfn $"%s{test.TestFullName}\n%A{result}\n\t%s{test.FilePath} %d{test.LineNumber}"
 )
 
 printfn ""
 
 ignored
 |> List.iter (fun (result, test) ->
-    printfn $"%A{result} <- %s{test.TestFullName} : %d{test.LineNumber}"
+    printfn $"%s{test.TestFullName}\n%A{result}\n\t%s{test.FilePath} %d{test.LineNumber}"
 )
 
 printfn "\n\n\n"
