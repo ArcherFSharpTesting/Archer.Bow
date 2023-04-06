@@ -52,6 +52,7 @@ type Framework () as this =
     let testStart = Event<FrameworkTestCancelDelegate, FrameworkTestCancelArgs> ()
     let testEnd = Event<FrameworkTestResultDelegate, FrameWorkTestResultArgs> ()
     let testStartTearDown = Event<FrameworkTestDelegate, FrameWorkTestArgs> ()
+    let testEndExecution = Event<FrameworkTestResultDelegate, FrameWorkTestResultArgs> ()
     
     let mutable tests = System.Collections.Generic.List<ITestExecutor>()
     
@@ -85,6 +86,8 @@ type Framework () as this =
     let handleTestEnd = createTestResultEventHandler testEnd
     
     let handleTestStartTearDown = createTestEventHandler testStartTearDown
+    
+    let handleTestEndExecution = createTestResultEventHandler testEndExecution
         
     member this.Run () =
         this.Run(fun () -> Random().Next ())
@@ -109,6 +112,7 @@ type Framework () as this =
             executor.StartTest.AddHandler handleTestStart
             executor.EndTest.AddHandler handleTestEnd
             executor.StartTearDown.AddHandler handleTestStartTearDown
+            executor.EndExecution.AddHandler handleTestEndExecution
             executor
             
         let getExecutor (test: ITest) = test.GetExecutor ()
@@ -143,6 +147,9 @@ type Framework () as this =
     
     [<CLIEvent>]
     member _.TestStartTearDown = testStartTearDown.Publish
+    
+    [<CLIEvent>]
+    member _.TestEndExecution = testEndExecution.Publish
         
 type Archer () =
     member _.Framework () = Framework ()
