@@ -65,12 +65,8 @@ type Framework () as this =
     let createTestCancelEventHandler =
         creatTestEventHandler (fun test (cancelArgs: CancelEventArgs) -> FrameworkTestCancelArgs (cancelArgs.Cancel, test))
         
-    let createTestResultCancelEventHandler (event: Event<'a, FrameworkTestResultCancelArgs>) (testObj: obj) (cancelArgs: TestCancelEventArgsWithResults) =
-        match testObj with
-        | :? ITest as test ->
-            let args = FrameworkTestResultCancelArgs (cancelArgs.Cancel, test, cancelArgs.TestResult)
-            event.Trigger (this, args)
-        | _ -> ()
+    let createTestResultCancelEventHandler =
+        creatTestEventHandler (fun test (cancelArgs: TestCancelEventArgsWithResults) -> FrameworkTestResultCancelArgs (cancelArgs.Cancel, test, cancelArgs.TestResult))
         
     let createTestResultEventHandler (event: Event<'a, FrameWorkTestResultArgs>) (testObj: obj) (args: TestEventArgs) =
         match testObj with
