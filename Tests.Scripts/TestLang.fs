@@ -11,6 +11,8 @@ let randomInt _ = System.Random().Next ()
 let ignoreInt _ = randomInt ()
 let ignoreString _ = $"%d{randomInt ()}%d{randomInt ()}%d{randomInt ()}"
 
+let ignorePath _ = $"%s{ignoreString ()}.test"
+
 let combineResultIgnoring defaultError a b =
     match a, b with
     | var, _ when var = defaultError -> b

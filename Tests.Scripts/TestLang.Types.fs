@@ -118,14 +118,14 @@ type TestPart =
     | TearDownPart of (unit -> TestResult)
     | Both of setup: (unit -> TestResult) * tearDown: (unit -> TestResult)
             
-type UnitTest (containerFullName: string, containerName: string, testName: string, lineNumber: int, tags: TestTag seq, test: unit -> TestResult, testParts: TestPart) =
+type UnitTest (filePath: string, containerFullName: string, containerName: string, testName: string, lineNumber: int, tags: TestTag seq, test: unit -> TestResult, testParts: TestPart) =
     let testFullName =
         [
             containerFullName
             testName
         ]
-        |> List.filter (System.String.IsNullOrEmpty >> not)
-        |> fun items -> System.String.Join (".", items)
+        |> List.filter (String.IsNullOrEmpty >> not)
+        |> fun items -> String.Join (".", items)
         
     let setup, tearDown =
         match testParts with
@@ -133,6 +133,11 @@ type UnitTest (containerFullName: string, containerName: string, testName: strin
         | SetupPart setup -> setup, success
         | TearDownPart tearDown -> success, tearDown
         | Both (setup, tearDown) -> setup, tearDown
+        
+    let fileName =
+        if String.IsNullOrEmpty filePath then ""
+        else
+            System.IO.Path.GetFileName filePath
 
     override this.ToString () =
         let test = this :> ITest
@@ -156,25 +161,16 @@ type UnitTest (containerFullName: string, containerName: string, testName: strin
         member _.Tags = tags
         member _.TestFullName = testFullName
         member _.TestName = testName
+        member _.FileName = fileName
+        member _.FilePath = filePath
         
         member this.GetExecutor() = this.GetExecutor ()
             
 type TestBuilder (containerPath: string, containerName: string) =
+    let fullPath = $"%s{containerPath}.%s{containerName}"
+    
     member _.Test(testName: string, action: unit -> TestResult, part: TestPart, [<CallerFilePath; Optional; DefaultParameterValue("")>] path: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>]lineNumber: int) =
-        let fullPath =
-            [
-                path
-                [
-                    containerPath
-                    containerName
-                ]
-                |> List.filter (System.String.IsNullOrEmpty >> not)
-                |> fun items -> System.String.Join (".", items)
-            ]
-            |> List.filter (System.String.IsNullOrEmpty >> not)
-            |> fun paths -> System.String.Join (" >> ", paths)
-            
-        UnitTest (fullPath , containerName, testName, lineNumber, [], action, part) :> ITest
+        UnitTest (path, fullPath , containerName, testName, lineNumber, [], action, part) :> ITest
     
     member this.Test (testName: string, action: unit -> TestResult, [<CallerFilePath; Optional; DefaultParameterValue("")>] path: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>]lineNumber: int) =
         this.Test(testName, action, EmptyPart, path, lineNumber)
