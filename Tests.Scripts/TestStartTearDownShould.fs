@@ -9,10 +9,27 @@ let ``Test Cases`` = [
         let framework, _test = buildTestFramework None None
         
         let mutable result = notRunError
-        framework.TestStartTearDown.AddHandler (fun fr test ->
+        framework.TestStartTearDown.AddHandler (fun fr _args ->
             result <-
                 fr
                 |> expectsToBe framework
+        )
+        
+        ()
+        |> framework.Run
+        |> ignore
+        
+        result
+    )
+    
+    container.Test ("be raised when the framework is run", fun () ->
+        let framework, test = buildTestFramework None None
+        
+        let mutable result = notRunError
+        framework.TestStartTearDown.AddHandler (fun _fr args ->
+            result <-
+                args.Test
+                |> expectsToBe test
         )
         
         ()
