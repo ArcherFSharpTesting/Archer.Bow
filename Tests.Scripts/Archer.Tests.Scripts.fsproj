@@ -27,6 +27,7 @@
     <Compile Include="TestEndSetupShould.fs" />
     <Compile Include="TestStartShould.fs" />
     <Compile Include="TestEndShould.fs" />
+    <Compile Include="TestStartTearDownShould.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 

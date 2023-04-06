@@ -33,6 +33,7 @@ let frameWorkTests =
         ``TestEndSetup Event``.``Test Cases``
         ``TestStart Event``.``Test Cases``
         ``TestEnd Event``.``Test Cases``
+        ``TestStartTearDown Event``.``Test Cases``
     ]
     |> List.concat
     

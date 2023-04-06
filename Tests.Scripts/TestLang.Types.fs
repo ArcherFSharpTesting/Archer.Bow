@@ -125,7 +125,7 @@ type UnitTest (filePath: string, containerFullName: string, containerName: strin
             testName
         ]
         |> List.filter (String.IsNullOrEmpty >> not)
-        |> fun items -> String.Join (".", items)
+        |> fun items -> String.Join (" <> ", items)
         
     let setup, tearDown =
         match testParts with
@@ -173,7 +173,7 @@ type TestBuilder (containerPath: string, containerName: string) =
             containerName
         ]
         |> List.filter (String.IsNullOrEmpty >> not)
-        |> fun items -> String.Join (".", items)
+        |> fun items -> String.Join (" <> ", items)
     
     member _.Test(testName: string, action: unit -> TestResult, part: TestPart, [<CallerFilePath; Optional; DefaultParameterValue("")>] path: string, [<CallerLineNumber; Optional; DefaultParameterValue(-1)>]lineNumber: int) =
         UnitTest (path, fullPath , containerName, testName, lineNumber, [], action, part) :> ITest

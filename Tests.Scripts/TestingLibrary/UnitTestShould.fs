@@ -34,7 +34,7 @@ let ``Test Cases`` = [
     container.Test ("have the test fullname", fun () ->
         let testName = "My Test Name"
         let containerFullName = "My Container Full Name"
-        let expectedName = $"%s{containerFullName}.%s{testName}"
+        let expectedName = $"%s{containerFullName} <> %s{testName}"
         let test = UnitTest (ignorePath (), containerFullName, ignoreString (), testName, ignoreInt (), [], successfulTest, EmptyPart) :> ITest
         
         test.TestFullName
@@ -61,6 +61,6 @@ let ``Test Cases`` = [
         let test = UnitTest (ignorePath (), "Container Full Path", ignoreString (), "Test Name", 47, [], successfulTest, EmptyPart)
         
         test.ToString ()
-        |> expectsToBe "Container Full Path.Test Name"
+        |> expectsToBe "Container Full Path <> Test Name"
     )
 ]
