@@ -55,7 +55,7 @@ type Framework () as this =
     
     let mutable tests = System.Collections.Generic.List<ITestExecutor>()
     
-    let handleTestCancelEvent (event: Event<'a, FrameworkTestCancelArgs>) (testObj: obj) (cancelArgs: CancelEventArgs) =
+    let createTestCancelEventHandler (event: Event<'a, FrameworkTestCancelArgs>) (testObj: obj) (cancelArgs: CancelEventArgs) =
         match testObj with
         | :? ITest as test ->
             let args = FrameworkTestCancelArgs (cancelArgs.Cancel, test)
@@ -63,38 +63,38 @@ type Framework () as this =
             cancelArgs.Cancel <- args.Cancel
         | _ -> ()
         
-    let handleTestResultCancelEvent (event: Event<'a, FrameworkTestResultCancelArgs>) (testObj: obj) (cancelArgs: TestCancelEventArgsWithResults) =
+    let createTestResultCancelEventHandler (event: Event<'a, FrameworkTestResultCancelArgs>) (testObj: obj) (cancelArgs: TestCancelEventArgsWithResults) =
         match testObj with
         | :? ITest as test ->
             let args = FrameworkTestResultCancelArgs (cancelArgs.Cancel, test, cancelArgs.TestResult)
             event.Trigger (this, args)
         | _ -> ()
         
-    let handleTestResultEvent (event: Event<'a, FrameWorkTestResultArgs>) (testObj: obj) (args: TestEventArgs) =
+    let createTestResultEventHandler (event: Event<'a, FrameWorkTestResultArgs>) (testObj: obj) (args: TestEventArgs) =
         match testObj with
         | :? ITest as test ->
             let args = FrameWorkTestResultArgs (test, args.TestResult)
             event.Trigger (this, args)
         | _ -> ()
         
-    let handleTestEvent (event: Event<'a, FrameWorkTestArgs>) (testObj: obj) (args: EventArgs) =
+    let createTestEventHandler (event: Event<'a, FrameWorkTestArgs>) (testObj: obj) (args: EventArgs) =
         match testObj with
         | :? ITest as test ->
             let args = FrameWorkTestArgs test
             event.Trigger (this, args)
         | _ -> ()
     
-    let handleTestExecutionStarted = handleTestCancelEvent testExecutionStarted
+    let handleTestExecutionStarted = createTestCancelEventHandler testExecutionStarted
         
-    let handleTestSetupStarted = handleTestCancelEvent testStartSetup
+    let handleTestSetupStarted = createTestCancelEventHandler testStartSetup
     
-    let handleTestSetupEnded = handleTestResultCancelEvent testEndSetup
+    let handleTestSetupEnded = createTestResultCancelEventHandler testEndSetup
     
-    let handleTestStart = handleTestCancelEvent testStart
+    let handleTestStart = createTestCancelEventHandler testStart
     
-    let handleTestEnd = handleTestResultEvent testEnd
+    let handleTestEnd = createTestResultEventHandler testEnd
     
-    let handleTestStartTearDown = handleTestEvent testStartTearDown
+    let handleTestStartTearDown = createTestEventHandler testStartTearDown
         
     member this.Run () =
         this.Run(fun () -> Random().Next ())
