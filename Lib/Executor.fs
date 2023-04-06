@@ -1,4 +1,4 @@
-namespace Archer.Bow.Lib
+namespace Archer.Bow
 
 open Archer.CoreTypes
 open Archer.CoreTypes.InternalTypes

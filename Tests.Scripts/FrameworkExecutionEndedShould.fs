@@ -1,6 +1,6 @@
 module Archer.Tests.Scripts.``FrameworkExecutionEnded Event``
 
-open Archer.Bow.Lib
+open Archer.Bow
 open Archer.CoreTypes
 open Archer.Tests.Scripts.TestLang
 

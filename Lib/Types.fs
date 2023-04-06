@@ -1,10 +1,10 @@
-﻿namespace Archer.Bow.Lib
+﻿namespace Archer.Bow
 
 open System
 open System.ComponentModel
 open Archer.CoreTypes
 open Archer.CoreTypes.InternalTypes
-open Archer.Bow.Lib.Executor
+open Archer.Bow.Executor
 
 type FrameworkTestCancelArgs (cancel: bool, test: ITest) =
     inherit CancelEventArgs (cancel)

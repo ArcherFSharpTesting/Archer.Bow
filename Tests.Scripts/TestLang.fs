@@ -2,7 +2,7 @@
 module Archer.Tests.Scripts.TestLang.Lang
 
 open Archer.CoreTypes
-open Archer.Bow.Lib
+open Archer.Bow
 open Archer.Tests.Scripts.TestLang.Types
 
 let suite = TestContainerBuilder ()

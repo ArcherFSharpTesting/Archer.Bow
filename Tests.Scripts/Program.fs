@@ -1,7 +1,7 @@
 ﻿module Archer.Tests.Scripts.Program
 // For more information see https://aka.ms/fsharp-console-apps
 
-open Archer.Bow.Lib
+open Archer.Bow
 open Archer.Tests.Scripts.TestingLibrary
 open Archer.CoreTypes
 

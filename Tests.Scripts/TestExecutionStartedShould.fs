@@ -1,6 +1,6 @@
 module Archer.Tests.Scripts.``TestExecutionStarted Event``
 
-open Archer.Bow.Lib
+open Archer.Bow
 open Archer.CoreTypes
 open Archer.Tests.Scripts.TestLang
 
