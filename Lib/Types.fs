@@ -55,7 +55,7 @@ type Framework () as this =
     
     let mutable tests = System.Collections.Generic.List<ITestExecutor>()
     
-    let creatTestEventHandler (createArgs: ITest -> 'b -> 'c) (event: Event<'a, 'c>) (testObj: obj) (testArgs: 'b) =
+    let createTestEventHandler (createArgs: ITest -> 'b -> 'c) (event: Event<'a, 'c>) (testObj: obj) (testArgs: 'b) =
         match testObj with
         | :? ITest as test ->
             let args = createArgs test testArgs
@@ -63,20 +63,16 @@ type Framework () as this =
         | _ -> ()
     
     let createTestCancelEventHandler =
-        creatTestEventHandler (fun test (cancelArgs: CancelEventArgs) -> FrameworkTestCancelArgs (cancelArgs.Cancel, test))
+        createTestEventHandler (fun test (cancelArgs: CancelEventArgs) -> FrameworkTestCancelArgs (cancelArgs.Cancel, test))
         
     let createTestResultCancelEventHandler =
-        creatTestEventHandler (fun test (cancelArgs: TestCancelEventArgsWithResults) -> FrameworkTestResultCancelArgs (cancelArgs.Cancel, test, cancelArgs.TestResult))
+        createTestEventHandler (fun test (cancelArgs: TestCancelEventArgsWithResults) -> FrameworkTestResultCancelArgs (cancelArgs.Cancel, test, cancelArgs.TestResult))
         
     let createTestResultEventHandler =
-        creatTestEventHandler (fun test (args: TestEventArgs) -> FrameWorkTestResultArgs (test, args.TestResult))
+        createTestEventHandler (fun test (args: TestEventArgs) -> FrameWorkTestResultArgs (test, args.TestResult))
         
-    let createTestEventHandler (event: Event<'a, FrameWorkTestArgs>) (testObj: obj) (args: EventArgs) =
-        match testObj with
-        | :? ITest as test ->
-            let args = FrameWorkTestArgs test
-            event.Trigger (this, args)
-        | _ -> ()
+    let createTestEventHandler =
+        createTestEventHandler (fun test (_args: EventArgs) -> FrameWorkTestArgs test)
     
     let handleTestExecutionStarted = createTestCancelEventHandler testExecutionStarted
         
