@@ -139,4 +139,62 @@ let ``Test Cases`` = [
 
         result |> verifyWith expected
     )
+    
+    container.Test ("shuffle the order of the tests", fun () ->
+        let framework = archer.Framework ()
+        
+        let container = suite.Container ("Framework Run", "shuffle the order of the tests")
+        let results = System.Collections.Generic.List<string> ()
+        
+        framework.AddTests [
+            container.Test ("Test A", successfulTest)
+            container.Test ("Test B", successfulTest)
+            container.Test ("Test C", successfulTest)
+        ]
+        
+        framework.TestStart.Add (fun ars ->
+            results.Add ars.Test.TestName
+        )
+        
+        (fun () -> 1073633209)
+        |> framework.Run
+        |> ignore
+        
+        results
+        |> List.ofSeq
+        |> expectsToBe [
+            "Test C"
+            "Test A"
+            "Test B"
+        ]
+    )
+    
+    container.Test ("shuffle the order of the tests different seed", fun () ->
+        let framework = archer.Framework ()
+        
+        let container = suite.Container ("Framework Run", "shuffle the order of the tests")
+        let results = System.Collections.Generic.List<string> ()
+        
+        framework.AddTests [
+            container.Test ("Test A", successfulTest)
+            container.Test ("Test B", successfulTest)
+            container.Test ("Test C", successfulTest)
+        ]
+        
+        framework.TestStart.Add (fun ars ->
+            results.Add ars.Test.TestName
+        )
+        
+        (fun () -> 4006)
+        |> framework.Run
+        |> ignore
+        
+        results
+        |> List.ofSeq
+        |> expectsToBe [
+            "Test B"
+            "Test C"
+            "Test A"
+        ]
+    )
 ]

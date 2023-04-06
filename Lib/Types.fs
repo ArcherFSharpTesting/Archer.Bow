@@ -88,7 +88,7 @@ type Framework () as this =
     let handleTestStartTearDown = createTestEventHandler testStartTearDown
     
     let handleTestEndExecution = createTestResultEventHandler testEndExecution
-        
+    
     member this.Run () =
         this.Run(fun () -> Random().Next ())
         
@@ -100,7 +100,8 @@ type Framework () as this =
         if startArgs.Cancel then
             buildReport [] [] seed
         else
-            let result = runTests seed tests
+            let shuffled = tests |> shuffle seed
+            let result = runTests seed shuffled
             frameworkEnd.Trigger (this, EventArgs.Empty)
             result
     

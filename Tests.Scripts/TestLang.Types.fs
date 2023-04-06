@@ -93,6 +93,9 @@ type UnitTestExecutor (parent: ITest, setup: unit -> TestResult, test: unit -> T
         |> wrapEvent endTest parent
         |> joinEvent startTearDown tearDown parent
         |> wrapEvent endExecution parent
+        
+    override this.ToString () =
+        $"%s{this.Parent.ToString ()}.Executor"
     
     interface ITestExecutor with
         [<CLIEvent>]
