@@ -5,7 +5,7 @@ open Archer.Bow
 open Archer.Tests.Scripts.TestingLibrary
 open Archer.CoreTypes
 
-let framework = archer.Framework ()
+let framework = bow.Framework ()
 
 // These tests test the testing environment used to test the framework
 let testDoublesTests =

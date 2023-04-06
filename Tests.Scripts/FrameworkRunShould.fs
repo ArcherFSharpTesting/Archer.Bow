@@ -13,7 +13,7 @@ let ``Test Cases`` = [
     container.Test ("return empty results when it has no tests", fun () ->
         let seed = 5
                 
-        let framework = archer.Framework ()
+        let framework = bow.Framework ()
         let result = framework.Run (fun () -> seed)
                 
         let expected = {
@@ -28,7 +28,7 @@ let ``Test Cases`` = [
     container.Test ("return empty results when it has no tests", fun () ->
         let seed = 258
                 
-        let framework = archer.Framework ()
+        let framework = bow.Framework ()
         let result = framework.Run (fun () -> seed)
                 
         let expected = {
@@ -41,7 +41,7 @@ let ``Test Cases`` = [
     )
     
     container.Test ("return a successful result when one test passes", fun () ->
-        let framework = archer.Framework ()
+        let framework = bow.Framework ()
         let container = suite.Container ("A Test Suite", "with a passing test")
         let test = container.Test ("A Passing Test", fun () -> TestSuccess)
 
@@ -58,7 +58,7 @@ let ``Test Cases`` = [
     )
     
     container.Test ("return a successful result when two tests pass", fun () ->
-        let framework = archer.Framework ()
+        let framework = bow.Framework ()
         let container = suite.Container ("A test Suite", "with two passing tests")
         
         let test1 = container.Test ("Fist Passing Test", fun () -> TestSuccess)
@@ -77,7 +77,7 @@ let ``Test Cases`` = [
     )
     
     container.Test ("return failure when a test fails", fun () -> 
-        let framework = archer.Framework ()
+        let framework = bow.Framework ()
         let container = suite.Container ("A test Suite", "to hold tests")
 
         let failure = "Boom" |> GeneralFailure
@@ -98,7 +98,7 @@ let ``Test Cases`` = [
     )
     
     container.Test ("return failure when second test fails", fun () -> 
-        let framework = archer.Framework ()
+        let framework = bow.Framework ()
         let container = suite.Container ("A test Suite", "to hold tests")
 
         let failure = "Boom Again" |> GeneralFailure
@@ -119,7 +119,7 @@ let ``Test Cases`` = [
     )
     
     container.Test ("return failure when second test fails", fun () -> 
-        let framework = archer.Framework ()
+        let framework = bow.Framework ()
         let container = suite.Container ("A test Suite", "to hold tests")
 
         let failure1 = "Boom Again" |> GeneralFailure
@@ -141,7 +141,7 @@ let ``Test Cases`` = [
     )
     
     container.Test ("shuffle the order of the tests", fun () ->
-        let framework = archer.Framework ()
+        let framework = bow.Framework ()
         
         let container = suite.Container ("Framework Run", "shuffle the order of the tests")
         let results = System.Collections.Generic.List<string> ()
@@ -170,7 +170,7 @@ let ``Test Cases`` = [
     )
     
     container.Test ("shuffle the order of the tests different seed", fun () ->
-        let framework = archer.Framework ()
+        let framework = bow.Framework ()
         
         let container = suite.Container ("Framework Run", "shuffle the order of the tests")
         let results = System.Collections.Generic.List<string> ()

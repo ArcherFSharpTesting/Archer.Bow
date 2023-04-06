@@ -11,7 +11,7 @@ let private container = suite.Container ("", "FrameworkExecutionStarted Event sh
 
 let ``Test Cases`` = [
     container.Test ("be raised when framework is run", fun () ->
-        let framework = archer.Framework ()
+        let framework = bow.Framework ()
 
         let mutable result = "Not Run" |> GeneralFailure |> TestFailure
         framework.FrameworkStartExecution.AddHandler (fun fr _ ->

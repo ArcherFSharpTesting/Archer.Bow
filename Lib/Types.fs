@@ -152,5 +152,5 @@ type Framework () as this =
     [<CLIEvent>]
     member _.TestEndExecution = testEndExecution.Publish
         
-type Archer () =
+type Bow () =
     member _.Framework () = Framework ()
