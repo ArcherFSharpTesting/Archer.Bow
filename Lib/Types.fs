@@ -6,6 +6,12 @@ open Archer.CoreTypes
 open Archer.CoreTypes.InternalTypes
 open Archer.Bow.Executor
 
+type FrameWorkTestResultArgs (test: ITest, result: TestResult) =
+    inherit EventArgs ()
+    
+    member _.Test with get () = test
+    member _.Result with get () = result
+
 type FrameworkTestCancelArgs (cancel: bool, test: ITest) =
     inherit CancelEventArgs (cancel)
 
@@ -25,16 +31,20 @@ type FrameworkTestResultCancelArgs (cancel: bool, test: ITest, result: TestResul
     
 type FrameworkDelegate = delegate of obj * EventArgs -> unit
 type FrameworkCancelDelegate = delegate of obj * CancelEventArgs -> unit
+
+type FrameworkTestResultDelegate = delegate of obj * FrameWorkTestResultArgs -> unit
 type FrameworkTestCancelDelegate = delegate of obj * FrameworkTestCancelArgs -> unit
 type FrameworkTestResultCancelDelegate = delegate of obj * FrameworkTestResultCancelArgs -> unit
 
 type Framework () as this =
     let frameworkStart = Event<FrameworkCancelDelegate, CancelEventArgs> ()
+    let frameworkEnd = Event<FrameworkDelegate, EventArgs> ()
+
     let testExecutionStarted = Event<FrameworkTestCancelDelegate, FrameworkTestCancelArgs> () 
     let testStartSetup = Event<FrameworkTestCancelDelegate, FrameworkTestCancelArgs> ()
     let testEndSetup = Event<FrameworkTestResultCancelDelegate, FrameworkTestResultCancelArgs> ()
     let testStart = Event<FrameworkTestCancelDelegate, FrameworkTestCancelArgs> ()
-    let frameworkEnd = Event<FrameworkDelegate, EventArgs> ()
+    let testEnd = Event<FrameworkTestResultDelegate, FrameWorkTestResultArgs> ()
     
     let mutable tests = System.Collections.Generic.List<ITestExecutor>()
     
@@ -52,6 +62,13 @@ type Framework () as this =
             let args = FrameworkTestResultCancelArgs (cancelArgs.Cancel, test, cancelArgs.TestResult)
             event.Trigger (this, args)
         | _ -> ()
+        
+    let handleTestResultEvent (event: Event<'a, FrameWorkTestResultArgs>) (testObj: obj) (args: TestEventArgs) =
+        match testObj with
+        | :? ITest as test ->
+            let args = FrameWorkTestResultArgs (test, args.TestResult)
+            event.Trigger (this, args)
+        | _ -> ()
     
     let handleTestExecutionStarted = handleTestCancelEvent testExecutionStarted
         
@@ -60,6 +77,8 @@ type Framework () as this =
     let handleTestSetupEnded = handleTestResultCancelEvent testEndSetup
     
     let handleTestStart = handleTestCancelEvent testStart
+    
+    let handleTestEnd = handleTestResultEvent testEnd
         
     member this.Run () =
         this.Run(fun () -> Random().Next ())
@@ -82,6 +101,7 @@ type Framework () as this =
             executor.StartSetup.AddHandler handleTestSetupStarted
             executor.EndSetup.AddHandler handleTestSetupEnded
             executor.StartTest.AddHandler handleTestStart
+            executor.EndTest.AddHandler handleTestEnd
             executor
             
         let getExecutor (test: ITest) = test.GetExecutor ()
@@ -110,6 +130,9 @@ type Framework () as this =
     
     [<CLIEvent>]
     member _.TestStart = testStart.Publish
+    
+    [<CLIEvent>]
+    member _.TestEnd = testEnd.Publish
         
 type Archer () =
     member _.Framework () = Framework ()

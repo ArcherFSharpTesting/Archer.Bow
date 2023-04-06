@@ -32,6 +32,7 @@ let frameWorkTests =
         ``TestStartSetup Event``.``Test Cases``
         ``TestEndSetup Event``.``Test Cases``
         ``TestStart Event``.``Test Cases``
+        ``TestEnd Event``.``Test Cases``
     ]
     |> List.concat
     
@@ -68,7 +69,7 @@ printfn $"\nTests Passing: %d{results.Successes |> List.length}, Ignored: %d{ign
 
 failures
 |> List.iter (fun (result, test) ->
-    printfn $"%s{test.TestFullName}\n%A{result}\n\t%s{test.FilePath} %d{test.LineNumber}"
+    printfn $"%s{test.TestFullName}\n\t%A{result}\n\t\t%s{test.FilePath} %d{test.LineNumber}"
 )
 
 printfn ""

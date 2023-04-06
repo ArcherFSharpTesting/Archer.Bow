@@ -26,6 +26,7 @@
     <Compile Include="TestStartSetupShould.fs" />
     <Compile Include="TestEndSetupShould.fs" />
     <Compile Include="TestStartShould.fs" />
+    <Compile Include="TestEndShould.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 
