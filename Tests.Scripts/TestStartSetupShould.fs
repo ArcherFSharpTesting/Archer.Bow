@@ -3,7 +3,7 @@ module Archer.Tests.Scripts.``TestStartSetup Event``
 open System.ComponentModel
 open Archer.Bow
 open Archer.CoreTypes
-open Archer.Tests.Scripts.TestLang
+open Archer.MicroLang.Lang
 
 let private defaultSeed = 33
 let private getDefaultSeed () = defaultSeed

@@ -1,8 +1,8 @@
 module Archer.Tests.Scripts.``TestEndSetup Event``
 
 open Archer.CoreTypes
-open Archer.Tests.Scripts.TestLang
-open Archer.Tests.Scripts.TestLang.Types
+open Archer.MicroLang.Lang
+open Archer.MicroLang.Types
 
 let private container = suite.Container ("", "TestEndSetup Event should")
 

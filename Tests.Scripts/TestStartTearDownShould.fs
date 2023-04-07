@@ -1,6 +1,6 @@
 module Archer.Tests.Scripts.``TestStartTearDown Event``
 
-open Archer.Tests.Scripts.TestLang
+open Archer.MicroLang.Lang
 
 let private container = suite.Container ("", "TestEnd Event should")
 
