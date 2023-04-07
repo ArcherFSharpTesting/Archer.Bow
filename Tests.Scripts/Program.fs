@@ -45,7 +45,12 @@ let frameWorkTests =
 |> List.concat
 |> framework.AddTests
 
+let startTime = System.DateTime.Now
+printfn $"Started at %s{startTime.ToShortTimeString ()}"
 let results = framework.Run ()
+
+let endTime = System.DateTime.Now
+printfn $"Ended at %s{endTime.ToShortTimeString ()}"
 
 let ignored =
     results.Failures
@@ -81,6 +86,8 @@ ignored
     printfn $"%s{test.TestFullName}\n%A{result}\n\t%s{test.FilePath} %d{test.LineNumber}"
 )
 
-printfn "\n\n\n"
+printfn $"\n\nTotal Time: %A{endTime - startTime}"
+
+printfn "\n"
 
 exit failureCount

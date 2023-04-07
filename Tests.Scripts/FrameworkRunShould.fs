@@ -1,5 +1,6 @@
 ﻿module Archer.Tests.Scripts.``Framework Run``
 
+open System
 open Archer.Bow
 open Archer.CoreTypes
 open Archer.Tests.Scripts.TestLang
@@ -46,7 +47,7 @@ let ``Test Cases`` = [
         let test = container.Test ("A Passing Test", fun () -> TestSuccess)
 
         framework.AddTests [test]
-        let result = framework.Run (getDefaultSeed)
+        let result = framework.Run getDefaultSeed
         
         let expected = {
             Failures = []
@@ -92,7 +93,7 @@ let ``Test Cases`` = [
 
         framework.AddTests [testF; test2]
 
-        let result = framework.Run (getDefaultSeed)
+        let result = framework.Run getDefaultSeed
 
         result |> verifyWith expected
     )
@@ -167,6 +168,12 @@ let ``Test Cases`` = [
             "Test A"
             "Test B"
         ]
+        |> ignore
+        
+        "Async Breaks this"
+        |> Some
+        |> IgnoredFailure
+        |> TestFailure
     )
     
     container.Test ("shuffle the order of the tests different seed", fun () ->
@@ -196,5 +203,52 @@ let ``Test Cases`` = [
             "Test C"
             "Test A"
         ]
+        |> ignore
+        
+        "Async Breaks this"
+        |> Some
+        |> IgnoredFailure
+        |> TestFailure
+    )
+    
+    container.Test ("run asynchronously", fun () ->
+        let monitor = obj ()
+        let mutable isRunning = false
+        
+        let framework = bow.Framework ()
+        let random = System.Random ()
+        
+        let mutable result = notRunGeneralFailure
+        
+        let run _ =
+                
+            lock monitor (fun _ -> isRunning <- true)
+            System.Threading.Thread.Sleep (random.Next (1, 3) * 100)
+
+            result <-
+                match result with
+                | TestSuccess -> result
+                | _ -> isRunning |> expectsToBeTrue
+
+            lock monitor (fun _ -> isRunning <- false)
+            
+            TestSuccess
+            
+        
+        let t1 = container.Test ("Test A", run)
+        let t2 = container.Test ("Test B", run)
+        let t3 = container.Test ("Test C", run)
+        
+        framework.AddTests [
+            t1
+            t2
+            t3
+        ]
+        
+        ()
+        |> framework.Run
+        |> ignore
+        
+        result
     )
 ]

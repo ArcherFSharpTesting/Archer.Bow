@@ -11,8 +11,10 @@ type RunResults = {
 
 module Executor =
     let runTest (test: ITestExecutor) =
-        let result = test.Execute ()
-        result, test.Parent
+        async {
+            let result = test.Execute ()
+            return (result, test.Parent)
+        }
         
     let buildReport failures successes seed =
         {
@@ -40,7 +42,12 @@ module Executor =
     
     let runTests seed (tests: ITestExecutor seq) =
         let shuffled = shuffle seed tests
-        let results = shuffled |> List.map runTest
+        let results =
+            shuffled
+            |> List.map runTest
+            |> Async.Parallel
+            |> Async.RunSynchronously
+            |> List.ofArray
         let successes =
             results
             |> List.filter (fst >> (=) TestSuccess)
