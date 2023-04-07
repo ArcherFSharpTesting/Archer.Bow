@@ -216,7 +216,7 @@ let ``Test Cases`` = [
         let mutable isRunning = false
         
         let framework = bow.Framework ()
-        let random = System.Random ()
+        let random = Random ()
         
         let mutable result = notRunGeneralFailure
         
