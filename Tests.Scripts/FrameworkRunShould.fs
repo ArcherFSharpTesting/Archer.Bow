@@ -123,7 +123,7 @@ let ``Test Cases`` = [
         let container = suite.Container ("A test Suite", "to hold tests")
 
         let failure1 = "Boom Again" |> GeneralFailure
-        let failure2 = "No good match" |> VerificationFailure
+        let failure2 = notRunExpectation
         let testF = container.Test ("Second Test Fails", fun () -> failure2 |> TestFailure)
         let testF2 = container.Test ("First Test fails", fun () -> failure1 |> TestFailure)
 

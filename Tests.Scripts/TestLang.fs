@@ -28,7 +28,10 @@ let successfulTest () = TestSuccess
 let expectsToBe expected result =
     if expected = result then TestSuccess
     else
-        $"expected \"%A{result}\" to be \"%A{expected}\""
+        {
+            Expected = $"%A{expected}"
+            Actual = $"%A{result}"
+        }
         |> VerificationFailure
         |> TestFailure
         
@@ -46,7 +49,10 @@ let verifyWith = expectsToBe
 let expectsToBeTrue result =
     if result then TestSuccess
     else
-        "expected true and got false"
+        {
+            Expected = true.ToString ()
+            Actual = result.ToString ()
+        }
         |> VerificationFailure
         |> TestFailure
         
@@ -71,4 +77,8 @@ let buildTestFramework (testAction: (unit -> TestResult) option) (parts: TestPar
     framework.AddTests [test]
     framework, test
     
-let notRunError = "Not Run" |> GeneralFailure |> TestFailure
+let notRunGeneralFailure = "Not Run" |> GeneralFailure |> TestFailure
+
+let notRunExpectation = { Expected = "Not to have been run"; Actual = "Was run" } |> VerificationFailure
+
+let notRunValidationFailure = notRunExpectation |> TestFailure

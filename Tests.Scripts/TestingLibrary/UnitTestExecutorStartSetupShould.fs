@@ -10,7 +10,7 @@ let ``Test Cases`` = [
     container.Test ("be raised when test is executed", fun () ->
         let executor = buildDummyExecutor None None
         
-        let mutable result = notRunError
+        let mutable result = notRunGeneralFailure
         executor.StartSetup.AddHandler (fun tst _ ->
             result <- tst |> expectsToBe executor.Parent
         )
@@ -26,7 +26,7 @@ let ``Test Cases`` = [
         
         let setupPart =
             SetupPart (fun () ->
-                result <- "Should not be called" |> VerificationFailure |> TestFailure
+                result <- notRunValidationFailure
                 TestSuccess
             )
             |> Some
@@ -46,7 +46,7 @@ let ``Test Cases`` = [
         let mutable result = TestSuccess
         
         let testAction () =
-            result <- "Should not be called" |> VerificationFailure |> TestFailure
+            result <- notRunValidationFailure
             TestSuccess
             
         let executor = buildDummyExecutor (Some testAction) None
@@ -64,7 +64,8 @@ let ``Test Cases`` = [
         let mutable result = TestSuccess
         
         let testAction () =
-            result <- "Should not be called" |> VerificationFailure |> TestFailure
+            result <- notRunValidationFailure
+            
             "some setup failure"
             |> SetupFailure
             |> TestFailure

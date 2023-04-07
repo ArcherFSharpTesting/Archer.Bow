@@ -8,7 +8,7 @@ let ``Test Cases`` = [
     container.Test ("be raised when the test is executed", fun () ->
         let executor = buildDummyExecutor None None
         
-        let mutable result = notRunError
+        let mutable result = notRunGeneralFailure
         executor.StartTest.AddHandler (fun tst _ ->
             result <- tst |> expectsToBe executor.Parent
         )

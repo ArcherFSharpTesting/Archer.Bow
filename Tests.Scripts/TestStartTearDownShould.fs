@@ -8,7 +8,7 @@ let ``Test Cases`` = [
     container.Test ("be raised when the framework is run", fun () ->
         let framework, _test = buildTestFramework None None
         
-        let mutable result = notRunError
+        let mutable result = notRunGeneralFailure
         framework.TestStartTearDown.AddHandler (fun fr _args ->
             result <-
                 fr
@@ -25,7 +25,7 @@ let ``Test Cases`` = [
     container.Test ("be raised with the given test", fun () ->
         let framework, test = buildTestFramework None None
         
-        let mutable result = notRunError
+        let mutable result = notRunGeneralFailure
         framework.TestStartTearDown.AddHandler (fun _fr args ->
             result <-
                 args.Test

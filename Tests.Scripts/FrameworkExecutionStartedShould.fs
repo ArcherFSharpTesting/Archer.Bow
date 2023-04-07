@@ -18,9 +18,8 @@ let ``Test Cases`` = [
             let r = 
                 if fr = framework then TestSuccess
                 else
-                    $"expected\n%A{fr}\nto be\n%A{framework}"
-                    |> VerificationFailure
-                    |> TestFailure
+                    fr
+                    |> expectsToBe framework
                     
             result <- r
         )

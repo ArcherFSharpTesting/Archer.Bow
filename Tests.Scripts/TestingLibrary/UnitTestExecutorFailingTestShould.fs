@@ -16,7 +16,7 @@ let private dummyExecutor (testAction: (unit -> TestResult) option) (parts: Test
     
 let ``Test Cases`` = [
     container.Test ("Should return failure if the test action returns failure", fun () ->
-        let expectedResult = "Things don't add up" |> generateFailure VerificationFailure
+        let expectedResult = { Actual = "Things don't add up"; Expected = "nice and tidy" } |> generateFailure VerificationFailure
         let test = dummyExecutor (Some (fun () -> expectedResult)) None
         
         let result = test.Execute ()
@@ -60,9 +60,9 @@ let ``Test Cases`` = [
         let failure = "Setup Fail" |> generateFailure SetupFailure
         let test = dummyExecutor None (Some (SetupPart (fun () -> failure)))
         
-        let mutable result = notRunError
+        let mutable result = notRunGeneralFailure
         
-        let combineResult = combineResultIgnoring notRunError
+        let combineResult = combineResultIgnoring notRunGeneralFailure
         
         let testTheResult _ (args: obj) =
             let a =
@@ -92,7 +92,7 @@ let ``Test Cases`` = [
         let mutable result = TestSuccess
         
         let testAction () =
-            result <- "Test should not have run" |> VerificationFailure |> TestFailure
+            result <- notRunValidationFailure
             result
         
         let test = dummyExecutor (Some testAction) (Some (SetupPart (fun () -> failure)))

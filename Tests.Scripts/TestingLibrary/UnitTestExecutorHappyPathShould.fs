@@ -22,9 +22,9 @@ let ``Test Cases`` = [
         let executor = buildDummyExecutor None None
         
         let mutable cnt = 0
-        let mutable result = notRunError
+        let mutable result = notRunGeneralFailure
         
-        let combineResult = combineResultIgnoring notRunError
+        let combineResult = combineResultIgnoring notRunGeneralFailure
             
         executor.StartExecution.AddHandler (fun _ _ ->
             let r =

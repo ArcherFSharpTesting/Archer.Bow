@@ -37,7 +37,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Archer.CoreTypes.Lib" Version="0.0.4" />
+    <PackageReference Include="Archer.CoreTypes.Lib" Version="0.0.5" />
     <PackageReference Include="Archer.Extension" Version="1.0.0" />
   </ItemGroup>
 

@@ -9,7 +9,7 @@ let ``Test Cases`` = [
     container.Test ("be raised when the framework is run", fun () ->
         let framework, _test = buildTestFramework None None
         
-        let mutable result = notRunError
+        let mutable result = notRunGeneralFailure
         
         framework.TestStart.AddHandler (fun fr _args ->
             result <-
@@ -27,7 +27,7 @@ let ``Test Cases`` = [
     container.Test ("be raised with the given test when the framework is run", fun () ->
         let framework, test = buildTestFramework None None
         
-        let mutable result = notRunError
+        let mutable result = notRunGeneralFailure
         
         framework.TestStart.AddHandler (fun _ args ->
             result <-
@@ -43,11 +43,11 @@ let ``Test Cases`` = [
     )
     
     container.Test ("should not run the test action when canceled", fun () ->
-        let mutable result = notRunError
+        let mutable result = notRunGeneralFailure
         
         let testAction =
             (fun () ->
-                result <- "Should not be run" |> VerificationFailure |> TestFailure
+                result <- notRunValidationFailure
                 TestSuccess
             )
             |> Some
@@ -59,6 +59,6 @@ let ``Test Cases`` = [
         )
         
         result
-        |> expectsToBe notRunError
+        |> expectsToBe notRunGeneralFailure
     )
 ]

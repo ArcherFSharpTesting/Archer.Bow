@@ -20,9 +20,8 @@ let ``Test Cases`` = [
              let r =
                  if fr = framework then TestSuccess
                  else
-                     $"expected\n%A{fr}\nto be\n%A{framework}"
-                     |> VerificationFailure
-                     |> TestFailure
+                     fr
+                     |> expectsToBe framework
                  
              result <- args.Test
                        |> expectsToBe test
@@ -45,7 +44,7 @@ let ``Test Cases`` = [
         
         let mutable result = TestSuccess
         framework.TestStartExecution.AddHandler (fun _ _ ->
-            result <- "Event Raised when it was not supposed to be" |> VerificationFailure |> TestFailure
+            result <- notRunValidationFailure
         )
         
         framework.Run () |> ignore

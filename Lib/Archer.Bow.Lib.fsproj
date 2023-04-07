@@ -15,7 +15,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Archer.CoreTypes.Lib" Version="0.0.4" />
+    <PackageReference Include="Archer.CoreTypes.Lib" Version="0.0.5" />
   </ItemGroup>
 
 </Project>
