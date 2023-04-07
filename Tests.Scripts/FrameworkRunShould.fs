@@ -3,7 +3,7 @@
 open System
 open Archer.Bow
 open Archer.CoreTypes
-open Archer.MicroLang.Lang
+open Archer.MicroLang
 
 let private defaultSeed = 42
 let private getDefaultSeed () = defaultSeed

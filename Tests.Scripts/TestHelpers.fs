@@ -3,7 +3,7 @@ module Archer.Tests.Scripts.TestHelpers
 
 open Archer.CoreTypes
 open Archer.Bow
-open Archer.MicroLang.Lang
+open Archer.MicroLang
 open Archer.MicroLang.Types
 
 let buildTestFramework (testAction: (unit -> TestResult) option) (parts: TestPart option) =

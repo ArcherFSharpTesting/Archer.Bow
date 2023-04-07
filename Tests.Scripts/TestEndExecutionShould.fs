@@ -1,6 +1,6 @@
 module Archer.Tests.Scripts.``TestEndExecution Event``
 
-open Archer.MicroLang.Lang
+open Archer.MicroLang
 
 let private container = suite.Container ("", "TestEndExecution Event should")
 
