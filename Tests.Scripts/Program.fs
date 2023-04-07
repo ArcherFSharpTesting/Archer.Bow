@@ -87,6 +87,7 @@ ignored
 )
 
 printfn $"\n\nTotal Time: %A{endTime - startTime}"
+printfn $"\nSeed: %d{results.Seed}"
 
 printfn "\n"
 
