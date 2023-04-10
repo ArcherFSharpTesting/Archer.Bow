@@ -3,12 +3,7 @@ namespace Archer.Bow
 open System
 open Archer
 open Archer.CoreTypes.InternalTypes
-
-type RunResults = {
-    Failures: (TestingFailure * ITest) list
-    Successes: ITest list
-    Seed: int
-}
+open Archer.CoreTypes.InternalTypes.FrameworkTypes
 
 module Executor =
     let runTest version (test: ITestExecutor) =

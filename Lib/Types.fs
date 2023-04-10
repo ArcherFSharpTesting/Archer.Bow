@@ -2,45 +2,9 @@
 
 open System
 open System.ComponentModel
-open Archer
-open Archer.CoreTypes.InternalTypes
 open Archer.Bow.Executor
-
-type FrameWorkTestArgs (test: ITest) =
-    inherit EventArgs ()
-    
-    member _.Test with get () = test
-
-type FrameWorkTestResultArgs (test: ITest, result: TestResult) =
-    inherit EventArgs ()
-    
-    member _.Test with get () = test
-    member _.Result with get () = result
-
-type FrameworkTestCancelArgs (cancel: bool, test: ITest) =
-    inherit CancelEventArgs (cancel)
-
-    new (test) = FrameworkTestCancelArgs (false, test)
-    
-    member _.Test with get () = test
-    
-type FrameworkTestResultCancelArgs (cancel: bool, test: ITest, result: TestResult) =
-    inherit CancelEventArgs (cancel)
-    
-    new (test: ITest) = FrameworkTestResultCancelArgs (false, test, TestSuccess)
-    
-    new (test: ITest, result: TestResult) = FrameworkTestResultCancelArgs (false, test, result)
-    
-    member _.Test with get () = test
-    member _.TestResult with get () = result
-    
-type FrameworkDelegate = delegate of obj * EventArgs -> unit
-type FrameworkCancelDelegate = delegate of obj * CancelEventArgs -> unit
-
-type FrameworkTestDelegate = delegate of obj * FrameWorkTestArgs -> unit
-type FrameworkTestResultDelegate = delegate of obj * FrameWorkTestResultArgs -> unit
-type FrameworkTestCancelDelegate = delegate of obj * FrameworkTestCancelArgs -> unit
-type FrameworkTestResultCancelDelegate = delegate of obj * FrameworkTestResultCancelArgs -> unit
+open Archer.CoreTypes.InternalTypes
+open Archer.CoreTypes.InternalTypes.FrameworkTypes
 
 type Framework () as this =
     let frameworkStart = Event<FrameworkCancelDelegate, CancelEventArgs> ()
@@ -125,32 +89,39 @@ type Framework () as this =
         executors
         |> tests.AddRange
         
-    [<CLIEvent>]
-    member _.FrameworkStartExecution = frameworkStart.Publish
+    interface IFramework with
+        member this.AddTests newTests = this.AddTests newTests
+        
+        member this.Run () = this.Run ()
+        
+        member this.Run getSeed = this.Run getSeed
+
+        [<CLIEvent>]
+        member this.FrameworkEndExecution = frameworkEnd.Publish
+        
+        [<CLIEvent>]
+        member _.FrameworkStartExecution = frameworkStart.Publish
     
-    [<CLIEvent>]
-    member _.FrameworkEndExecution = frameworkEnd.Publish
+        [<CLIEvent>]
+        member _.TestEnd = testEnd.Publish
     
-    [<CLIEvent>]
-    member _.TestStartExecution = testExecutionStarted.Publish
-    
-    [<CLIEvent>]
-    member _.TestStartSetup = testStartSetup.Publish
-    
-    [<CLIEvent>]
-    member _.TestEndSetup = testEndSetup.Publish
-    
-    [<CLIEvent>]
-    member _.TestStart = testStart.Publish
-    
-    [<CLIEvent>]
-    member _.TestEnd = testEnd.Publish
-    
-    [<CLIEvent>]
-    member _.TestStartTearDown = testStartTearDown.Publish
-    
-    [<CLIEvent>]
-    member _.TestEndExecution = testEndExecution.Publish
+        [<CLIEvent>]
+        member _.TestEndExecution = testEndExecution.Publish
+        
+        [<CLIEvent>]
+        member _.TestEndSetup = testEndSetup.Publish
+        
+        [<CLIEvent>]
+        member _.TestStart = testStart.Publish
+        
+        [<CLIEvent>]
+        member _.TestStartExecution = testExecutionStarted.Publish
+        
+        [<CLIEvent>]
+        member _.TestStartSetup = testStartSetup.Publish
+        
+        [<CLIEvent>]
+        member _.TestStartTearDown = testStartTearDown.Publish
         
 type Bow () =
-    member _.Framework () = Framework ()
+    member _.Framework () = Framework () :> IFramework
