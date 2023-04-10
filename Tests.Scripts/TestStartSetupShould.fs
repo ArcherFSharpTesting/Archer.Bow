@@ -2,7 +2,7 @@ module Archer.Tests.Scripts.``TestStartSetup Event``
 
 open System.ComponentModel
 open Archer.Bow
-open Archer.CoreTypes
+open Archer
 open Archer.MicroLang
 
 let private defaultSeed = 33

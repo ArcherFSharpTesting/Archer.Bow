@@ -1,6 +1,6 @@
 module Archer.Tests.Scripts.``TestStart Event``
 
-open Archer.CoreTypes
+open Archer
 open Archer.MicroLang
 
 let private container = suite.Container ("", "TestStart Event should")

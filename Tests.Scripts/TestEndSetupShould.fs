@@ -1,6 +1,6 @@
 module Archer.Tests.Scripts.``TestEndSetup Event``
 
-open Archer.CoreTypes
+open Archer
 open Archer.MicroLang
 open Archer.MicroLang.Types
 

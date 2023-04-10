@@ -1,7 +1,7 @@
 module Archer.Tests.Scripts.``FrameworkExecutionEnded Event``
 
 open Archer.Bow
-open Archer.CoreTypes
+open Archer
 open Archer.MicroLang
 
 let private defaultSeed = 33

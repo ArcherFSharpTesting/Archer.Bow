@@ -1,7 +1,7 @@
 [<AutoOpen>]
 module Archer.Tests.Scripts.TestHelpers
 
-open Archer.CoreTypes
+open Archer
 open Archer.Bow
 open Archer.MicroLang
 open Archer.MicroLang.Types

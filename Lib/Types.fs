@@ -2,7 +2,7 @@
 
 open System
 open System.ComponentModel
-open Archer.CoreTypes
+open Archer
 open Archer.CoreTypes.InternalTypes
 open Archer.Bow.Executor
 

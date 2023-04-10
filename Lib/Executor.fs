@@ -1,10 +1,10 @@
 namespace Archer.Bow
 
-open Archer.CoreTypes
+open Archer
 open Archer.CoreTypes.InternalTypes
 
 type RunResults = {
-    Failures: (Failure * ITest) list
+    Failures: (TestingFailure * ITest) list
     Successes: ITest list
     Seed: int
 }
@@ -18,8 +18,8 @@ module Executor =
         
     let buildReport failures successes seed =
         {
-            Failures = failures |> List.sortBy (fun (_, test) -> test.TestFullName)
-            Successes = successes |> List.sortBy (fun test -> test.TestFullName)
+            Failures = failures |> List.sortBy (fun (_, test) -> test.ContainerPath, test.ContainerName, test.TestName)
+            Successes = successes |> List.sortBy (fun test -> test.ContainerPath, test.ContainerName, test.TestName)
             Seed = seed
         }
         
