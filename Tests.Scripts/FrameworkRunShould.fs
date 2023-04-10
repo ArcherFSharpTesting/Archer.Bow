@@ -21,6 +21,7 @@ let ``Test Cases`` = [
         let expected = {
             Failures = []
             Successes = []
+            Ignored = [] 
             Seed = seed
         }
                 
@@ -36,6 +37,7 @@ let ``Test Cases`` = [
         let expected = {
             Failures = []
             Successes = []
+            Ignored = [] 
             Seed = seed
         }
                 
@@ -44,7 +46,9 @@ let ``Test Cases`` = [
     
     container.Test ("return a successful result when one test passes", fun _ ->
         let framework = bow.Framework ()
-        let container = suite.Container ("A Test Suite", "with a passing test")
+        let containerPath = "A Test Suite"
+        let containerName = "with a passing test"
+        let container = suite.Container (containerPath, containerName)
         let test = container.Test ("A Passing Test", fun _ -> TestSuccess)
 
         
@@ -54,7 +58,12 @@ let ``Test Cases`` = [
         
         let expected = {
             Failures = []
-            Successes = [test]
+            Successes = [
+                SuccessContainer (containerPath, [
+                    SuccessContainer (containerName, [SucceededTests [test]])
+                ])
+            ]
+            Ignored = [] 
             Seed = defaultSeed
         }
 
@@ -63,14 +72,21 @@ let ``Test Cases`` = [
     
     container.Test ("return a successful result when two tests pass", fun _ ->
         let framework = bow.Framework ()
-        let container = suite.Container ("A test Suite", "with two passing tests")
+        let containerPath = "A test Suite"
+        let containerName = "with two passing tests"
+        let container = suite.Container (containerPath, containerName)
         
         let test1 = container.Test ("Fist Passing Test", fun _ -> TestSuccess)
         let test2 = container.Test ("Second Passing Test", fun _ -> TestSuccess)
 
         let expected = {
                 Failures = []
-                Successes = [test1; test2]
+                Successes = [
+                    SuccessContainer (containerPath, [
+                        SuccessContainer (containerName, [SucceededTests [test1; test2]])
+                    ])
+                ]
+                Ignored = [] 
                 Seed = defaultSeed
             }
 
@@ -84,15 +100,26 @@ let ``Test Cases`` = [
     
     container.Test ("return failure when a test fails", fun _ -> 
         let framework = bow.Framework ()
-        let container = suite.Container ("A test Suite", "to hold tests")
+        let containerPath = "A test Suite"
+        let containerName = "to hold tests"
+        let container = suite.Container (containerPath, containerName)
 
         let failure = "Boom" |> GeneralFailure
         let testF = container.Test ("First Test Fails", fun _ -> failure |> TestFailure)
         let test2 = container.Test ("Second Test Passes", fun _ -> TestSuccess)
 
         let expected = {
-                Failures = [failure, testF]
-                Successes = [test2]
+                Failures = [
+                    FailContainer (containerPath, [
+                        FailContainer (containerName, [FailedTests [failure, testF]])
+                    ])
+                ]
+                Successes = [
+                    SuccessContainer (containerPath, [
+                        SuccessContainer (containerName, [SucceededTests [test2]])
+                    ])
+                ]
+                Ignored = [] 
                 Seed = defaultSeed
             }
 
@@ -105,15 +132,26 @@ let ``Test Cases`` = [
     
     container.Test ("return failure when second test fails", fun _ -> 
         let framework = bow.Framework ()
-        let container = suite.Container ("A test Suite", "to hold tests")
+        let containerPath = "A test Suite"
+        let containerName = "to hold tests"
+        let container = suite.Container (containerPath, containerName)
 
         let failure = "Boom Again" |> GeneralFailure
         let test1 = container.Test ("First Test Passes", fun _ -> TestSuccess)
         let testF = container.Test ("Second Test Fails", fun _ -> failure |> TestFailure)
 
         let expected = {
-                Failures = [failure, testF]
-                Successes = [test1]
+                Failures = [
+                    FailContainer (containerPath, [
+                        FailContainer (containerName, [FailedTests [failure, testF]])
+                    ])
+                ]
+                Successes = [
+                    SuccessContainer (containerPath, [
+                        SuccessContainer (containerName, [SucceededTests [test1]])
+                    ])
+                ]
+                Ignored = [] 
                 Seed = defaultSeed
             }
 
@@ -126,7 +164,9 @@ let ``Test Cases`` = [
     
     container.Test ("return failure when second test fails", fun _ -> 
         let framework = bow.Framework ()
-        let container = suite.Container ("A test Suite", "to hold tests")
+        let containerPath = "A test Suite"
+        let containerName = "to hold tests"
+        let container = suite.Container (containerPath, containerName)
 
         let failure1 = "Boom Again" |> GeneralFailure
         let failure2 = notRunExpectation
@@ -134,8 +174,13 @@ let ``Test Cases`` = [
         let testF2 = container.Test ("First Test fails", fun _ -> failure1 |> TestFailure)
 
         let expected = {
-                Failures = [failure1, testF2; failure2, testF]
+                Failures = [
+                    FailContainer (containerPath, [
+                        FailContainer (containerName,  [FailedTests [failure1, testF2; failure2, testF]])
+                    ])
+                ]
                 Successes = []
+                Ignored = [] 
                 Seed = defaultSeed
             }
 
@@ -177,8 +222,7 @@ let ``Test Cases`` = [
         
         "Async Breaks this"
         |> Some
-        |> IgnoredFailure
-        |> TestFailure
+        |> Ignored
     )
     
     container.Test ("shuffle the order of the tests different seed", fun _ ->
@@ -212,8 +256,7 @@ let ``Test Cases`` = [
         
         "Async Breaks this"
         |> Some
-        |> IgnoredFailure
-        |> TestFailure
+        |> Ignored
     )
     
     container.Test ("run asynchronously", fun _ ->
@@ -306,7 +349,12 @@ let ``Test Cases`` = [
             
         let b =
             result.Successes
-            |> expectsToBe [test]
+            |> expectsToBe [
+                SuccessContainer (
+                    containerPath,
+                    [SuccessContainer (containerName, [SucceededTests [test]])]
+                )
+            ]
             
         a
         |> andResult b

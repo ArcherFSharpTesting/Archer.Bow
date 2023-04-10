@@ -85,7 +85,7 @@ type Framework (tests: ITestExecutor list) as this =
         frameworkStart.Trigger (this, startArgs)
 
         if startArgs.Cancel then
-            buildReport [] [] seed
+            buildReport [] [] [] seed
         else
             let shuffled = tests |> shuffle seed
             let result = runTests seed shuffled
