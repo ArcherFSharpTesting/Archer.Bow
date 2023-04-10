@@ -5,7 +5,7 @@ open Archer.MicroLang
 let private container = suite.Container ("", "TestEnd Event should")
 
 let ``Test Cases`` = [
-    container.Test ("be raised when the framework is run", fun () ->
+    container.Test ("be raised when the framework is run", fun _ ->
         let framework, _test = buildTestFramework None None
         
         let mutable result = notRunGeneralFailure
@@ -23,7 +23,7 @@ let ``Test Cases`` = [
         result
     )
     
-    container.Test ("raise event with given test", fun () ->
+    container.Test ("raise event with given test", fun _ ->
         let framework, test = buildTestFramework None None
         
         let mutable result = notRunGeneralFailure

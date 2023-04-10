@@ -11,7 +11,7 @@ let private getDefaultSeed () = defaultSeed
 let private container = suite.Container ("", "Framework Run Should")
 
 let ``Test Cases`` = [
-    container.Test ("return empty results when it has no tests", fun () ->
+    container.Test ("return empty results when it has no tests", fun _ ->
         let seed = 5
                 
         let framework = bow.Framework ()
@@ -26,7 +26,7 @@ let ``Test Cases`` = [
         result |> verifyWith expected
     )
     
-    container.Test ("return empty results when it has no tests", fun () ->
+    container.Test ("return empty results when it has no tests", fun _ ->
         let seed = 258
                 
         let framework = bow.Framework ()
@@ -41,10 +41,10 @@ let ``Test Cases`` = [
         result |> verifyWith expected
     )
     
-    container.Test ("return a successful result when one test passes", fun () ->
+    container.Test ("return a successful result when one test passes", fun _ ->
         let framework = bow.Framework ()
         let container = suite.Container ("A Test Suite", "with a passing test")
-        let test = container.Test ("A Passing Test", fun () -> TestSuccess)
+        let test = container.Test ("A Passing Test", fun _ -> TestSuccess)
 
         framework.AddTests [test]
         let result = framework.Run getDefaultSeed
@@ -58,12 +58,12 @@ let ``Test Cases`` = [
         result |> verifyWith expected
     )
     
-    container.Test ("return a successful result when two tests pass", fun () ->
+    container.Test ("return a successful result when two tests pass", fun _ ->
         let framework = bow.Framework ()
         let container = suite.Container ("A test Suite", "with two passing tests")
         
-        let test1 = container.Test ("Fist Passing Test", fun () -> TestSuccess)
-        let test2 = container.Test ("Second Passing Test", fun () -> TestSuccess)
+        let test1 = container.Test ("Fist Passing Test", fun _ -> TestSuccess)
+        let test2 = container.Test ("Second Passing Test", fun _ -> TestSuccess)
 
         let expected = {
                 Failures = []
@@ -77,13 +77,13 @@ let ``Test Cases`` = [
         result |> verifyWith expected
     )
     
-    container.Test ("return failure when a test fails", fun () -> 
+    container.Test ("return failure when a test fails", fun _ -> 
         let framework = bow.Framework ()
         let container = suite.Container ("A test Suite", "to hold tests")
 
         let failure = "Boom" |> GeneralFailure
-        let testF = container.Test ("First Test Fails", fun () -> failure |> TestFailure)
-        let test2 = container.Test ("Second Test Passes", fun () -> TestSuccess)
+        let testF = container.Test ("First Test Fails", fun _ -> failure |> TestFailure)
+        let test2 = container.Test ("Second Test Passes", fun _ -> TestSuccess)
 
         let expected = {
                 Failures = [failure, testF]
@@ -98,13 +98,13 @@ let ``Test Cases`` = [
         result |> verifyWith expected
     )
     
-    container.Test ("return failure when second test fails", fun () -> 
+    container.Test ("return failure when second test fails", fun _ -> 
         let framework = bow.Framework ()
         let container = suite.Container ("A test Suite", "to hold tests")
 
         let failure = "Boom Again" |> GeneralFailure
-        let test1 = container.Test ("First Test Passes", fun () -> TestSuccess)
-        let testF = container.Test ("Second Test Fails", fun () -> failure |> TestFailure)
+        let test1 = container.Test ("First Test Passes", fun _ -> TestSuccess)
+        let testF = container.Test ("Second Test Fails", fun _ -> failure |> TestFailure)
 
         let expected = {
                 Failures = [failure, testF]
@@ -119,14 +119,14 @@ let ``Test Cases`` = [
         result |> verifyWith expected
     )
     
-    container.Test ("return failure when second test fails", fun () -> 
+    container.Test ("return failure when second test fails", fun _ -> 
         let framework = bow.Framework ()
         let container = suite.Container ("A test Suite", "to hold tests")
 
         let failure1 = "Boom Again" |> GeneralFailure
         let failure2 = notRunExpectation
-        let testF = container.Test ("Second Test Fails", fun () -> failure2 |> TestFailure)
-        let testF2 = container.Test ("First Test fails", fun () -> failure1 |> TestFailure)
+        let testF = container.Test ("Second Test Fails", fun _ -> failure2 |> TestFailure)
+        let testF2 = container.Test ("First Test fails", fun _ -> failure1 |> TestFailure)
 
         let expected = {
                 Failures = [failure1, testF2; failure2, testF]
@@ -141,7 +141,7 @@ let ``Test Cases`` = [
         result |> verifyWith expected
     )
     
-    container.Test ("shuffle the order of the tests", fun () ->
+    container.Test ("shuffle the order of the tests", fun _ ->
         let framework = bow.Framework ()
         
         let container = suite.Container ("Framework Run", "shuffle the order of the tests")
@@ -176,7 +176,7 @@ let ``Test Cases`` = [
         |> TestFailure
     )
     
-    container.Test ("shuffle the order of the tests different seed", fun () ->
+    container.Test ("shuffle the order of the tests different seed", fun _ ->
         let framework = bow.Framework ()
         
         let container = suite.Container ("Framework Run", "shuffle the order of the tests")
@@ -211,7 +211,7 @@ let ``Test Cases`` = [
         |> TestFailure
     )
     
-    container.Test ("run asynchronously", fun () ->
+    container.Test ("run asynchronously", fun _ ->
         let monitor = obj ()
         let mutable isRunning = false
         
@@ -250,5 +250,60 @@ let ``Test Cases`` = [
         |> ignore
         
         result
+    )
+    
+    container.Test("run a test with the correct framework name", fun env ->
+        env.FrameworkName
+        |> expectsToBe "Archer.Bow"
+    )
+    
+    container.Test("run a test with the correct framework version", fun env ->
+        let typeBow = bow.GetType ()
+        let version = typeBow.Assembly.GetName().Version
+        
+        env.FrameworkVersion
+        |> expectsToBe version
+    )
+    
+    container.Test("run a test with the correct test info", fun env ->
+        let containerPath = "The Path"
+        let containerName = "My new container"
+        let testName = "Testing the test info"
+        let c = suite.Container (containerPath, containerName)
+        let test = c.Test (testName, fun e ->
+            let info = e.TestInfo
+            
+            let pathResult =
+                info.ContainerPath
+                |> expectsToBe containerPath
+                
+            let containerNameResult =
+                info.ContainerName
+                |> expectsToBe containerName
+                
+            let testNameResult =
+                info.TestName
+                |> expectsToBe testName
+                
+            pathResult
+            |> andResult containerNameResult
+            |> andResult testNameResult
+        )
+        
+        let framework = bow.Framework ()
+        framework.AddTests [test]
+        
+        let result = framework.Run ()
+        
+        let a = 
+            result.Failures
+            |> expectsToBeWithMessage [] "Failures"
+            
+        let b =
+            result.Successes
+            |> expectsToBe [test]
+            
+        a
+        |> andResult b
     )
 ]

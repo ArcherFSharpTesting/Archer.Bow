@@ -6,7 +6,7 @@ open Archer.Bow
 open Archer.MicroLang
 open Archer.MicroLang.Types
 
-let buildTestFramework (testAction: (unit -> TestResult) option) (parts: TestPart option) =
+let buildTestFramework (testAction: (FrameworkEnvironment -> TestResult) option) (parts: TestPart option) =
     let framework = bow.Framework ()
     let test = buildDummyTest testAction parts
 

@@ -1,5 +1,6 @@
 namespace Archer.Bow
 
+open System
 open Archer
 open Archer.CoreTypes.InternalTypes
 
@@ -10,9 +11,15 @@ type RunResults = {
 }
 
 module Executor =
-    let runTest (test: ITestExecutor) =
+    let runTest version (test: ITestExecutor) =
+        let info = {
+            FrameworkName = "Archer.Bow"
+            FrameworkVersion = version
+            TestInfo = test.Parent :> ITestInfo 
+        }
+        
         async {
-            let result = test.Execute ()
+            let result = test.Execute info
             return (result, test.Parent)
         }
         
@@ -41,10 +48,13 @@ module Executor =
         shuffle []
     
     let runTests seed (tests: ITestExecutor seq) =
+        let assembly = System.Reflection.Assembly.GetExecutingAssembly ()
+        let version = assembly.GetName().Version
+        
         let shuffled = shuffle seed tests
         let results =
             shuffled
-            |> List.map runTest
+            |> List.map (runTest version)
             |> Async.Parallel
             |> Async.RunSynchronously
             |> List.ofArray

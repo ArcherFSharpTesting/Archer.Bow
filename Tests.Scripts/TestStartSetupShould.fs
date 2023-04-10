@@ -11,7 +11,7 @@ let private getDefaultSeed () = defaultSeed
 let private container = suite.Container ("", "TestStartSetup Event should")
 
 let ``Test Cases`` = [
-    container.Test ("be raised from the given test when the framework is run", fun () ->
+    container.Test ("be raised from the given test when the framework is run", fun _ ->
         let framework, test = buildTestFramework None None
 
         let mutable result = "Not Called" |> GeneralFailure |> TestFailure
@@ -35,7 +35,7 @@ let ``Test Cases`` = [
         result
     )
     
-    container.Test ("not be raised if FrameworkExecutionStarted was canceled", fun () ->
+    container.Test ("not be raised if FrameworkExecutionStarted was canceled", fun _ ->
         let framework, _ = buildTestFramework None None
          
         framework.FrameworkStartExecution.AddHandler (fun _ (args: CancelEventArgs) ->

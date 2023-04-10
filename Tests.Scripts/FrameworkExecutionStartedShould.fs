@@ -10,7 +10,7 @@ let private getDefaultSeed () = defaultSeed
 let private container = suite.Container ("", "FrameworkExecutionStarted Event should")
 
 let ``Test Cases`` = [
-    container.Test ("be raised when framework is run", fun () ->
+    container.Test ("be raised when framework is run", fun _ ->
         let framework = bow.Framework ()
 
         let mutable result = "Not Run" |> GeneralFailure |> TestFailure

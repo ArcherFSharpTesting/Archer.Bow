@@ -4,8 +4,10 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <RootNamespace>Archer.Bow</RootNamespace>
-    <Version>0.0.4</Version>
+    <Version>0.0.5</Version>
     <Title>Archer.Bow</Title>
+    <AssemblyVersion>0.0.5</AssemblyVersion>
+    <FileVersion>0.0.5</FileVersion>
   </PropertyGroup>
 
   <ItemGroup>
@@ -15,7 +17,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Archer.CoreTypes.Lib" Version="0.0.9" />
+    <PackageReference Include="Archer.CoreTypes.Lib" Version="0.0.11" />
   </ItemGroup>
 
 </Project>

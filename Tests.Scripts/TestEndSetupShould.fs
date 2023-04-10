@@ -7,7 +7,7 @@ open Archer.MicroLang.Types
 let private container = suite.Container ("", "TestEndSetup Event should")
 
 let ``Test Cases`` = [
-    container.Test ("be raised from the given test when the framework is run", fun () ->
+    container.Test ("be raised from the given test when the framework is run", fun _ ->
         let framework, test = buildTestFramework None None
 
         let mutable result = notRunGeneralFailure
@@ -32,7 +32,7 @@ let ``Test Cases`` = [
         result
     )
     
-    container.Test ("should not be raised if FrameworkExecutionStart canceled", fun () ->
+    container.Test ("should not be raised if FrameworkExecutionStart canceled", fun _ ->
         let framework, _test = buildTestFramework None None
         
         let mutable result = TestSuccess
@@ -52,7 +52,7 @@ let ``Test Cases`` = [
         result
     )
     
-    container.Test ("should carry the result of the EndSetup event", fun () ->
+    container.Test ("should carry the result of the EndSetup event", fun _ ->
         let expectedResult = "Should blow up" |> SetupFailure |> TestFailure
         let setup =
             (fun () -> expectedResult)
