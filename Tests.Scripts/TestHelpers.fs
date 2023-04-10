@@ -10,5 +10,4 @@ let buildTestFramework (testAction: (FrameworkEnvironment -> TestResult) option)
     let framework = bow.Framework ()
     let test = buildDummyTest testAction parts
 
-    framework.AddTests [test]
-    framework, test
+    (framework.AddTests [test]), test

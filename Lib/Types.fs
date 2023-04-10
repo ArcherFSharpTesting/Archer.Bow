@@ -6,7 +6,7 @@ open Archer.Bow.Executor
 open Archer.CoreTypes.InternalTypes
 open Archer.CoreTypes.InternalTypes.FrameworkTypes
 
-type Framework () as this =
+type Framework (tests: ITestExecutor list) as this =
     let frameworkStart = Event<FrameworkCancelDelegate, CancelEventArgs> ()
     let frameworkEnd = Event<FrameworkDelegate, EventArgs> ()
 
@@ -17,8 +17,6 @@ type Framework () as this =
     let testEnd = Event<FrameworkTestResultDelegate, FrameWorkTestResultArgs> ()
     let testStartTearDown = Event<FrameworkTestDelegate, FrameWorkTestArgs> ()
     let testEndExecution = Event<FrameworkTestResultDelegate, FrameWorkTestResultArgs> ()
-    
-    let mutable tests = System.Collections.Generic.List<ITestExecutor>()
     
     let createTestEventHandler (createArgs: ITest -> 'b -> 'c) (event: Event<'a, 'c>) (testObj: obj) (testArgs: 'b) =
         match testObj with
@@ -53,6 +51,31 @@ type Framework () as this =
     
     let handleTestEndExecution = createTestResultEventHandler testEndExecution
     
+    do
+        let hookEvents (executor: ITestExecutor) =
+            executor.StartExecution.AddHandler handleTestExecutionStarted
+            executor.StartSetup.AddHandler handleTestSetupStarted
+            executor.EndSetup.AddHandler handleTestSetupEnded
+            executor.StartTest.AddHandler handleTestStart
+            executor.EndTest.AddHandler handleTestEnd
+            executor.StartTearDown.AddHandler handleTestStartTearDown
+            executor.EndExecution.AddHandler handleTestEndExecution
+            ()
+            
+        tests
+        |> List.iter hookEvents
+    
+    new () =
+        let tests: ITestExecutor list = []
+        Framework tests
+        
+    new (tests: ITest List) =
+        let executors =
+            tests
+            |> List.map (fun tst -> tst.GetExecutor ())
+            
+        Framework executors
+    
     member this.Run () =
         this.Run(fun () -> Random().Next ())
         
@@ -70,24 +93,12 @@ type Framework () as this =
             result
     
     member this.AddTests (newTests: ITest seq) =
-        let hookEvents (executor: ITestExecutor) =
-            executor.StartExecution.AddHandler handleTestExecutionStarted
-            executor.StartSetup.AddHandler handleTestSetupStarted
-            executor.EndSetup.AddHandler handleTestSetupEnded
-            executor.StartTest.AddHandler handleTestStart
-            executor.EndTest.AddHandler handleTestEnd
-            executor.StartTearDown.AddHandler handleTestStartTearDown
-            executor.EndExecution.AddHandler handleTestEndExecution
-            executor
-            
-        let getExecutor (test: ITest) = test.GetExecutor ()
-            
-        let executors =
+        let tsts =
             newTests
-            |> Seq.map (getExecutor >> hookEvents)
+            |> List.ofSeq
             
-        executors
-        |> tests.AddRange
+        Framework tsts
+        
         
     interface IFramework with
         member this.AddTests newTests = this.AddTests newTests

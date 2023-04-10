@@ -47,8 +47,10 @@ let ``Test Cases`` = [
         let container = suite.Container ("A Test Suite", "with a passing test")
         let test = container.Test ("A Passing Test", fun _ -> TestSuccess)
 
-        framework.AddTests [test]
-        let result = framework.Run getDefaultSeed
+        
+        let result =
+            framework.AddTests [test]
+            |> runWithSeed getDefaultSeed
         
         let expected = {
             Failures = []
@@ -72,8 +74,10 @@ let ``Test Cases`` = [
                 Seed = defaultSeed
             }
 
-        framework.AddTests [test1; test2]
-        let result = framework.Run getDefaultSeed
+        
+        let result =
+            framework.AddTests [test1; test2]
+            |> runWithSeed getDefaultSeed
 
         result |> verifyWith expected
     )
@@ -92,9 +96,9 @@ let ``Test Cases`` = [
                 Seed = defaultSeed
             }
 
-        framework.AddTests [testF; test2]
-
-        let result = framework.Run getDefaultSeed
+        let result =
+            framework.AddTests [testF; test2]
+            |> runWithSeed getDefaultSeed
 
         result |> verifyWith expected
     )
@@ -113,9 +117,9 @@ let ``Test Cases`` = [
                 Seed = defaultSeed
             }
 
-        framework.AddTests [test1; testF]
-
-        let result = framework.Run getDefaultSeed
+        let result =
+            framework.AddTests [test1; testF]
+            |> runWithSeed getDefaultSeed
 
         result |> verifyWith expected
     )
@@ -135,9 +139,9 @@ let ``Test Cases`` = [
                 Seed = defaultSeed
             }
 
-        framework.AddTests [testF2; testF]
-
-        let result = framework.Run getDefaultSeed
+        let result =
+            framework.AddTests [testF2; testF]
+            |> runWithSeed getDefaultSeed
 
         result |> verifyWith expected
     )
@@ -148,7 +152,7 @@ let ``Test Cases`` = [
         let container = suite.Container ("Framework Run", "shuffle the order of the tests")
         let results = System.Collections.Generic.List<string> ()
         
-        framework.AddTests [
+        let framework = framework.AddTests [
             container.Test ("Test A", successfulTest)
             container.Test ("Test B", successfulTest)
             container.Test ("Test C", successfulTest)
@@ -183,7 +187,7 @@ let ``Test Cases`` = [
         let container = suite.Container ("Framework Run", "shuffle the order of the tests")
         let results = System.Collections.Generic.List<string> ()
         
-        framework.AddTests [
+        let framework = framework.AddTests [
             container.Test ("Test A", successfulTest)
             container.Test ("Test B", successfulTest)
             container.Test ("Test C", successfulTest)
@@ -245,9 +249,7 @@ let ``Test Cases`` = [
             t2
             t3
         ]
-        
-        ()
-        |> framework.Run
+        |> run
         |> ignore
         
         result
@@ -292,9 +294,11 @@ let ``Test Cases`` = [
         )
         
         let framework = bow.Framework ()
-        framework.AddTests [test]
         
-        let result = framework.Run ()
+        
+        let result =
+            framework.AddTests [test]
+            |> run
         
         let a = 
             result.Failures

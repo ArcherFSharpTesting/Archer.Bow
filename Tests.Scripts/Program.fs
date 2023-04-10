@@ -5,23 +5,18 @@ open Archer.Bow
 open Archer.MicroLang.Lang
 let framework = bow.Framework ()
 
-let frameWorkTests =
-    [
-        ``Framework Run``.``Test Cases``
-        ``FrameworkExecutionStarted Event``.``Test Cases``
-        ``FrameworkExecutionEnded Event``.``Test Cases``
-        ``TestExecutionStarted Event``.``Test Cases``
-        ``TestStartSetup Event``.``Test Cases``
-        ``TestEndSetup Event``.``Test Cases``
-        ``TestStart Event``.``Test Cases``
-        ``TestEnd Event``.``Test Cases``
-        ``TestStartTearDown Event``.``Test Cases``
-        ``TestEndExecution Event``.``Test Cases``
-    ]
-    |> List.concat
-    
-frameWorkTests
+[
+    ``Framework Run``.``Test Cases``
+    ``FrameworkExecutionStarted Event``.``Test Cases``
+    ``FrameworkExecutionEnded Event``.``Test Cases``
+    ``TestExecutionStarted Event``.``Test Cases``
+    ``TestStartSetup Event``.``Test Cases``
+    ``TestEndSetup Event``.``Test Cases``
+    ``TestStart Event``.``Test Cases``
+    ``TestEnd Event``.``Test Cases``
+    ``TestStartTearDown Event``.``Test Cases``
+    ``TestEndExecution Event``.``Test Cases``
+]
+|> List.concat
 |> framework.AddTests
-
-framework
 |> runAndReport
