@@ -53,7 +53,7 @@
         },
         {
             "name": "up-version",
-            "command": "\"DotVersion.exe\" --patch"
+            "command": "\"DotVersion.exe\" --subpatch ./lib/"
         }
     ],
     "collaborators": []
