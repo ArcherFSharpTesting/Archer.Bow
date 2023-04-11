@@ -53,7 +53,7 @@
         },
         {
             "name": "up-version",
-            "command": "\"DotVersion.exe\" --subpatch ./lib/"
+            "command": "gittey commit && \"DotVersion.exe\" --subpatch ./lib/"
         }
     ],
     "collaborators": []
