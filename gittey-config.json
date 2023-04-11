@@ -45,11 +45,15 @@
         },
         {
             "name": "pack",
-            "command": "gittey push && dotnet pack"
+            "command": "DotVersion.exe --patch && gittey push && dotnet pack"
         },
         {
             "name": "pack-unsafe",
-            "command": "dotnet pack ./lib/"
+            "command": "DotVersion.exe --patch && dotnet pack ./lib/"
+        },
+        {
+            "name": "up-version",
+            "command": "\"DotVersion.exe\" --patch"
         }
     ],
     "collaborators": []
