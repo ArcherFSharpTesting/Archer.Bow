@@ -192,33 +192,33 @@ let ``Test Cases`` = [
     )
     
     container.Test ("shuffle the order of the tests", fun _ ->
-        let framework = bow.Framework ()
-        
-        let container = suite.Container ("Framework Run", "shuffle the order of the tests")
-        let results = System.Collections.Generic.List<string> ()
-        
-        let framework = framework.AddTests [
-            container.Test ("Test A", successfulTest)
-            container.Test ("Test B", successfulTest)
-            container.Test ("Test C", successfulTest)
-        ]
-        
-        framework.TestStart.Add (fun ars ->
-            results.Add ars.Test.TestName
-        )
-        
-        (fun () -> 1073633209)
-        |> framework.Run
-        |> ignore
-        
-        results
-        |> List.ofSeq
-        |> expectsToBe [
-            "Test C"
-            "Test A"
-            "Test B"
-        ]
-        |> ignore
+        // let framework = bow.Framework ()
+        //
+        // let container = suite.Container ("Framework Run", "shuffle the order of the tests")
+        // let results = System.Collections.Generic.List<string> ()
+        //
+        // let framework = framework.AddTests [
+        //     container.Test ("Test A", successfulTest)
+        //     container.Test ("Test B", successfulTest)
+        //     container.Test ("Test C", successfulTest)
+        // ]
+        //
+        // framework.TestStart.Add (fun ars ->
+        //     results.Add ars.Test.TestName
+        // )
+        //
+        // (fun () -> 1073633209)
+        // |> framework.Run
+        // |> ignore
+        //
+        // results
+        // |> List.ofSeq
+        // |> expectsToBe [
+        //     "Test C"
+        //     "Test A"
+        //     "Test B"
+        // ]
+        // |> ignore
         
         "Async Breaks this"
         |> Some
@@ -226,33 +226,33 @@ let ``Test Cases`` = [
     )
     
     container.Test ("shuffle the order of the tests different seed", fun _ ->
-        let framework = bow.Framework ()
-        
-        let container = suite.Container ("Framework Run", "shuffle the order of the tests")
-        let results = System.Collections.Generic.List<string> ()
-        
-        let framework = framework.AddTests [
-            container.Test ("Test A", successfulTest)
-            container.Test ("Test B", successfulTest)
-            container.Test ("Test C", successfulTest)
-        ]
-        
-        framework.TestStart.Add (fun ars ->
-            results.Add ars.Test.TestName
-        )
-        
-        (fun () -> 4006)
-        |> framework.Run
-        |> ignore
-        
-        results
-        |> List.ofSeq
-        |> expectsToBe [
-            "Test B"
-            "Test C"
-            "Test A"
-        ]
-        |> ignore
+        // let framework = bow.Framework ()
+        //
+        // let container = suite.Container ("Framework Run", "shuffle the order of the tests")
+        // let results = System.Collections.Generic.List<string> ()
+        //
+        // let framework = framework.AddTests [
+        //     container.Test ("Test A", successfulTest)
+        //     container.Test ("Test B", successfulTest)
+        //     container.Test ("Test C", successfulTest)
+        // ]
+        //
+        // framework.TestStart.Add (fun ars ->
+        //     results.Add ars.Test.TestName
+        // )
+        //
+        // (fun () -> 4006)
+        // |> framework.Run
+        // |> ignore
+        //
+        // results
+        // |> List.ofSeq
+        // |> expectsToBe [
+        //     "Test B"
+        //     "Test C"
+        //     "Test A"
+        // ]
+        // |> ignore
         
         "Async Breaks this"
         |> Some

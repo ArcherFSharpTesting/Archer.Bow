@@ -6,6 +6,7 @@ open Archer.CoreTypes.InternalTypes
 open Archer.CoreTypes.InternalTypes.FrameworkTypes
 
 module Executor =
+    let globalRandom = Random ()
     let runTest version (test: ITestExecutor) =
         let info = {
             FrameworkName = "Archer.Bow"
@@ -18,7 +19,7 @@ module Executor =
             return (result, test.Parent)
         }
         
-    let buildReport (failures: (TestingFailure * ITest) list) (ignored: ((string option) * ITest) list) (successes: ITest list) seed =
+    let buildReport (failures: (TestingFailure * ITest) list, ignored: ((string option) * ITest) list, successes: ITest list, seed) =
         let failures =
             failures
             |> List.groupBy (fun (_, test) -> test.ContainerPath)
@@ -102,9 +103,14 @@ module Executor =
             |> Async.Parallel
             |> Async.RunSynchronously
             |> List.ofArray
+            
         let successes =
             results
-            |> List.filter (fst >> (=) TestSuccess)
+            |> List.filter (fun (result, _) ->
+                match result with
+                | TestSuccess -> true
+                | _ -> false
+            )
             |> List.map snd
 
         let failures =
@@ -126,4 +132,4 @@ module Executor =
             )
             |> List.map (fun (Ignored s, test) -> s, test)
 
-        buildReport failures ignored successes seed
+        (failures, ignored, successes, seed)

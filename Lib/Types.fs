@@ -77,7 +77,7 @@ type Framework (tests: ITestExecutor list) as this =
         Framework executors
     
     member this.Run () =
-        this.Run(fun () -> Random().Next ())
+        this.Run(fun () -> globalRandom.Next ())
         
     member this.Run (getSeed: unit -> int) =
         let seed = getSeed ()
@@ -85,12 +85,16 @@ type Framework (tests: ITestExecutor list) as this =
         frameworkStart.Trigger (this, startArgs)
 
         if startArgs.Cancel then
-            buildReport [] [] [] seed
+            buildReport ([], [], [], seed)
         else
             let shuffled = tests |> shuffle seed
-            let result = runTests seed shuffled
+            let results =
+                runTests seed shuffled
+            let report =
+                results
+                |> buildReport
             frameworkEnd.Trigger (this, EventArgs.Empty)
-            result
+            report
     
     member this.AddTests (newTests: ITest seq) =
         let tsts =
