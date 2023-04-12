@@ -7,59 +7,38 @@ open Archer.CoreTypes.InternalTypes
 open Archer.CoreTypes.InternalTypes.FrameworkTypes
 
 type Framework (tests: ITestExecutor list) as this =
-    let frameworkStart = Event<FrameworkCancelDelegate, CancelEventArgs> ()
-    let frameworkEnd = Event<FrameworkDelegate, EventArgs> ()
-
-    let testExecutionStarted = Event<FrameworkTestCancelDelegate, FrameworkTestCancelArgs> () 
-    let testStartSetup = Event<FrameworkTestCancelDelegate, FrameworkTestCancelArgs> ()
-    let testEndSetup = Event<FrameworkTestResultCancelDelegate, FrameworkTestResultCancelArgs> ()
-    let testStart = Event<FrameworkTestCancelDelegate, FrameworkTestCancelArgs> ()
-    let testEnd = Event<FrameworkTestResultDelegate, FrameWorkTestResultArgs> ()
-    let testStartTearDown = Event<FrameworkTestDelegate, FrameWorkTestArgs> ()
-    let testEndExecution = Event<FrameworkTestResultDelegate, FrameWorkTestResultArgs> ()
-    
-    let createTestEventHandler (createArgs: ITest -> 'b -> 'c) (event: Event<'a, 'c>) (testObj: obj) (testArgs: 'b) =
-        match testObj with
-        | :? ITest as test ->
-            let args = createArgs test testArgs
-            event.Trigger (this, args)
+    let lockObj = obj()
+    let mutable cancel = false
+    let setCancel value =
+        lock lockObj (fun () -> cancel <- value)
+        cancel
+        
+    let readCancel () =
+        lock lockObj (fun () -> cancel)
+        
+    let frameworkLifecycleEvent = Event<FrameworkExecutionDelegate, FrameworkEventLifecycle> ()
+    let handleTestEvents (test: obj) (event: TestEventLifecycle) =
+        match test with
+        | :? ITest as tst ->
+            match event with
+            | TestExecutionStarted cancelEventArgs
+            | TestSetupStarted cancelEventArgs
+            | TestEndSetup (_, cancelEventArgs)
+            | TestStart cancelEventArgs as eventType ->
+                cancelEventArgs.Cancel <- cancelEventArgs.Cancel || readCancel ()
+                frameworkLifecycleEvent.Trigger (this, FrameworkTestLifeCycle (tst, eventType, cancelEventArgs))
+                setCancel cancelEventArgs.Cancel |> ignore
+            | TestEnd _
+            | TestStartTearDown
+            | TestEndExecution _ as eventType ->
+                let cancelEventArgs = readCancel () |> CancelEventArgs
+                frameworkLifecycleEvent.Trigger (this, FrameworkTestLifeCycle (tst, eventType, cancelEventArgs))
+                
         | _ -> ()
-    
-    let createTestCancelEventHandler =
-        createTestEventHandler (fun test (cancelArgs: CancelEventArgs) -> FrameworkTestCancelArgs (cancelArgs.Cancel, test))
         
-    let createTestResultCancelEventHandler =
-        createTestEventHandler (fun test (cancelArgs: TestCancelEventArgsWithResults) -> FrameworkTestResultCancelArgs (cancelArgs.Cancel, test, cancelArgs.TestResult))
-        
-    let createTestResultEventHandler =
-        createTestEventHandler (fun test (args: TestEventArgs) -> FrameWorkTestResultArgs (test, args.TestResult))
-        
-    let createTestEventHandler =
-        createTestEventHandler (fun test (_args: EventArgs) -> FrameWorkTestArgs test)
-    
-    let handleTestExecutionStarted = createTestCancelEventHandler testExecutionStarted
-        
-    let handleTestSetupStarted = createTestCancelEventHandler testStartSetup
-    
-    let handleTestSetupEnded = createTestResultCancelEventHandler testEndSetup
-    
-    let handleTestStart = createTestCancelEventHandler testStart
-    
-    let handleTestEnd = createTestResultEventHandler testEnd
-    
-    let handleTestStartTearDown = createTestEventHandler testStartTearDown
-    
-    let handleTestEndExecution = createTestResultEventHandler testEndExecution
-    
     do
         let hookEvents (executor: ITestExecutor) =
-            executor.StartExecution.AddHandler handleTestExecutionStarted
-            executor.StartSetup.AddHandler handleTestSetupStarted
-            executor.EndSetup.AddHandler handleTestSetupEnded
-            executor.StartTest.AddHandler handleTestStart
-            executor.EndTest.AddHandler handleTestEnd
-            executor.StartTearDown.AddHandler handleTestStartTearDown
-            executor.EndExecution.AddHandler handleTestEndExecution
+            executor.TestLifecycleEvent.AddHandler handleTestEvents
             ()
             
         tests
@@ -82,7 +61,7 @@ type Framework (tests: ITestExecutor list) as this =
     member this.Run (getSeed: unit -> int) =
         let seed = getSeed ()
         let startArgs = CancelEventArgs ()
-        frameworkStart.Trigger (this, startArgs)
+        frameworkLifecycleEvent.Trigger (this, FrameworkStartExecution startArgs)
 
         if startArgs.Cancel then
             buildReport ([], [], [], seed)
@@ -93,7 +72,8 @@ type Framework (tests: ITestExecutor list) as this =
             let report =
                 results
                 |> buildReport
-            frameworkEnd.Trigger (this, EventArgs.Empty)
+            
+            frameworkLifecycleEvent.Trigger (this, FrameworkEndExecution)
             report
     
     member this.AddTests (newTests: ITest seq) =
@@ -110,33 +90,9 @@ type Framework (tests: ITestExecutor list) as this =
         member this.Run () = this.Run ()
         
         member this.Run getSeed = this.Run getSeed
-
-        [<CLIEvent>]
-        member this.FrameworkEndExecution = frameworkEnd.Publish
         
         [<CLIEvent>]
-        member _.FrameworkStartExecution = frameworkStart.Publish
-    
-        [<CLIEvent>]
-        member _.TestEnd = testEnd.Publish
-    
-        [<CLIEvent>]
-        member _.TestEndExecution = testEndExecution.Publish
-        
-        [<CLIEvent>]
-        member _.TestEndSetup = testEndSetup.Publish
-        
-        [<CLIEvent>]
-        member _.TestStart = testStart.Publish
-        
-        [<CLIEvent>]
-        member _.TestStartExecution = testExecutionStarted.Publish
-        
-        [<CLIEvent>]
-        member _.TestStartSetup = testStartSetup.Publish
-        
-        [<CLIEvent>]
-        member _.TestStartTearDown = testStartTearDown.Publish
+        member this.FrameworkLifecycleEvent = frameworkLifecycleEvent.Publish
         
 type Bow () =
     member _.Framework () = Framework () :> IFramework

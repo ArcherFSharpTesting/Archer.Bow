@@ -104,7 +104,7 @@ let ``Test Cases`` = [
         let containerName = "to hold tests"
         let container = suite.Container (containerPath, containerName)
 
-        let failure = "Boom" |> GeneralFailure
+        let failure = "Boom" |> build.AsGeneralFailure
         let testF = container.Test ("First Test Fails", fun _ -> failure |> TestFailure)
         let test2 = container.Test ("Second Test Passes", fun _ -> TestSuccess)
 
@@ -136,7 +136,7 @@ let ``Test Cases`` = [
         let containerName = "to hold tests"
         let container = suite.Container (containerPath, containerName)
 
-        let failure = "Boom Again" |> GeneralFailure
+        let failure = "Boom Again" |> build.AsGeneralFailure
         let test1 = container.Test ("First Test Passes", fun _ -> TestSuccess)
         let testF = container.Test ("Second Test Fails", fun _ -> failure |> TestFailure)
 
@@ -168,7 +168,7 @@ let ``Test Cases`` = [
         let containerName = "to hold tests"
         let container = suite.Container (containerPath, containerName)
 
-        let failure1 = "Boom Again" |> GeneralFailure
+        let failure1 = "Boom Again" |> build.AsGeneralFailure
         let failure2 = notRunExpectation
         let testF = container.Test ("Second Test Fails", fun _ -> failure2 |> TestFailure)
         let testF2 = container.Test ("First Test fails", fun _ -> failure1 |> TestFailure)
@@ -221,8 +221,7 @@ let ``Test Cases`` = [
         // |> ignore
         
         "Async Breaks this"
-        |> Some
-        |> Ignored
+        |> build.AsIgnored
     )
     
     container.Test ("shuffle the order of the tests different seed", fun _ ->
@@ -255,8 +254,7 @@ let ``Test Cases`` = [
         // |> ignore
         
         "Async Breaks this"
-        |> Some
-        |> Ignored
+        |> build.AsIgnored
     )
     
     container.Test ("run asynchronously", fun _ ->

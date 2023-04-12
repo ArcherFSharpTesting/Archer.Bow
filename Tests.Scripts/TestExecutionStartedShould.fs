@@ -1,7 +1,7 @@
 module Archer.Tests.Scripts.``TestExecutionStarted Event``
 
-open Archer.Bow
-open Archer
+open Archer.CoreTypes.InternalTypes
+open Archer.CoreTypes.InternalTypes.FrameworkTypes
 open Archer.MicroLang
 
 let private defaultSeed = 33
@@ -11,26 +11,29 @@ let private container = suite.Container ("", "TestExecutionStarted Event should"
 
 let ``Test Cases`` = [
     container.Test ("be raised from the given test when framework is run", fun _ ->
-         let framework, test = buildTestFramework None None
+        let framework, test = buildTestFramework None None
 
-         let mutable result = "Not Called" |> GeneralFailure |> TestFailure
-         
-         framework.TestStartExecution.AddHandler (fun fr args ->
-                 let r =
-                     if fr = framework then TestSuccess
-                     else
-                         fr
-                         |> expectsToBe framework
-                     
-                 result <- args.Test
-                           |> expectsToBe test
-                           |> combineError r
-             )
-         
-         getDefaultSeed
-         |> framework.Run
-         |> ignore
-         
-         result
-     )
+        let mutable result = "Not Called" |> build.AsGeneralTestFailure
+        
+        framework.FrameworkLifecycleEvent
+        |> Event.filter (fun args ->
+            match args with
+            | FrameworkTestLifeCycle (_, TestExecutionStarted _, _) -> true
+            | _ -> false
+        )
+        |> Event.add (fun args ->
+            match args with
+            | FrameworkTestLifeCycle(currentTest, _, _) ->
+                result <-
+                    currentTest
+                    |> expectsToBe test
+            | _ -> ()
+        )
+
+        getDefaultSeed
+        |> framework.Run
+        |> ignore
+
+        result
+    )
 ]

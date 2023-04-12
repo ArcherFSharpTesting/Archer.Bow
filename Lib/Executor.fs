@@ -19,7 +19,7 @@ module Executor =
             return (result, test.Parent)
         }
         
-    let buildReport (failures: (TestingFailure * ITest) list, ignored: ((string option) * ITest) list, successes: ITest list, seed) =
+    let buildReport (failures: (TestingFailure * ITest) list, ignored: (string option * CodeLocation * ITest) list, successes: ITest list, seed) =
         let failures =
             failures
             |> List.groupBy (fun (_, test) -> test.ContainerPath)
@@ -54,11 +54,11 @@ module Executor =
             
         let ignored =
             ignored
-            |> List.groupBy (fun (_, test) -> test.ContainerPath)
+            |> List.groupBy (fun (_, _, test) -> test.ContainerPath)
             |> List.map(fun (path, results) ->
                 let reports =
                     results
-                    |> List.groupBy (fun (_, test) -> test.ContainerName)
+                    |> List.groupBy (fun (_, _, test) -> test.ContainerName)
                     |> List.map (fun (container, tests) ->
                         IgnoreContainer (container, [IgnoredTests tests]) 
                     )
@@ -84,7 +84,7 @@ module Executor =
                 acc
             else
                 let index = random.Next (0, bucket.Count)
-                let item = bucket.[index]
+                let item = bucket[index]
                 bucket.RemoveAt index
                 
                 item::acc
@@ -130,6 +130,6 @@ module Executor =
                 | Ignored _ -> true
                 | _ -> false
             )
-            |> List.map (fun (Ignored s, test) -> s, test)
+            |> List.map (fun (Ignored (s, location), test) -> s, location, test)
 
         (failures, ignored, successes, seed)

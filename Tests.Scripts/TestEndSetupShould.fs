@@ -1,6 +1,8 @@
 module Archer.Tests.Scripts.``TestEndSetup Event``
 
 open Archer
+open Archer.CoreTypes.InternalTypes
+open Archer.CoreTypes.InternalTypes.FrameworkTypes
 open Archer.MicroLang
 open Archer.MicroLang.Types
 
@@ -11,18 +13,20 @@ let ``Test Cases`` = [
         let framework, test = buildTestFramework None None
 
         let mutable result = notRunGeneralFailure
-
-        framework.TestEndSetup.AddHandler (fun fr args ->
-            let r =
-                if fr = framework then TestSuccess
-                else
-                    fr
-                    |> expectsToBe framework
-
-            result <-
-                args.Test
-                |> expectsToBe test
-                |> combineError r
+        
+        framework.FrameworkLifecycleEvent
+        |> Event.filter (fun args ->
+            match args with
+            | FrameworkTestLifeCycle(_, TestEndSetup _, _) -> true
+            | _ -> false
+        )
+        |> Event.add (fun args ->
+            match args with
+            | FrameworkTestLifeCycle(currentTest, TestEndSetup _, _) ->
+                result <-
+                    currentTest
+                    |> expectsToBe test
+            | _ -> ()
         )
 
         ()
@@ -37,12 +41,20 @@ let ``Test Cases`` = [
         
         let mutable result = TestSuccess
         
-        framework.TestEndSetup.AddHandler (fun _ _ ->
-            result <- notRunValidationFailure
+        framework.FrameworkLifecycleEvent
+        |> Event.filter (fun args ->
+            match args with
+            | FrameworkTestLifeCycle(_, TestEndSetup _, _)
+            | FrameworkStartExecution _ -> true
+            | _ -> false
         )
-        
-        framework.FrameworkStartExecution.AddHandler (fun _ args ->
-            args.Cancel <- true
+        |> Event.add (fun args ->
+            match args with
+            | FrameworkTestLifeCycle(_, TestEndSetup _, _) ->
+                result <- notRunValidationFailure
+            | FrameworkStartExecution cancelEventArgs ->
+                cancelEventArgs.Cancel <- true
+            | _ -> ()
         )
         
         ()
@@ -53,7 +65,7 @@ let ``Test Cases`` = [
     )
     
     container.Test ("should carry the result of the EndSetup event", fun _ ->
-        let expectedResult = "Should blow up" |> SetupFailure |> TestFailure
+        let expectedResult = ("Should blow up", { FilePath = ignoreString (); FileName = ignoreString (); LineNumber = ignoreInt () }) |> SetupFailure |> TestFailure
         let setup =
             (fun () -> expectedResult)
             |> SetupPart
@@ -62,10 +74,20 @@ let ``Test Cases`` = [
         let framework, _test = buildTestFramework None setup
         
         let mutable result = notRunGeneralFailure
-        framework.TestEndSetup.Add (fun args ->
-            result <-
-                args.TestResult
-                |> expectsToBe expectedResult
+        
+        framework.FrameworkLifecycleEvent
+        |> Event.filter (fun args ->
+            match args with
+            | FrameworkTestLifeCycle(_, TestEndSetup _, _) -> true
+            | _ -> false
+        )
+        |> Event.add (fun args ->
+            match args with
+            | FrameworkTestLifeCycle(_, TestEndSetup (testResult, _), _) ->
+                result <-
+                    testResult
+                    |> expectsToBe expectedResult
+            | _ -> ()
         )
         
         ()

@@ -2,6 +2,7 @@ module Archer.Tests.Scripts.``FrameworkExecutionEnded Event``
 
 open Archer.Bow
 open Archer
+open Archer.CoreTypes.InternalTypes.FrameworkTypes
 open Archer.MicroLang
 
 let private defaultSeed = 33
@@ -13,16 +14,18 @@ let ``Test Cases`` = [
     container.Test ("be raised when the framework is run", fun _ ->
         let framework = bow.Framework ()
 
-        let mutable result = "Not Called" |> GeneralFailure |> TestFailure
-        framework.FrameworkEndExecution.AddHandler (fun fr _ ->
-            let r =
-                if fr = framework then TestSuccess
-                else
-                    fr
-                    |> expectsToBe framework
-                    
-            result <- r
+        let mutable result = "Not Called" |> build.AsGeneralTestFailure
+        
+        framework.FrameworkLifecycleEvent
+        |> Event.filter (fun args ->
+            match args with
+            | FrameworkEndExecution -> true
+            | _ -> false
         )
+        |> Event.add (fun _ ->
+            result <- TestSuccess
+        )
+        
         framework.Run getDefaultSeed |> ignore
         
         result
