@@ -21,7 +21,7 @@ type Framework (tests: ITest list) as this =
         match test with
         | :? ITest as tst ->
             match event with
-            | TestExecutionStarted cancelEventArgs
+            | TestStartExecution cancelEventArgs
             | TestSetupStarted cancelEventArgs
             | TestEndSetup (_, cancelEventArgs)
             | TestStart cancelEventArgs as eventType ->

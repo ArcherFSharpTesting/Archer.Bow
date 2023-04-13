@@ -19,7 +19,7 @@ let ``be raised from the given test when framework is run`` =
         framework.FrameworkLifecycleEvent
         |> Event.filter (fun args ->
             match args with
-            | FrameworkTestLifeCycle (_, TestExecutionStarted _, _) -> true
+            | FrameworkTestLifeCycle (_, TestStartExecution _, _) -> true
             | _ -> false
         )
         |> Event.add (fun args ->

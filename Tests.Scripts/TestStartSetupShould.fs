@@ -50,7 +50,7 @@ let ``not be raised if FrameworkExecutionStarted was canceled`` =
         |> Event.filter (fun args ->
             match args with
             | FrameworkStartExecution _
-            | FrameworkTestLifeCycle(_, TestExecutionStarted _, _) -> true
+            | FrameworkTestLifeCycle(_, TestStartExecution _, _) -> true
             | _ -> false
         )
         |> Event.add (fun args ->
