@@ -22,7 +22,7 @@ type Framework (tests: ITest list) as this =
         | :? ITest as tst ->
             match event with
             | TestStartExecution cancelEventArgs
-            | TestSetupStarted cancelEventArgs
+            | TestStartSetup cancelEventArgs
             | TestEndSetup (_, cancelEventArgs)
             | TestStart cancelEventArgs as eventType ->
                 cancelEventArgs.Cancel <- cancelEventArgs.Cancel || readCancel ()
