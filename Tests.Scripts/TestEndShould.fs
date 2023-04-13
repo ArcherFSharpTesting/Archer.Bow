@@ -25,6 +25,7 @@ let ``raise event with given test`` =
                 result <-
                     currentTest
                     |> expects.ToBe test
+            | _ -> ()
         )
         
         ()

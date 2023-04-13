@@ -1,5 +1,6 @@
 module Archer.Tests.Scripts.``TestExecutionStarted Event should``
 
+open Archer
 open Archer.CoreTypes.InternalTypes
 open Archer.CoreTypes.InternalTypes.FrameworkTypes
 open Archer.MicroLang
@@ -13,7 +14,7 @@ let ``be raised from the given test when framework is run`` =
     container.Test (fun _ ->
         let framework, test = buildTestFramework None None
 
-        let mutable result = "Not Called" |> build.AsGeneralTestFailure
+        let mutable result = "Not Called" |> expects.AsGeneralFailure |> TestFailure
         
         framework.FrameworkLifecycleEvent
         |> Event.filter (fun args ->

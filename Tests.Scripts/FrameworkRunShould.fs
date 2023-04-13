@@ -108,7 +108,7 @@ let ``return failure when a test fails`` =
         let containerName = "to hold tests"
         let container = suite.Container (containerPath, containerName)
 
-        let failure = "Boom" |> build.AsGeneralFailure
+        let failure = "Boom" |> expects.AsGeneralFailure
         let testF = container.Test ("First Test Fails", fun _ -> failure |> TestFailure)
         let test2 = container.Test ("Second Test Passes", fun _ -> TestSuccess)
 
@@ -141,7 +141,7 @@ let ``return failure when second test fails`` =
         let containerName = "to hold tests"
         let container = suite.Container (containerPath, containerName)
 
-        let failure = "Boom Again" |> build.AsGeneralFailure
+        let failure = "Boom Again" |> expects.AsGeneralFailure
         let test1 = container.Test ("First Test Passes", fun _ -> TestSuccess)
         let testF = container.Test ("Second Test Fails", fun _ -> failure |> TestFailure)
 
@@ -228,7 +228,7 @@ let ``shuffle the order of the tests`` =
         // |> ignore
         
         "Async Breaks this"
-        |> build.AsIgnored
+        |> expects.ToBeIgnored
     )
     
 let ``shuffle the order of the tests different seed`` =
@@ -262,7 +262,7 @@ let ``shuffle the order of the tests different seed`` =
         // |> ignore
         
         "Async Breaks this"
-        |> build.AsIgnored
+        |> expects.ToBeIgnored
     )
     
 let ``run asynchronously`` =

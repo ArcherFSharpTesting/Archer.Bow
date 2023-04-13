@@ -16,7 +16,7 @@ let ``be raised from the given test when the framework is run`` =
     container.Test (fun _ ->
         let framework, test = buildTestFramework None None
 
-        let mutable result = "Not Called" |> build.AsGeneralTestFailure
+        let mutable result = "Not Called" |> expects.AsGeneralFailure |> TestFailure
         
         framework.FrameworkLifecycleEvent
         |> Event.filter (fun args ->

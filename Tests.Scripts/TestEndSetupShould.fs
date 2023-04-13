@@ -67,7 +67,7 @@ let ``should not be raised if FrameworkExecutionStart canceled`` =
     
 let ``should carry the result of the EndSetup event`` =
     container.Test (fun _ ->
-        let expectedResult = ("Should blow up", { FilePath = ignoreString (); FileName = ignoreString (); LineNumber = ignoreInt () }) |> SetupFailure |> TestFailure
+        let expectedResult = ("Should blow up", { FilePath = ignoreString (); FileName = ignoreString (); LineNumber = ignoreInt () }) |> GeneralSetupTearDownFailure |> SetupFailure |> TestFailure
         let setup =
             (fun () -> expectedResult)
             |> SetupPart
