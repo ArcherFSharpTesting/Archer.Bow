@@ -29,7 +29,7 @@ let ``Test Cases`` = [
             | FrameworkTestLifeCycle (currentTest, _, _) ->
                 result <-
                     currentTest
-                    |> expectsToBe test
+                    |> expects.ToBe test
             | _ -> ()
         )
 
@@ -57,7 +57,7 @@ let ``Test Cases`` = [
             | FrameworkStartExecution cancelEventArgs ->
                 cancelEventArgs.Cancel <- true
             | FrameworkTestLifeCycle _ ->
-                result <- notRunValidationFailure
+                result <- expects.NotRunValidationFailure () |> TestFailure
             | _ -> ()
         )
         

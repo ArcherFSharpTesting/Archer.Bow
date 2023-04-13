@@ -12,7 +12,7 @@ let ``Test Cases`` = [
     container.Test ("be raised from the given test when the framework is run", fun _ ->
         let framework, test = buildTestFramework None None
 
-        let mutable result = notRunGeneralFailure
+        let mutable result = expects.GeneralNotRunFailure () |> TestFailure
         
         framework.FrameworkLifecycleEvent
         |> Event.filter (fun args ->
@@ -25,7 +25,7 @@ let ``Test Cases`` = [
             | FrameworkTestLifeCycle(currentTest, TestEndSetup _, _) ->
                 result <-
                     currentTest
-                    |> expectsToBe test
+                    |> expects.ToBe test
             | _ -> ()
         )
 
@@ -51,7 +51,7 @@ let ``Test Cases`` = [
         |> Event.add (fun args ->
             match args with
             | FrameworkTestLifeCycle(_, TestEndSetup _, _) ->
-                result <- notRunValidationFailure
+                result <- expects.NotRunValidationFailure () |> TestFailure
             | FrameworkStartExecution cancelEventArgs ->
                 cancelEventArgs.Cancel <- true
             | _ -> ()
@@ -73,7 +73,7 @@ let ``Test Cases`` = [
         
         let framework, _test = buildTestFramework None setup
         
-        let mutable result = notRunGeneralFailure
+        let mutable result = expects.GeneralNotRunFailure () |> TestFailure
         
         framework.FrameworkLifecycleEvent
         |> Event.filter (fun args ->
@@ -86,7 +86,7 @@ let ``Test Cases`` = [
             | FrameworkTestLifeCycle(_, TestEndSetup (testResult, _), _) ->
                 result <-
                     testResult
-                    |> expectsToBe expectedResult
+                    |> expects.ToBe expectedResult
             | _ -> ()
         )
         

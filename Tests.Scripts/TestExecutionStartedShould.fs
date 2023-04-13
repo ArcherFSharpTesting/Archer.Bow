@@ -26,7 +26,7 @@ let ``Test Cases`` = [
             | FrameworkTestLifeCycle(currentTest, _, _) ->
                 result <-
                     currentTest
-                    |> expectsToBe test
+                    |> expects.ToBe test
             | _ -> ()
         )
 

@@ -25,7 +25,7 @@ let ``Test Cases`` = [
             Seed = seed
         }
                 
-        result |> verifyWith expected
+        result |> expects.ToBe expected
     )
     
     container.Test ("return empty results when it has no tests", fun _ ->
@@ -41,7 +41,7 @@ let ``Test Cases`` = [
             Seed = seed
         }
                 
-        result |> verifyWith expected
+        result |> expects.ToBe expected
     )
     
     container.Test ("return a successful result when one test passes", fun _ ->
@@ -67,7 +67,7 @@ let ``Test Cases`` = [
             Seed = defaultSeed
         }
 
-        result |> verifyWith expected
+        result |> expects.ToBe expected
     )
     
     container.Test ("return a successful result when two tests pass", fun _ ->
@@ -95,7 +95,7 @@ let ``Test Cases`` = [
             framework.AddTests [test1; test2]
             |> runWithSeed getDefaultSeed
 
-        result |> verifyWith expected
+        result |> expects.ToBe expected
     )
     
     container.Test ("return failure when a test fails", fun _ -> 
@@ -127,7 +127,7 @@ let ``Test Cases`` = [
             framework.AddTests [testF; test2]
             |> runWithSeed getDefaultSeed
 
-        result |> verifyWith expected
+        result |> expects.ToBe expected
     )
     
     container.Test ("return failure when second test fails", fun _ -> 
@@ -159,7 +159,7 @@ let ``Test Cases`` = [
             framework.AddTests [test1; testF]
             |> runWithSeed getDefaultSeed
 
-        result |> verifyWith expected
+        result |> expects.ToBe expected
     )
     
     container.Test ("return failure when second test fails", fun _ -> 
@@ -168,8 +168,8 @@ let ``Test Cases`` = [
         let containerName = "to hold tests"
         let container = suite.Container (containerPath, containerName)
 
-        let failure1 = "Boom Again" |> build.AsGeneralFailure
-        let failure2 = notRunExpectation
+        let failure1 = "Boom Again" |> expects.AsGeneralFailure
+        let failure2 = expects.NotRunValidationFailure ()
         let testF = container.Test ("Second Test Fails", fun _ -> failure2 |> TestFailure)
         let testF2 = container.Test ("First Test fails", fun _ -> failure1 |> TestFailure)
 
@@ -188,7 +188,7 @@ let ``Test Cases`` = [
             framework.AddTests [testF2; testF]
             |> runWithSeed getDefaultSeed
 
-        result |> verifyWith expected
+        result |> expects.ToBe expected
     )
     
     container.Test ("shuffle the order of the tests", fun _ ->
@@ -264,7 +264,7 @@ let ``Test Cases`` = [
         let framework = bow.Framework ()
         let random = Random ()
         
-        let mutable result = notRunGeneralFailure
+        let mutable result = expects.GeneralNotRunFailure () |> TestFailure
         
         let run _ =
                 
@@ -274,7 +274,8 @@ let ``Test Cases`` = [
             result <-
                 match result with
                 | TestSuccess -> result
-                | _ -> isRunning |> expectsToBeTrue
+                | _ ->
+                    isRunning |> expects.ToBeTrue
 
             lock monitor (fun _ -> isRunning <- false)
             
@@ -298,7 +299,7 @@ let ``Test Cases`` = [
     
     container.Test("run a test with the correct framework name", fun env ->
         env.FrameworkName
-        |> expectsToBe "Archer.Bow"
+        |> expects.ToBe "Archer.Bow"
     )
     
     container.Test("run a test with the correct framework version", fun env ->
@@ -306,7 +307,7 @@ let ``Test Cases`` = [
         let version = typeBow.Assembly.GetName().Version
         
         env.FrameworkVersion
-        |> expectsToBe version
+        |> expects.ToBe version
     )
     
     container.Test("run a test with the correct test info", fun env ->
@@ -319,15 +320,15 @@ let ``Test Cases`` = [
             
             let pathResult =
                 info.ContainerPath
-                |> expectsToBe containerPath
+                |> expects.ToBe containerPath
                 
             let containerNameResult =
                 info.ContainerName
-                |> expectsToBe containerName
+                |> expects.ToBe containerName
                 
             let testNameResult =
                 info.TestName
-                |> expectsToBe testName
+                |> expects.ToBe testName
                 
             pathResult
             |> andResult containerNameResult
@@ -343,11 +344,12 @@ let ``Test Cases`` = [
         
         let a = 
             result.Failures
-            |> expectsToBeWithMessage [] "Failures"
+            |> expects.ToBe [] 
+            |> withMessage "Failures"
             
         let b =
             result.Successes
-            |> expectsToBe [
+            |> expects.ToBe [
                 SuccessContainer (
                     containerPath,
                     [SuccessContainer (containerName, [SucceededTests [test]])]

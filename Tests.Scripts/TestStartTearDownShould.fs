@@ -1,5 +1,6 @@
 module Archer.Tests.Scripts.``TestStartTearDown Event``
 
+open Archer
 open Archer.CoreTypes.InternalTypes.FrameworkTypes
 open Archer.MicroLang
 
@@ -9,7 +10,7 @@ let ``Test Cases`` = [
     container.Test ("be raised with the given test", fun _ ->
         let framework, test = buildTestFramework None None
         
-        let mutable result = notRunGeneralFailure
+        let mutable result = expects.GeneralNotRunFailure () |> TestFailure
         
         framework.FrameworkLifecycleEvent
         |> Event.filter (fun args ->
@@ -22,7 +23,7 @@ let ``Test Cases`` = [
             | FrameworkTestLifeCycle(currentTest, _, _) ->
                 result <-
                     currentTest
-                    |> expectsToBe test
+                    |> expects.ToBe test
             | _ -> ()
         )
         

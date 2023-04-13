@@ -11,7 +11,7 @@ let ``Test Cases`` = [
     container.Test ("be raised with the given test when the framework is run", fun _ ->
         let framework, test = buildTestFramework None None
         
-        let mutable result = notRunGeneralFailure
+        let mutable result = expects.GeneralNotRunFailure () |> TestFailure
         
         framework.FrameworkLifecycleEvent
         |> Event.filter (fun args ->
@@ -24,7 +24,7 @@ let ``Test Cases`` = [
             | FrameworkTestLifeCycle(currentTest, _, _) ->
                 result <-
                     currentTest
-                    |> expectsToBe test
+                    |> expects.ToBe test
             | _ -> ()
         )
         
@@ -36,11 +36,12 @@ let ``Test Cases`` = [
     )
     
     container.Test ("should not run the test action when canceled from test arg", fun _ ->
-        let mutable result = notRunGeneralFailure
+        let expectedFailure = expects.GeneralNotRunFailure () |> TestFailure
+        let mutable result = expectedFailure 
         
         let testAction =
             (fun _ ->
-                result <- notRunValidationFailure
+                result <- expects.NotRunValidationFailure () |> TestFailure
                 TestSuccess
             )
             |> Some
@@ -61,15 +62,16 @@ let ``Test Cases`` = [
         )
         
         result
-        |> expectsToBe notRunGeneralFailure
+        |> expects.ToBe expectedFailure
     )
     
     container.Test ("should not run the test action when canceled from framework arg", fun _ ->
-        let mutable result = notRunGeneralFailure
+        let expectedFailure = expects.GeneralNotRunFailure () |> TestFailure 
+        let mutable result = expectedFailure
         
         let testAction =
             (fun _ ->
-                result <- notRunValidationFailure
+                result <- expects.NotRunValidationFailure () |> TestFailure
                 TestSuccess
             )
             |> Some
@@ -90,6 +92,6 @@ let ``Test Cases`` = [
         )
         
         result
-        |> expectsToBe notRunGeneralFailure
+        |> expects.ToBe expectedFailure
     )
 ]
