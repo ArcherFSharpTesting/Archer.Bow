@@ -16,6 +16,7 @@ let framework = bow.Framework ()
     ``TestEnd Event should``.``Test Cases``
     ``TestStartTearDown Event should``.``Test Cases``
     ``TestEndExecution Event should``.``Test Cases``
+    ``When running tests that throw exception framework should``.``Test Cases``
 ]
 |> List.concat
 |> framework.AddTests

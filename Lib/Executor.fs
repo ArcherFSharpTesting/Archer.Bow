@@ -15,8 +15,11 @@ module Executor =
         }
         
         async {
-            let result = test.Execute info
-            return (result, test.Parent)
+            try
+                let result = test.Execute info
+                return (result, test.Parent)
+            with
+            | e -> return (e |> ExceptionFailure |> TestFailure, test.Parent)
         }
         
     let buildReport (failures: (TestingFailure * ITest) list, ignored: (string option * CodeLocation * ITest) list, successes: ITest list, seed) =

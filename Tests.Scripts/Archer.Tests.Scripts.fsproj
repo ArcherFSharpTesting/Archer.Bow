@@ -19,6 +19,7 @@
     <Compile Include="TestEndShould.fs" />
     <Compile Include="TestStartTearDownShould.fs" />
     <Compile Include="TestEndExecutionShould.fs" />
+    <Compile Include="RuningTestsWhenExeceptionIsThrownShould.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 
@@ -27,7 +28,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Archer.CoreTypes.Lib" Version="0.0.13.10" />
+    <PackageReference Include="Archer.CoreTypes.Lib" Version="0.0.13.11" />
     <PackageReference Include="Archer.Extension" Version="1.0.0" />
     <PackageReference Include="MicroLang.Lib" Version="0.0.12.10" />
   </ItemGroup>
