@@ -132,9 +132,9 @@ module Executor =
             results
             |> List.filter (fun (result, _) ->
                 match result with
-                | Ignored _ -> true
+                | TestIgnored _ -> true
                 | _ -> false
             )
-            |> List.map (fun (Ignored (s, location), test) -> s, location, test)
+            |> List.map (fun (TestIgnored (s, location), test) -> s, location, test)
 
         (failures, ignored, successes, seed)
