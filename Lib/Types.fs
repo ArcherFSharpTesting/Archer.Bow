@@ -6,7 +6,7 @@ open Archer.Bow.Executor
 open Archer.CoreTypes.InternalTypes
 open Archer.CoreTypes.InternalTypes.FrameworkTypes
 
-type Framework (tests: ITestExecutor list) as this =
+type Framework (tests: ITest list) as this =
     let lockObj = obj()
     let mutable cancel = false
     let setCancel value =
@@ -36,25 +36,10 @@ type Framework (tests: ITestExecutor list) as this =
                 
         | _ -> ()
         
-    do
-        let hookEvents (executor: ITestExecutor) =
-            executor.TestLifecycleEvent.AddHandler handleTestEvents
-            ()
-            
-        tests
-        |> List.iter hookEvents
-    
     new () =
-        let tests: ITestExecutor list = []
+        let tests: ITest list = []
         Framework tests
         
-    new (tests: ITest List) =
-        let executors =
-            tests
-            |> List.map (fun tst -> tst.GetExecutor ())
-            
-        Framework executors
-    
     member this.Run () =
         this.Run(fun () -> globalRandom.Next ())
         
@@ -62,19 +47,33 @@ type Framework (tests: ITestExecutor list) as this =
         let seed = getSeed ()
         let startArgs = CancelEventArgs ()
         frameworkLifecycleEvent.Trigger (this, FrameworkStartExecution startArgs)
-
-        if startArgs.Cancel then
-            buildReport ([], [], [], seed)
-        else
-            let shuffled = tests |> shuffle seed
-            let results =
-                runTests seed shuffled
-            let report =
-                results
-                |> buildReport
+        
+        let hookEvents (executor: ITestExecutor) =
+            executor.TestLifecycleEvent.AddHandler handleTestEvents
+            executor
             
+        let unhookEvents (executor: ITestExecutor) =
+            executor.TestLifecycleEvent.RemoveHandler handleTestEvents
+
+        let executors =
+            tests
+            |> List.map (fun t -> t.GetExecutor () |> hookEvents)
+
+        try
+            if startArgs.Cancel then
+                buildReport ([], [], [], seed)
+            else
+                let shuffled = executors |> shuffle seed
+                let results =
+                    runTests seed shuffled
+                let report =
+                    results
+                    |> buildReport
+                
+                report
+        finally
+            executors |> List.iter unhookEvents
             frameworkLifecycleEvent.Trigger (this, FrameworkEndExecution)
-            report
     
     member this.AddTests (newTests: ITest seq) =
         let tsts =
