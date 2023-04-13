@@ -120,7 +120,12 @@ module Executor =
                 | TestFailure _ -> true
                 | _ -> false
             )
-            |> List.map (fun (TestFailure f, test) -> f, test)
+            |> List.map (fun (result, test) ->
+                match result with
+                | TestFailure testingFailure ->
+                    testingFailure, test
+                | _ -> failwith "Non Failure in filter"
+                )
             |> List.ofSeq
             
         let ignored =
