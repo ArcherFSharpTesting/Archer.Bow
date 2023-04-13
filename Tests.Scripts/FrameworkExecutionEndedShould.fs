@@ -1,4 +1,4 @@
-module Archer.Tests.Scripts.``FrameworkExecutionEnded Event``
+module Archer.Tests.Scripts.``FrameworkExecutionEnded Event should``
 
 open Archer.Bow
 open Archer
@@ -8,10 +8,10 @@ open Archer.MicroLang
 let private defaultSeed = 33
 let private getDefaultSeed () = defaultSeed
 
-let private container = suite.Container ("", "FrameworkExecutionEnded Event should")
+let private container = suite.Container ()
 
-let ``Test Cases`` = [
-    container.Test ("be raised when the framework is run", fun _ ->
+let ``be raised when the framework is run`` =
+    container.Test (fun _ ->
         let framework = bow.Framework ()
 
         let mutable result = "Not Called" |> build.AsGeneralTestFailure
@@ -30,4 +30,5 @@ let ``Test Cases`` = [
         
         result
     )
-]
+    
+let ``Test Cases`` = container.Tests

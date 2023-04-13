@@ -1,4 +1,4 @@
-module Archer.Tests.Scripts.``TestStartSetup Event``
+module Archer.Tests.Scripts.``TestStartSetup Event should``
 
 open System.ComponentModel
 open Archer.Bow
@@ -10,10 +10,10 @@ open Archer.MicroLang
 let private defaultSeed = 33
 let private getDefaultSeed () = defaultSeed
 
-let private container = suite.Container ("", "TestStartSetup Event should")
+let private container = suite.Container ()
 
-let ``Test Cases`` = [
-    container.Test ("be raised from the given test when the framework is run", fun _ ->
+let ``be raised from the given test when the framework is run`` =
+    container.Test (fun _ ->
         let framework, test = buildTestFramework None None
 
         let mutable result = "Not Called" |> build.AsGeneralTestFailure
@@ -40,7 +40,8 @@ let ``Test Cases`` = [
         result
     )
     
-    container.Test ("not be raised if FrameworkExecutionStarted was canceled", fun _ ->
+let ``not be raised if FrameworkExecutionStarted was canceled`` =
+    container.Test (fun _ ->
         let framework, _ = buildTestFramework None None
          
         let mutable result = TestSuccess
@@ -65,4 +66,5 @@ let ``Test Cases`` = [
         
         result
     )
-]
+    
+let ``Test Cases`` = container.Tests

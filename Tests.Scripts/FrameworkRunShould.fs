@@ -1,4 +1,4 @@
-﻿module Archer.Tests.Scripts.``Framework Run``
+﻿module Archer.Tests.Scripts.``Framework Run Should``
 
 open System
 open Archer.Bow
@@ -9,10 +9,10 @@ open Archer.CoreTypes.InternalTypes.FrameworkTypes
 let private defaultSeed = 42
 let private getDefaultSeed () = defaultSeed
 
-let private container = suite.Container ("", "Framework Run Should")
+let private container = suite.Container ()
 
-let ``Test Cases`` = [
-    container.Test ("return empty results when it has no tests", fun _ ->
+let ``return empty results when it has no tests`` =
+    container.Test (fun _ ->
         let seed = 5
                 
         let framework = bow.Framework ()
@@ -28,7 +28,8 @@ let ``Test Cases`` = [
         result |> expects.ToBe expected
     )
     
-    container.Test ("return empty results when it has no tests", fun _ ->
+let ``return empty results with different seed when it has no tests and provided a different seed`` =
+    container.Test (fun _ ->
         let seed = 258
                 
         let framework = bow.Framework ()
@@ -44,7 +45,8 @@ let ``Test Cases`` = [
         result |> expects.ToBe expected
     )
     
-    container.Test ("return a successful result when one test passes", fun _ ->
+let ``return a successful result when one test passes`` =
+    container.Test (fun _ ->
         let framework = bow.Framework ()
         let containerPath = "A Test Suite"
         let containerName = "with a passing test"
@@ -70,7 +72,8 @@ let ``Test Cases`` = [
         result |> expects.ToBe expected
     )
     
-    container.Test ("return a successful result when two tests pass", fun _ ->
+let ``return a successful result when two tests pass`` =
+    container.Test (fun _ ->
         let framework = bow.Framework ()
         let containerPath = "A test Suite"
         let containerName = "with two passing tests"
@@ -98,7 +101,8 @@ let ``Test Cases`` = [
         result |> expects.ToBe expected
     )
     
-    container.Test ("return failure when a test fails", fun _ -> 
+let ``return failure when a test fails`` =
+    container.Test ("", fun _ -> 
         let framework = bow.Framework ()
         let containerPath = "A test Suite"
         let containerName = "to hold tests"
@@ -130,7 +134,8 @@ let ``Test Cases`` = [
         result |> expects.ToBe expected
     )
     
-    container.Test ("return failure when second test fails", fun _ -> 
+let ``return failure when second test fails`` =
+    container.Test (fun _ -> 
         let framework = bow.Framework ()
         let containerPath = "A test Suite"
         let containerName = "to hold tests"
@@ -162,7 +167,8 @@ let ``Test Cases`` = [
         result |> expects.ToBe expected
     )
     
-    container.Test ("return failure when second test fails", fun _ -> 
+let ``return failure all second test fail`` =
+    container.Test (fun _ -> 
         let framework = bow.Framework ()
         let containerPath = "A test Suite"
         let containerName = "to hold tests"
@@ -191,7 +197,8 @@ let ``Test Cases`` = [
         result |> expects.ToBe expected
     )
     
-    container.Test ("shuffle the order of the tests", fun _ ->
+let ``shuffle the order of the tests`` =
+    container.Test (fun _ ->
         // let framework = bow.Framework ()
         //
         // let container = suite.Container ("Framework Run", "shuffle the order of the tests")
@@ -224,7 +231,8 @@ let ``Test Cases`` = [
         |> build.AsIgnored
     )
     
-    container.Test ("shuffle the order of the tests different seed", fun _ ->
+let ``shuffle the order of the tests different seed`` =
+    container.Test (fun _ ->
         // let framework = bow.Framework ()
         //
         // let container = suite.Container ("Framework Run", "shuffle the order of the tests")
@@ -257,7 +265,8 @@ let ``Test Cases`` = [
         |> build.AsIgnored
     )
     
-    container.Test ("run asynchronously", fun _ ->
+let ``run asynchronously`` =
+    container.Test (fun _ ->
         let monitor = obj ()
         let mutable isRunning = false
         
@@ -297,12 +306,14 @@ let ``Test Cases`` = [
         result
     )
     
-    container.Test("run a test with the correct framework name", fun env ->
+let ``run a test with the correct framework name`` =
+    container.Test(fun env ->
         env.FrameworkName
         |> expects.ToBe "Archer.Bow"
     )
     
-    container.Test("run a test with the correct framework version", fun env ->
+let ``run a test with the correct framework version`` =
+    container.Test(fun env ->
         let typeBow = bow.GetType ()
         let version = typeBow.Assembly.GetName().Version
         
@@ -310,11 +321,13 @@ let ``Test Cases`` = [
         |> expects.ToBe version
     )
     
-    container.Test("run a test with the correct test info", fun env ->
+let ``run a test with the correct test info`` =
+    container.Test(fun env ->
         let containerPath = "The Path"
         let containerName = "My new container"
         let testName = "Testing the test info"
         let c = suite.Container (containerPath, containerName)
+        
         let test = c.Test (testName, fun e ->
             let info = e.TestInfo
             
@@ -359,4 +372,5 @@ let ``Test Cases`` = [
         a
         |> andResult b
     )
-]
+    
+let ``Test Cases`` = container.Tests

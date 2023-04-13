@@ -29,7 +29,7 @@
   <ItemGroup>
     <PackageReference Include="Archer.CoreTypes.Lib" Version="0.0.13.10" />
     <PackageReference Include="Archer.Extension" Version="1.0.0" />
-    <PackageReference Include="MicroLang.Lib" Version="0.0.12.6" />
+    <PackageReference Include="MicroLang.Lib" Version="0.0.12.10" />
   </ItemGroup>
 
 </Project>

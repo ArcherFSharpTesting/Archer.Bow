@@ -1,4 +1,4 @@
-module Archer.Tests.Scripts.``TestEndSetup Event``
+module Archer.Tests.Scripts.``TestEndSetup Event should``
 
 open Archer
 open Archer.CoreTypes.InternalTypes
@@ -6,10 +6,10 @@ open Archer.CoreTypes.InternalTypes.FrameworkTypes
 open Archer.MicroLang
 open Archer.MicroLang.Types
 
-let private container = suite.Container ("", "TestEndSetup Event should")
+let private container = suite.Container ()
 
-let ``Test Cases`` = [
-    container.Test ("be raised from the given test when the framework is run", fun _ ->
+let ``be raised from the given test when the framework is run`` =
+    container.Test (fun _ ->
         let framework, test = buildTestFramework None None
 
         let mutable result = expects.GeneralNotRunFailure () |> TestFailure
@@ -36,7 +36,8 @@ let ``Test Cases`` = [
         result
     )
     
-    container.Test ("should not be raised if FrameworkExecutionStart canceled", fun _ ->
+let ``should not be raised if FrameworkExecutionStart canceled`` =
+    container.Test (fun _ ->
         let framework, _test = buildTestFramework None None
         
         let mutable result = TestSuccess
@@ -64,7 +65,8 @@ let ``Test Cases`` = [
         result
     )
     
-    container.Test ("should carry the result of the EndSetup event", fun _ ->
+let ``should carry the result of the EndSetup event`` =
+    container.Test (fun _ ->
         let expectedResult = ("Should blow up", { FilePath = ignoreString (); FileName = ignoreString (); LineNumber = ignoreInt () }) |> SetupFailure |> TestFailure
         let setup =
             (fun () -> expectedResult)
@@ -96,4 +98,5 @@ let ``Test Cases`` = [
         
         result
     )
-]
+    
+let ``Test Cases`` = container.Tests

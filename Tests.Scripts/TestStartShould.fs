@@ -1,14 +1,14 @@
-module Archer.Tests.Scripts.``TestStart Event``
+module Archer.Tests.Scripts.``TestStart Event should``
 
 open Archer
 open Archer.CoreTypes.InternalTypes
 open Archer.CoreTypes.InternalTypes.FrameworkTypes
 open Archer.MicroLang
 
-let private container = suite.Container ("", "TestStart Event should")
+let private container = suite.Container ()
 
-let ``Test Cases`` = [
-    container.Test ("be raised with the given test when the framework is run", fun _ ->
+let ``be raised with the given test when the framework is run`` =
+    container.Test (fun _ ->
         let framework, test = buildTestFramework None None
         
         let mutable result = expects.GeneralNotRunFailure () |> TestFailure
@@ -35,7 +35,8 @@ let ``Test Cases`` = [
         result
     )
     
-    container.Test ("should not run the test action when canceled from test arg", fun _ ->
+let ``should not run the test action when canceled from test arg`` =
+    container.Test (fun _ ->
         let expectedFailure = expects.GeneralNotRunFailure () |> TestFailure
         let mutable result = expectedFailure 
         
@@ -65,7 +66,8 @@ let ``Test Cases`` = [
         |> expects.ToBe expectedFailure
     )
     
-    container.Test ("should not run the test action when canceled from framework arg", fun _ ->
+let ``should not run the test action when canceled from framework arg`` =
+    container.Test (fun _ ->
         let expectedFailure = expects.GeneralNotRunFailure () |> TestFailure 
         let mutable result = expectedFailure
         
@@ -94,4 +96,5 @@ let ``Test Cases`` = [
         result
         |> expects.ToBe expectedFailure
     )
-]
+    
+let ``Test Cases`` = container.Tests

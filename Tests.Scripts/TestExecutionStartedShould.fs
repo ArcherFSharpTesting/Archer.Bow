@@ -1,4 +1,4 @@
-module Archer.Tests.Scripts.``TestExecutionStarted Event``
+module Archer.Tests.Scripts.``TestExecutionStarted Event should``
 
 open Archer.CoreTypes.InternalTypes
 open Archer.CoreTypes.InternalTypes.FrameworkTypes
@@ -7,10 +7,10 @@ open Archer.MicroLang
 let private defaultSeed = 33
 let private getDefaultSeed () = defaultSeed
 
-let private container = suite.Container ("", "TestExecutionStarted Event should")
+let private container = suite.Container ()
 
-let ``Test Cases`` = [
-    container.Test ("be raised from the given test when framework is run", fun _ ->
+let ``be raised from the given test when framework is run`` =
+    container.Test (fun _ ->
         let framework, test = buildTestFramework None None
 
         let mutable result = "Not Called" |> build.AsGeneralTestFailure
@@ -36,4 +36,5 @@ let ``Test Cases`` = [
 
         result
     )
-]
+    
+let ``Test Cases`` = container.Tests
