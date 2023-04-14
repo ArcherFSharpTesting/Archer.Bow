@@ -19,10 +19,10 @@ module Executor =
                 let result = test.Execute info
                 return (result, test.Parent)
             with
-            | e -> return (e |> ExceptionFailure |> TestFailure, test.Parent)
+            | e -> return (e |> TestExceptionFailure |> TestFailure |> TestResult, test.Parent)
         }
         
-    let buildReport (failures: (TestingFailure * ITest) list, ignored: (string option * CodeLocation * ITest) list, successes: ITest list, seed) =
+    let buildReport (failures: (TestFailureType * ITest) list, ignored: (string option * CodeLocation * ITest) list, successes: ITest list, seed) =
         let failures =
             failures
             |> List.groupBy (fun (_, test) -> test.ContainerPath)
@@ -111,7 +111,7 @@ module Executor =
             results
             |> List.filter (fun (result, _) ->
                 match result with
-                | TestSuccess -> true
+                | TestResult TestSuccess -> true
                 | _ -> false
             )
             |> List.map snd
@@ -120,21 +120,29 @@ module Executor =
             results
             |> List.filter (fun (result, _) ->
                 match result with
-                | TestFailure _ -> true
-                | _ -> false
+                | TestResult TestSuccess
+                | TestResult (TestIgnored _)  -> false
+                | _ -> true
             )
-            |> List.map (fun (TestFailure testingFailure, test) ->
-                    testingFailure, test
-                )
+            |> List.map (fun (testResult, test) ->
+                let failure = 
+                    match testResult with
+                    | GeneralFailure generalTestingFailure -> GeneralFailureType generalTestingFailure
+                    | SetupFailure setupTearDownFailure -> SetupFailureType setupTearDownFailure
+                    | TestResult (TestFailure testFailure) -> TestRunFailureType testFailure
+                    | TearDownFailure setupTearDownFailure -> TearDownFailureType setupTearDownFailure
+                    
+                failure, test
+            )
             |> List.ofSeq
             
         let ignored =
             results
             |> List.filter (fun (result, _) ->
                 match result with
-                | TestIgnored _ -> true
+                | TestResult (TestIgnored _) -> true
                 | _ -> false
             )
-            |> List.map (fun (TestIgnored (s, location), test) -> s, location, test)
+            |> List.map (fun (TestResult (TestIgnored (s, location)), test) -> s, location, test)
 
         (failures, ignored, successes, seed)
