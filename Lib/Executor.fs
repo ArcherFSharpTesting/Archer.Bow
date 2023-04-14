@@ -19,7 +19,7 @@ module Executor =
                 let result = test.Execute info
                 return (result, test.Parent)
             with
-            | e -> return (e |> TestExceptionFailure |> TestFailure |> TestResult, test.Parent)
+            | e -> return (e |> TestExceptionFailure |> TestFailure |> TestExecutionResult, test.Parent)
         }
         
     let buildReport (failures: (TestFailureType * ITest) list, ignored: (string option * CodeLocation * ITest) list, successes: ITest list, seed) =
@@ -111,7 +111,7 @@ module Executor =
             results
             |> List.filter (fun (result, _) ->
                 match result with
-                | TestResult TestSuccess -> true
+                | TestExecutionResult TestSuccess -> true
                 | _ -> false
             )
             |> List.map snd
@@ -120,17 +120,17 @@ module Executor =
             results
             |> List.filter (fun (result, _) ->
                 match result with
-                | TestResult TestSuccess
-                | TestResult (TestIgnored _)  -> false
+                | TestExecutionResult TestSuccess
+                | TestExecutionResult (TestIgnored _)  -> false
                 | _ -> true
             )
             |> List.map (fun (testResult, test) ->
                 let failure = 
                     match testResult with
-                    | GeneralFailure generalTestingFailure -> GeneralFailureType generalTestingFailure
-                    | SetupFailure setupTearDownFailure -> SetupFailureType setupTearDownFailure
-                    | TestResult (TestFailure testFailure) -> TestRunFailureType testFailure
-                    | TeardownFailure setupTearDownFailure -> TeardownFailureType setupTearDownFailure
+                    | GeneralExecutionFailure generalTestingFailure -> GeneralFailureType generalTestingFailure
+                    | SetupExecutionFailure setupTearDownFailure -> SetupFailureType setupTearDownFailure
+                    | TestExecutionResult (TestFailure testFailure) -> TestRunFailureType testFailure
+                    | TeardownExecutionFailure setupTearDownFailure -> TeardownFailureType setupTearDownFailure
                     
                 failure, test
             )
@@ -140,9 +140,9 @@ module Executor =
             results
             |> List.filter (fun (result, _) ->
                 match result with
-                | TestResult (TestIgnored _) -> true
+                | TestExecutionResult (TestIgnored _) -> true
                 | _ -> false
             )
-            |> List.map (fun (TestResult (TestIgnored (s, location)), test) -> s, location, test)
+            |> List.map (fun (TestExecutionResult (TestIgnored (s, location)), test) -> s, location, test)
 
         (failures, ignored, successes, seed)
