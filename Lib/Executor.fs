@@ -130,7 +130,7 @@ module Executor =
                     | GeneralFailure generalTestingFailure -> GeneralFailureType generalTestingFailure
                     | SetupFailure setupTearDownFailure -> SetupFailureType setupTearDownFailure
                     | TestResult (TestFailure testFailure) -> TestRunFailureType testFailure
-                    | TearDownFailure setupTearDownFailure -> TearDownFailureType setupTearDownFailure
+                    | TeardownFailure setupTearDownFailure -> TeardownFailureType setupTearDownFailure
                     
                 failure, test
             )

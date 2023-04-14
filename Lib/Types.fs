@@ -29,7 +29,7 @@ type Framework (tests: ITest list) as this =
                 frameworkLifecycleEvent.Trigger (this, FrameworkTestLifeCycle (tst, eventType, cancelEventArgs))
                 setCancel cancelEventArgs.Cancel |> ignore
             | TestEnd _
-            | TestStartTearDown
+            | TestStartTeardown
             | TestEndExecution _ as eventType ->
                 let cancelEventArgs = readCancel () |> CancelEventArgs
                 frameworkLifecycleEvent.Trigger (this, FrameworkTestLifeCycle (tst, eventType, cancelEventArgs))
