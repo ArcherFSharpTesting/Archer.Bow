@@ -11,7 +11,7 @@ let ``be raised with the given test when the framework is run`` =
     container.Test (fun _ ->
         let framework, test = buildBasicFramework ()
         
-        let mutable result = expects.GeneralNotRunFailure () |> TestFailure
+        let mutable result = newFailure.With.GeneralNotRunFailure () |> TestFailure
         
         framework.FrameworkLifecycleEvent
         |> Event.filter (fun args ->
@@ -37,12 +37,12 @@ let ``be raised with the given test when the framework is run`` =
     
 let ``should not run the test action when canceled from test arg`` =
     container.Test (fun _ ->
-        let expectedFailure = expects.GeneralNotRunFailure () |> TestFailure
+        let expectedFailure = newFailure.With.GeneralNotRunFailure () |> TestFailure
         let mutable result = expectedFailure 
         
         let testAction =
             (fun _ _ ->
-                result <- expects.NotRunValidationFailure () |> TestFailure
+                result <- newFailure.With.NotRunValidationFailure () |> TestFailure
                 TestSuccess
             )
             
@@ -67,12 +67,12 @@ let ``should not run the test action when canceled from test arg`` =
     
 let ``should not run the test action when canceled from framework arg`` =
     container.Test (fun _ ->
-        let expectedFailure = expects.GeneralNotRunFailure () |> TestFailure 
+        let expectedFailure = newFailure.With.GeneralNotRunFailure () |> TestFailure 
         let mutable result = expectedFailure
         
         let testAction =
             (fun _ _ ->
-                result <- expects.NotRunValidationFailure () |> TestFailure
+                result <- newFailure.With.NotRunValidationFailure () |> TestFailure
                 TestSuccess
             )
             

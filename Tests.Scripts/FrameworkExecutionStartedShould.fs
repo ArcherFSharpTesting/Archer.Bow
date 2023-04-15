@@ -14,7 +14,7 @@ let ``be raised when framework is run`` =
     container.Test (fun _ ->
         let framework = bow.Framework ()
 
-        let mutable result = "Not Run" |> expects.AsGeneralFailure |> TestFailure
+        let mutable result = "Not Run" |> newFailure.With.OtherTestExecutionFailure |> TestFailure
         
         framework.FrameworkLifecycleEvent
         |> Event.filter (fun args ->

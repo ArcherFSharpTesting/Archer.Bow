@@ -108,7 +108,7 @@ let ``return failure when a test fails`` =
         let containerName = "to hold tests"
         let container = suite.Container (containerPath, containerName)
 
-        let failure = "Boom" |> expects.AsGeneralFailure
+        let failure = "Boom" |> newFailure.With.OtherTestExecutionFailure
         let testF = container.Test ("First Test Fails", fun _ -> failure |> TestFailure)
         let test2 = container.Test ("Second Test Passes", fun _ -> TestSuccess)
 
@@ -141,7 +141,7 @@ let ``return failure when second test fails`` =
         let containerName = "to hold tests"
         let container = suite.Container (containerPath, containerName)
 
-        let failure = "Boom Again" |> expects.AsGeneralFailure
+        let failure = "Boom Again" |> newFailure.With.OtherTestExecutionFailure
         let test1 = container.Test ("First Test Passes", fun _ -> TestSuccess)
         let testF = container.Test ("Second Test Fails", fun _ -> failure |> TestFailure)
 
@@ -174,8 +174,8 @@ let ``return failure all second test fail`` =
         let containerName = "to hold tests"
         let container = suite.Container (containerPath, containerName)
 
-        let failure1 = "Boom Again" |> expects.AsOtherTestExecutionFailure
-        let failure2 = expects.NotRunValidationFailure ()
+        let failure1 = "Boom Again" |> newFailure.With.OtherTestExecutionFailure
+        let failure2 = newFailure.With.NotRunValidationFailure ()
         let testF = container.Test ("Second Test Fails", fun _ -> failure2 |> TestFailure)
         let testF2 = container.Test ("First Test fails", fun _ -> failure1 |> TestFailure)
 
@@ -273,7 +273,7 @@ let ``run asynchronously`` =
         let framework = bow.Framework ()
         let random = Random ()
         
-        let mutable result = expects.GeneralNotRunFailure () |> TestFailure
+        let mutable result = newFailure.With.GeneralNotRunFailure () |> TestFailure
         
         let run _ =
                 
