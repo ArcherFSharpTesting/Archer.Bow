@@ -9,14 +9,14 @@ let private container = suite.Container ()
 
 let ``be raised with the given test`` =
     container.Test (fun _ ->
-        let framework, test = buildTestFramework None None
+        let framework, test = buildBasicFramework ()
         
         let mutable result = expects.GeneralNotRunFailure () |> TestFailure
         
         framework.FrameworkLifecycleEvent
         |> Event.filter (fun args ->
             match args with
-            | FrameworkTestLifeCycle (_, TestStartTearDown, _) -> true
+            | FrameworkTestLifeCycle (_, TestStartTeardown, _) -> true
             | _ -> false
         )
         |> Event.add (fun args ->

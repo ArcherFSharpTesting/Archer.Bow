@@ -14,7 +14,7 @@ let private container = suite.Container ()
 
 let ``be raised from the given test when the framework is run`` =
     container.Test (fun _ ->
-        let framework, test = buildTestFramework None None
+        let framework, test = buildTestFramework successfulEnvironmentTest successfulUnitSetup successfulTeardown
 
         let mutable result = "Not Called" |> expects.AsGeneralFailure |> TestFailure
         
@@ -42,7 +42,7 @@ let ``be raised from the given test when the framework is run`` =
     
 let ``not be raised if FrameworkExecutionStarted was canceled`` =
     container.Test (fun _ ->
-        let framework, _ = buildTestFramework None None
+        let framework, _ = buildTestFramework successfulEnvironmentTest successfulUnitSetup successfulTeardown
          
         let mutable result = TestSuccess
         

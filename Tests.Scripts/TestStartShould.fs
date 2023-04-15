@@ -9,7 +9,7 @@ let private container = suite.Container ()
 
 let ``be raised with the given test when the framework is run`` =
     container.Test (fun _ ->
-        let framework, test = buildTestFramework None None
+        let framework, test = buildBasicFramework ()
         
         let mutable result = expects.GeneralNotRunFailure () |> TestFailure
         
@@ -41,13 +41,12 @@ let ``should not run the test action when canceled from test arg`` =
         let mutable result = expectedFailure 
         
         let testAction =
-            (fun _ ->
+            (fun _ _ ->
                 result <- expects.NotRunValidationFailure () |> TestFailure
                 TestSuccess
             )
-            |> Some
             
-        let framework, _ = buildTestFramework testAction None
+        let framework, _ = buildTestFramework testAction successfulUnitSetup successfulTeardown
         
         framework.FrameworkLifecycleEvent
         |> Event.filter (fun args ->
@@ -72,13 +71,12 @@ let ``should not run the test action when canceled from framework arg`` =
         let mutable result = expectedFailure
         
         let testAction =
-            (fun _ ->
+            (fun _ _ ->
                 result <- expects.NotRunValidationFailure () |> TestFailure
                 TestSuccess
             )
-            |> Some
             
-        let framework, _ = buildTestFramework testAction None
+        let framework, _ = buildTestFramework testAction successfulUnitSetup successfulTeardown
         
         framework.FrameworkLifecycleEvent
         |> Event.filter (fun args ->

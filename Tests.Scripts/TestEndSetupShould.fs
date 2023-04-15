@@ -4,13 +4,12 @@ open Archer
 open Archer.CoreTypes.InternalTypes
 open Archer.CoreTypes.InternalTypes.FrameworkTypes
 open Archer.MicroLang
-open Archer.MicroLang.Types
 
 let private container = suite.Container ()
 
 let ``be raised from the given test when the framework is run`` =
     container.Test (fun _ ->
-        let framework, test = buildTestFramework None None
+        let framework, test = buildTestFramework successfulEnvironmentTest successfulUnitSetup successfulTeardown
 
         let mutable result = expects.GeneralNotRunFailure () |> TestFailure
         
@@ -38,7 +37,7 @@ let ``be raised from the given test when the framework is run`` =
     
 let ``should not be raised if FrameworkExecutionStart canceled`` =
     container.Test (fun _ ->
-        let framework, _test = buildTestFramework None None
+        let framework, _test = buildTestFramework successfulEnvironmentTest successfulUnitSetup successfulTeardown
         
         let mutable result = TestSuccess
         
@@ -67,13 +66,10 @@ let ``should not be raised if FrameworkExecutionStart canceled`` =
     
 let ``should carry the result of the EndSetup event`` =
     container.Test (fun _ ->
-        let expectedResult = ("Should blow up", { FilePath = ignoreString (); FileName = ignoreString (); LineNumber = ignoreInt () }) |> GeneralSetupTearDownFailure |> SetupFailure |> TestFailure
-        let setup =
-            (fun () -> expectedResult)
-            |> SetupPart
-            |> Some
+        let expectedResult = ("Should blow up", { FilePath = ignoreString (); FileName = ignoreString (); LineNumber = ignoreInt () }) |> GeneralSetupTeardownFailure
+        let setup _ = Error expectedResult
         
-        let framework, _test = buildTestFramework None setup
+        let framework, _test = buildTestFramework successfulEnvironmentTest setup successfulTeardown
         
         let mutable result = expects.GeneralNotRunFailure () |> TestFailure
         
@@ -88,7 +84,7 @@ let ``should carry the result of the EndSetup event`` =
             | FrameworkTestLifeCycle(_, TestEndSetup (testResult, _), _) ->
                 result <-
                     testResult
-                    |> expects.ToBe expectedResult
+                    |> expects.ToBe (expectedResult |> SetupFailure)
             | _ -> ()
         )
         

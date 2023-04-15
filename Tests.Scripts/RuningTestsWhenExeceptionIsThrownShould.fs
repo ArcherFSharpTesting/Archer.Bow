@@ -9,7 +9,7 @@ open Archer.Bow.Values
 
 let private container = suite.Container ()
 
-type DummyTestExecutor (parent: ITest, action: FrameworkEnvironment -> TestResult) =
+type DummyTestExecutor (parent: ITest, action: FrameworkEnvironment -> TestExecutionResult) =
     let dummyEvent = Event<TestExecutionDelegate, TestEventLifecycle> ()
     
     interface ITestExecutor with
@@ -19,7 +19,7 @@ type DummyTestExecutor (parent: ITest, action: FrameworkEnvironment -> TestResul
         [<CLIEvent>]
         member this.TestLifecycleEvent = dummyEvent.Publish
 
-type DummyTest (containerPath: string, containerName: string, testName: string, action: FrameworkEnvironment -> TestResult, location: CodeLocation) =
+type DummyTest (containerPath: string, containerName: string, testName: string, action: FrameworkEnvironment -> TestExecutionResult, location: CodeLocation) =
     interface ITest with
         member _.ContainerName = containerName
         member _.ContainerPath = containerPath
@@ -49,7 +49,7 @@ let ``Return ExceptionFailure`` =
                     [
                         FailContainer (
                             containerName,
-                            [FailedTests [expectedException |> ExceptionFailure, badTest]]
+                            [FailedTests [expectedException |> TestExceptionFailure |> TestRunFailureType, badTest]]
                         )
                     ]
                 )

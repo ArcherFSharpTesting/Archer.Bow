@@ -115,7 +115,7 @@ let ``return failure when a test fails`` =
         let expected = {
                 Failures = [
                     FailContainer (containerPath, [
-                        FailContainer (containerName, [FailedTests [failure, testF]])
+                        FailContainer (containerName, [FailedTests [failure |> TestRunFailureType, testF]])
                     ])
                 ]
                 Successes = [
@@ -148,7 +148,7 @@ let ``return failure when second test fails`` =
         let expected = {
                 Failures = [
                     FailContainer (containerPath, [
-                        FailContainer (containerName, [FailedTests [failure, testF]])
+                        FailContainer (containerName, [FailedTests [failure |> TestRunFailureType, testF]])
                     ])
                 ]
                 Successes = [
@@ -174,7 +174,7 @@ let ``return failure all second test fail`` =
         let containerName = "to hold tests"
         let container = suite.Container (containerPath, containerName)
 
-        let failure1 = "Boom Again" |> expects.AsGeneralFailure
+        let failure1 = "Boom Again" |> expects.AsOtherTestExecutionFailure
         let failure2 = expects.NotRunValidationFailure ()
         let testF = container.Test ("Second Test Fails", fun _ -> failure2 |> TestFailure)
         let testF2 = container.Test ("First Test fails", fun _ -> failure1 |> TestFailure)
@@ -182,7 +182,7 @@ let ``return failure all second test fail`` =
         let expected = {
                 Failures = [
                     FailContainer (containerPath, [
-                        FailContainer (containerName,  [FailedTests [failure1, testF2; failure2, testF]])
+                        FailContainer (containerName,  [FailedTests [failure1 |> TestRunFailureType, testF2; failure2 |> TestRunFailureType, testF]])
                     ])
                 ]
                 Successes = []

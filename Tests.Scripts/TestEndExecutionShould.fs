@@ -9,7 +9,7 @@ let private container = suite.Container ()
 
 let ``be raised with the given test`` =
     container.Test (fun _ ->
-        let framework, test = buildTestFramework None None
+        let framework, test = buildTestFramework successfulEnvironmentTest successfulUnitSetup successfulTeardown
         
         let mutable result = expects.GeneralNotRunFailure () |> TestFailure
         
