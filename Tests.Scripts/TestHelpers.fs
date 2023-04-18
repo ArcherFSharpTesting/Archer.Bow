@@ -9,7 +9,7 @@ open Archer.MicroLang.Types
 let buildTestFramework (testAction: 'a -> FrameworkEnvironment -> TestResult) (setup: unit -> Result<'a, SetupTeardownFailure>) (teardown: Result<'a, SetupTeardownFailure> -> TestResult option -> Result<unit, SetupTeardownFailure>) =
     let framework = bow.Framework ()
     let container = suite.Container (ignoreString (), ignoreString ())
-    let test = container.Test (Setup setup, testAction, Teardown teardown)
+    let test = container.Test (SetupPart setup, testAction, TeardownPart teardown)
     
     (framework.AddTests [test]), test
     

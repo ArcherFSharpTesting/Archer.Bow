@@ -108,7 +108,7 @@ let ``return failure when a test fails`` =
         let containerName = "to hold tests"
         let container = suite.Container (containerPath, containerName)
 
-        let failure = "Boom" |> newFailure.With.OtherTestExecutionFailure
+        let failure = "Boom" |> newFailure.With.TestOtherExpectationFailure
         let testF = container.Test ("First Test Fails", fun _ -> failure |> TestFailure)
         let test2 = container.Test ("Second Test Passes", fun _ -> TestSuccess)
 
@@ -141,7 +141,7 @@ let ``return failure when second test fails`` =
         let containerName = "to hold tests"
         let container = suite.Container (containerPath, containerName)
 
-        let failure = "Boom Again" |> newFailure.With.OtherTestExecutionFailure
+        let failure = "Boom Again" |> newFailure.With.TestOtherExpectationFailure
         let test1 = container.Test ("First Test Passes", fun _ -> TestSuccess)
         let testF = container.Test ("Second Test Fails", fun _ -> failure |> TestFailure)
 
@@ -174,8 +174,8 @@ let ``return failure all second test fail`` =
         let containerName = "to hold tests"
         let container = suite.Container (containerPath, containerName)
 
-        let failure1 = "Boom Again" |> newFailure.With.OtherTestExecutionFailure
-        let failure2 = newFailure.With.NotRunValidationFailure ()
+        let failure1 = "Boom Again" |> newFailure.With.TestOtherExpectationFailure
+        let failure2 = newFailure.With.TestExecutionNotRunFailure ()
         let testF = container.Test ("Second Test Fails", fun _ -> failure2 |> TestFailure)
         let testF2 = container.Test ("First Test fails", fun _ -> failure1 |> TestFailure)
 
@@ -227,8 +227,8 @@ let ``shuffle the order of the tests`` =
         // ]
         // |> ignore
         
-        "Async Breaks this"
-        |> expects.ToBeIgnored
+        ()
+        |> expects.ToBeIgnored "Async Breaks this"
     )
     
 let ``shuffle the order of the tests different seed`` =
@@ -261,8 +261,8 @@ let ``shuffle the order of the tests different seed`` =
         // ]
         // |> ignore
         
-        "Async Breaks this"
-        |> expects.ToBeIgnored
+        ()
+        |> expects.ToBeIgnored "Async Breaks this"
     )
     
 let ``run asynchronously`` =
@@ -273,7 +273,7 @@ let ``run asynchronously`` =
         let framework = bow.Framework ()
         let random = Random ()
         
-        let mutable result = newFailure.With.GeneralNotRunFailure () |> TestFailure
+        let mutable result = newFailure.With.TestExecutionNotRunFailure () |> TestFailure
         
         let run _ =
                 

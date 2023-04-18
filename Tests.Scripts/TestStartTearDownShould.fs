@@ -11,7 +11,7 @@ let ``be raised with the given test`` =
     container.Test (fun _ ->
         let framework, test = buildBasicFramework ()
         
-        let mutable result = newFailure.With.GeneralNotRunFailure () |> TestFailure
+        let mutable result = newFailure.With.TestExecutionNotRunFailure () |> TestFailure
         
         framework.FrameworkLifecycleEvent
         |> Event.filter (fun args ->

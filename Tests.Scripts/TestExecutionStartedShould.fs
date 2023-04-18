@@ -14,7 +14,7 @@ let ``be raised from the given test when framework is run`` =
     container.Test (fun _ ->
         let framework, test = buildTestFramework successfulEnvironmentTest successfulUnitSetup successfulTeardown
 
-        let mutable result = "Not Called" |> newFailure.With.OtherTestExecutionFailure |> TestFailure
+        let mutable result = "Not Called" |> newFailure.With.TestOtherExpectationFailure |> TestFailure
         
         framework.FrameworkLifecycleEvent
         |> Event.filter (fun args ->

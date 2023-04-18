@@ -121,7 +121,7 @@ module Executor =
             |> List.filter (fun (result, _) ->
                 match result with
                 | TestExecutionResult TestSuccess
-                | TestExecutionResult (TestIgnored _)  -> false
+                | TestExecutionResult (TestFailure (TestIgnored _))  -> false
                 | _ -> true
             )
             |> List.map (fun (testResult, test) ->
@@ -140,9 +140,9 @@ module Executor =
             results
             |> List.filter (fun (result, _) ->
                 match result with
-                | TestExecutionResult (TestIgnored _) -> true
+                | TestExecutionResult (TestFailure (TestIgnored _)) -> true
                 | _ -> false
             )
-            |> List.map (fun (TestExecutionResult (TestIgnored (s, location)), test) -> s, location, test)
+            |> List.map (fun (TestExecutionResult (TestFailure (TestIgnored (s, location))), test) -> s, location, test)
 
         (failures, ignored, successes, seed)
