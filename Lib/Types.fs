@@ -44,6 +44,12 @@ type Framework (tests: ITest list) as this =
         this.Run(fun () -> globalRandom.Next ())
         
     member this.Run (getSeed: unit -> int) =
+        this.Run ((fun _ -> true), getSeed)
+        
+    member this.Run (predicate: ITest -> bool) =
+        this.Run (predicate, fun () -> globalRandom.Next ())
+    
+    member this.Run (predicate: ITest -> bool, getSeed: unit -> int) =
         let seed = getSeed ()
         let startArgs = CancelEventArgs ()
         frameworkLifecycleEvent.Trigger (this, FrameworkStartExecution startArgs)
@@ -57,6 +63,7 @@ type Framework (tests: ITest list) as this =
 
         let executors =
             tests
+            |> List.filter predicate
             |> List.map (fun t -> t.GetExecutor () |> hookEvents)
 
         try
@@ -88,7 +95,9 @@ type Framework (tests: ITest list) as this =
         
         member this.Run () = this.Run ()
         
-        member this.Run getSeed = this.Run getSeed
+        member this.Run (getSeed: unit -> int) = this.Run getSeed
+        member this.Run (predicate: ITest -> bool) = this.Run predicate
+        member this.Run (predicate, getSeed) = this.Run (predicate, getSeed)
         
         [<CLIEvent>]
         member this.FrameworkLifecycleEvent = frameworkLifecycleEvent.Publish
