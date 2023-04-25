@@ -3,9 +3,8 @@
 
 open Archer.Bow
 open Archer.MicroLang.Lang
-let framework = bow.Framework ()
-
-[
+bow.Framework ()
+|> addManyTests [
     ``Framework Run Should``.``Test Cases``
     ``FrameworkExecutionStarted Event should``.``Test Cases``
     ``FrameworkExecutionEnded Event should``.``Test Cases``
@@ -18,6 +17,4 @@ let framework = bow.Framework ()
     ``TestEndExecution Event should``.``Test Cases``
     ``When running tests that throw exception framework should``.``Test Cases``
 ]
-|> List.concat
-|> framework.AddTests
 |> runAndReport
