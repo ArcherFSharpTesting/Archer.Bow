@@ -11,7 +11,7 @@ let ``raise event with given test`` =
     container.Test (fun _ ->
         let framework, test = buildBasicFramework ()
         
-        let mutable result = newFailure.With.TestExecutionNotRunFailure () |> TestFailure
+        let mutable result = newFailure.With.TestExecutionWasNotRunValidationFailure () |> TestFailure
         
         framework.FrameworkLifecycleEvent
         |> Event.filter (fun args ->

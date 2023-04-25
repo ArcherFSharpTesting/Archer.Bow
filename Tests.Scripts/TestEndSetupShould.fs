@@ -11,7 +11,7 @@ let ``be raised from the given test when the framework is run`` =
     container.Test (fun _ ->
         let framework, test = buildTestFramework successfulEnvironmentTest successfulUnitSetup successfulTeardown
 
-        let mutable result = newFailure.With.TestExecutionNotRunFailure () |> TestFailure
+        let mutable result = newFailure.With.TestExecutionWasNotRunValidationFailure () |> TestFailure
         
         framework.FrameworkLifecycleEvent
         |> Event.filter (fun args ->
@@ -71,7 +71,7 @@ let ``should carry the result of the EndSetup event`` =
         
         let framework, _test = buildTestFramework successfulEnvironmentTest setup successfulTeardown
         
-        let mutable result = newFailure.With.TestExecutionNotRunFailure () |> TestFailure
+        let mutable result = newFailure.With.TestExecutionWasNotRunValidationFailure () |> TestFailure
         
         framework.FrameworkLifecycleEvent
         |> Event.filter (fun args ->

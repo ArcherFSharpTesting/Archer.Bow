@@ -11,7 +11,7 @@ let ``be raised with the given test`` =
     container.Test (fun _ ->
         let framework, test = buildTestFramework successfulEnvironmentTest successfulUnitSetup successfulTeardown
         
-        let mutable result = newFailure.With.TestExecutionNotRunFailure () |> TestFailure
+        let mutable result = newFailure.With.TestExecutionWasNotRunValidationFailure () |> TestFailure
         
         framework.FrameworkLifecycleEvent
         |> Event.filter (fun args ->

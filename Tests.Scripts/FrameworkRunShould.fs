@@ -175,7 +175,7 @@ let ``return failure all second test fail`` =
         let container = suite.Container (containerPath, containerName)
 
         let failure1 = "Boom Again" |> newFailure.With.TestOtherExpectationFailure
-        let failure2 = newFailure.With.TestExecutionNotRunFailure ()
+        let failure2 = newFailure.With.TestExecutionWasNotRunValidationFailure ()
         let testF = container.Test ("Second Test Fails", fun _ -> failure2 |> TestFailure)
         let testF2 = container.Test ("First Test fails", fun _ -> failure1 |> TestFailure)
 
@@ -273,7 +273,7 @@ let ``run asynchronously`` =
         let framework = bow.Framework ()
         let random = Random ()
         
-        let mutable result = newFailure.With.TestExecutionNotRunFailure () |> TestFailure
+        let mutable result = newFailure.With.TestExecutionWasNotRunValidationFailure () |> TestFailure
         
         let run _ =
                 
