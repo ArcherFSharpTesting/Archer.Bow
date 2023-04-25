@@ -1,14 +1,15 @@
 module Archer.Tests.Scripts.``TestEndExecution Event should``
 
 open Archer
+open Archer.Arrows.Helpers
 open Archer.CoreTypes.InternalTypes
 open Archer.CoreTypes.InternalTypes.FrameworkTypes
 open Archer.MicroLang
 
-let private container = suite.Container ()
+let private feature = Arrow.NewFeature ()
 
 let ``be raised with the given test`` =
-    container.Test (fun _ ->
+    feature.Test (fun _ ->
         let framework, test = buildTestFramework successfulEnvironmentTest successfulUnitSetup successfulTeardown
         
         let mutable result = newFailure.With.TestExecutionWasNotRunValidationFailure () |> TestFailure
@@ -35,4 +36,4 @@ let ``be raised with the given test`` =
         result
     )
     
-let ``Test Cases`` = container.Tests
+let ``Test Cases`` = feature.GetTests ()

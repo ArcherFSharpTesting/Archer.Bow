@@ -1,5 +1,6 @@
 module Archer.Tests.Scripts.``FrameworkExecutionStarted Event should``
 
+open Archer.Arrows.Helpers
 open Archer.Bow
 open Archer
 open Archer.CoreTypes.InternalTypes.FrameworkTypes
@@ -8,10 +9,10 @@ open Archer.MicroLang
 let private defaultSeed = 33
 let private getDefaultSeed () = defaultSeed
 
-let private container = suite.Container ()
+let private feature = Arrow.NewFeature ()
 
 let ``be raised when framework is run`` =
-    container.Test (fun _ ->
+    feature.Test (fun _ ->
         let framework = bow.Framework ()
 
         let mutable result = "Not Run" |> newFailure.With.TestOtherExpectationFailure |> TestFailure
@@ -34,4 +35,4 @@ let ``be raised when framework is run`` =
         result        
     )
     
-let ``Test Cases`` = container.Tests
+let ``Test Cases`` = feature.GetTests ()

@@ -4,7 +4,6 @@ module Archer.Tests.Scripts.TestHelpers
 open Archer
 open Archer.Bow
 open Archer.MicroLang
-open Archer.MicroLang.Types
 
 let buildTestFramework (testAction: 'a -> FrameworkEnvironment -> TestResult) (setup: unit -> Result<'a, SetupTeardownFailure>) (teardown: Result<'a, SetupTeardownFailure> -> TestResult option -> Result<unit, SetupTeardownFailure>) =
     let framework = bow.Framework ()

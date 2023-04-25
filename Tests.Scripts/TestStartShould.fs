@@ -1,11 +1,12 @@
 module Archer.Tests.Scripts.``TestStart Event should``
 
 open Archer
+open Archer.Arrows.Helpers
 open Archer.CoreTypes.InternalTypes
 open Archer.CoreTypes.InternalTypes.FrameworkTypes
 open Archer.MicroLang
 
-let private container = suite.Container ()
+let private container = Arrow.NewFeature ()
 
 let ``be raised with the given test when the framework is run`` =
     container.Test (fun _ ->
@@ -24,7 +25,7 @@ let ``be raised with the given test when the framework is run`` =
             | FrameworkTestLifeCycle(currentTest, _, _) ->
                 result <-
                     currentTest
-                    |> expects.ToBe test
+                    |> Should.BeEqualTo test
             | _ -> ()
         )
         
@@ -62,7 +63,7 @@ let ``should not run the test action when canceled from test arg`` =
         )
         
         result
-        |> expects.ToBe expectedFailure
+        |> Should.BeEqualTo expectedFailure
     )
     
 let ``should not run the test action when canceled from framework arg`` =
@@ -95,4 +96,4 @@ let ``should not run the test action when canceled from framework arg`` =
         |> expects.ToBe expectedFailure
     )
     
-let ``Test Cases`` = container.Tests
+let ``Test Cases`` = container.GetTests ()

@@ -1,7 +1,6 @@
 module Archer.Tests.Scripts.``TestStartSetup Event should``
 
-open System.ComponentModel
-open Archer.Bow
+open Archer.Arrows.Helpers
 open Archer
 open Archer.CoreTypes.InternalTypes
 open Archer.CoreTypes.InternalTypes.FrameworkTypes
@@ -10,10 +9,10 @@ open Archer.MicroLang
 let private defaultSeed = 33
 let private getDefaultSeed () = defaultSeed
 
-let private container = suite.Container ()
+let private feature = Arrow.NewFeature ()
 
 let ``be raised from the given test when the framework is run`` =
-    container.Test (fun _ ->
+    feature.Test (fun _ ->
         let framework, test = buildTestFramework successfulEnvironmentTest successfulUnitSetup successfulTeardown
 
         let mutable result = "Not Called" |> newFailure.With.TestOtherExpectationFailure |> TestFailure
@@ -41,7 +40,7 @@ let ``be raised from the given test when the framework is run`` =
     )
     
 let ``not be raised if FrameworkExecutionStarted was canceled`` =
-    container.Test (fun _ ->
+    feature.Test (fun _ ->
         let framework, _ = buildTestFramework successfulEnvironmentTest successfulUnitSetup successfulTeardown
          
         let mutable result = TestSuccess
@@ -67,4 +66,4 @@ let ``not be raised if FrameworkExecutionStarted was canceled`` =
         result
     )
     
-let ``Test Cases`` = container.Tests
+let ``Test Cases`` = feature.GetTests ()

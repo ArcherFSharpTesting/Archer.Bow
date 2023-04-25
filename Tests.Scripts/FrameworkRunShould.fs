@@ -1,6 +1,7 @@
 ﻿module Archer.Tests.Scripts.``Framework Run Should``
 
 open System
+open Archer.Arrows.Helpers
 open Archer.Bow
 open Archer
 open Archer.MicroLang
@@ -9,10 +10,10 @@ open Archer.CoreTypes.InternalTypes.FrameworkTypes
 let private defaultSeed = 42
 let private getDefaultSeed () = defaultSeed
 
-let private container = suite.Container ()
+let private feature = Arrow.NewFeature ()
 
 let ``return empty results when it has no tests`` =
-    container.Test (fun _ ->
+    feature.Test (fun _ ->
         let seed = 5
                 
         let framework = bow.Framework ()
@@ -25,11 +26,11 @@ let ``return empty results when it has no tests`` =
             Seed = seed
         }
                 
-        result |> expects.ToBe expected
+        result |> Should.BeEqualTo expected
     )
     
 let ``return empty results with different seed when it has no tests and provided a different seed`` =
-    container.Test (fun _ ->
+    feature.Test (fun _ ->
         let seed = 258
                 
         let framework = bow.Framework ()
@@ -42,11 +43,11 @@ let ``return empty results with different seed when it has no tests and provided
             Seed = seed
         }
                 
-        result |> expects.ToBe expected
+        result |> Should.BeEqualTo expected
     )
     
 let ``return a successful result when one test passes`` =
-    container.Test (fun _ ->
+    feature.Test (fun _ ->
         let framework = bow.Framework ()
         let containerPath = "A Test Suite"
         let containerName = "with a passing test"
@@ -69,11 +70,11 @@ let ``return a successful result when one test passes`` =
             Seed = defaultSeed
         }
 
-        result |> expects.ToBe expected
+        result |> Should.BeEqualTo expected
     )
     
 let ``return a successful result when two tests pass`` =
-    container.Test (fun _ ->
+    feature.Test (fun _ ->
         let framework = bow.Framework ()
         let containerPath = "A test Suite"
         let containerName = "with two passing tests"
@@ -98,11 +99,11 @@ let ``return a successful result when two tests pass`` =
             framework.AddTests [test1; test2]
             |> runWithSeed getDefaultSeed
 
-        result |> expects.ToBe expected
+        result |> Should.BeEqualTo expected
     )
     
 let ``return failure when a test fails`` =
-    container.Test ("", fun _ -> 
+    feature.Test ("", fun _ -> 
         let framework = bow.Framework ()
         let containerPath = "A test Suite"
         let containerName = "to hold tests"
@@ -131,11 +132,11 @@ let ``return failure when a test fails`` =
             framework.AddTests [testF; test2]
             |> runWithSeed getDefaultSeed
 
-        result |> expects.ToBe expected
+        result |> Should.BeEqualTo expected
     )
     
 let ``return failure when second test fails`` =
-    container.Test (fun _ -> 
+    feature.Test (fun _ -> 
         let framework = bow.Framework ()
         let containerPath = "A test Suite"
         let containerName = "to hold tests"
@@ -164,11 +165,11 @@ let ``return failure when second test fails`` =
             framework.AddTests [test1; testF]
             |> runWithSeed getDefaultSeed
 
-        result |> expects.ToBe expected
+        result |> Should.BeEqualTo expected
     )
     
 let ``return failure all second test fail`` =
-    container.Test (fun _ -> 
+    feature.Test (fun _ -> 
         let framework = bow.Framework ()
         let containerPath = "A test Suite"
         let containerName = "to hold tests"
@@ -194,79 +195,11 @@ let ``return failure all second test fail`` =
             framework.AddTests [testF2; testF]
             |> runWithSeed getDefaultSeed
 
-        result |> expects.ToBe expected
-    )
-    
-let ``shuffle the order of the tests`` =
-    container.Test (fun _ ->
-        // let framework = bow.Framework ()
-        //
-        // let container = suite.Container ("Framework Run", "shuffle the order of the tests")
-        // let results = System.Collections.Generic.List<string> ()
-        //
-        // let framework = framework.AddTests [
-        //     container.Test ("Test A", successfulTest)
-        //     container.Test ("Test B", successfulTest)
-        //     container.Test ("Test C", successfulTest)
-        // ]
-        //
-        // framework.TestStart.Add (fun ars ->
-        //     results.Add ars.Test.TestName
-        // )
-        //
-        // (fun () -> 1073633209)
-        // |> framework.Run
-        // |> ignore
-        //
-        // results
-        // |> List.ofSeq
-        // |> expectsToBe [
-        //     "Test C"
-        //     "Test A"
-        //     "Test B"
-        // ]
-        // |> ignore
-        
-        ()
-        |> expects.ToBeIgnored "Async Breaks this"
-    )
-    
-let ``shuffle the order of the tests different seed`` =
-    container.Test (fun _ ->
-        // let framework = bow.Framework ()
-        //
-        // let container = suite.Container ("Framework Run", "shuffle the order of the tests")
-        // let results = System.Collections.Generic.List<string> ()
-        //
-        // let framework = framework.AddTests [
-        //     container.Test ("Test A", successfulTest)
-        //     container.Test ("Test B", successfulTest)
-        //     container.Test ("Test C", successfulTest)
-        // ]
-        //
-        // framework.TestStart.Add (fun ars ->
-        //     results.Add ars.Test.TestName
-        // )
-        //
-        // (fun () -> 4006)
-        // |> framework.Run
-        // |> ignore
-        //
-        // results
-        // |> List.ofSeq
-        // |> expectsToBe [
-        //     "Test B"
-        //     "Test C"
-        //     "Test A"
-        // ]
-        // |> ignore
-        
-        ()
-        |> expects.ToBeIgnored "Async Breaks this"
+        result |> Should.BeEqualTo expected
     )
     
 let ``run asynchronously`` =
-    container.Test (fun _ ->
+    feature.Test (fun _ ->
         let monitor = obj ()
         let mutable isRunning = false
         
@@ -291,9 +224,9 @@ let ``run asynchronously`` =
             TestSuccess
             
         
-        let t1 = container.Test ("Test A", run)
-        let t2 = container.Test ("Test B", run)
-        let t3 = container.Test ("Test C", run)
+        let t1 = feature.Test ("Test A", run)
+        let t2 = feature.Test ("Test B", run)
+        let t3 = feature.Test ("Test C", run)
         
         framework.AddTests [
             t1
@@ -307,22 +240,22 @@ let ``run asynchronously`` =
     )
     
 let ``run a test with the correct framework name`` =
-    container.Test(fun env ->
-        env.FrameworkName
+    feature.Test(fun _ env ->
+        env.FrameworkEnvironment.FrameworkName
         |> expects.ToBe "Archer.Bow"
     )
     
 let ``run a test with the correct framework version`` =
-    container.Test(fun env ->
+    feature.Test(fun _ env ->
         let typeBow = bow.GetType ()
         let version = typeBow.Assembly.GetName().Version
         
-        env.FrameworkVersion
+        env.FrameworkEnvironment.FrameworkVersion
         |> expects.ToBe version
     )
     
 let ``run a test with the correct test info`` =
-    container.Test(fun env ->
+    feature.Test(fun _ ->
         let containerPath = "The Path"
         let containerName = "My new container"
         let testName = "Testing the test info"
@@ -373,4 +306,4 @@ let ``run a test with the correct test info`` =
         |> andResult b
     )
     
-let ``Test Cases`` = container.Tests
+let ``Test Cases`` = feature.GetTests ()

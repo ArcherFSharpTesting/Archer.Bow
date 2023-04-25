@@ -2,12 +2,13 @@
 
 open System
 open Archer
+open Archer.Arrows.Helpers
 open Archer.CoreTypes.InternalTypes
 open Archer.CoreTypes.InternalTypes.FrameworkTypes
 open Archer.MicroLang
 open Archer.Bow.Values
 
-let private container = suite.Container ()
+let private container = Arrow.NewFeature ()
 
 type DummyTestExecutor (parent: ITest, action: FrameworkEnvironment -> TestExecutionResult) =
     let dummyEvent = Event<TestExecutionDelegate, TestEventLifecycle> ()
@@ -41,7 +42,7 @@ let ``Return ExceptionFailure`` =
         
         framework.AddTests [badTest]
         |> runWithSeed (fun () -> 155)
-        |> expects.ToBe {
+        |> Should.BeEqualTo {
             Successes = []
             Failures = [
                 FailContainer (
@@ -59,4 +60,4 @@ let ``Return ExceptionFailure`` =
         }
     )
 
-let ``Test Cases`` = container.Tests
+let ``Test Cases`` = container.GetTests ()
