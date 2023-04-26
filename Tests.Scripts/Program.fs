@@ -1,8 +1,35 @@
 ﻿module Archer.Tests.Scripts.Program
 // For more information see https://aka.ms/fsharp-console-apps
 
+open Archer
 open Archer.Bow
+open Archer.CoreTypes.InternalTypes
+open Archer.CoreTypes.InternalTypes.FrameworkTypes
 open Archer.MicroLang.Lang
+
+let reportWhileRunning (framework: IFramework) =
+    framework.FrameworkLifecycleEvent
+    |> Event.add (fun args ->
+        match args with
+        | FrameworkStartExecution _ ->
+            printfn ""
+        | FrameworkTestLifeCycle (test, testEventLifecycle, _) ->
+            match testEventLifecycle with
+            | TestEndExecution testExecutionResult ->
+                let successMsg =
+                    match testExecutionResult with
+                    | TestExecutionResult TestSuccess -> "Success"
+                    | _ -> "Fail"
+                    
+                let report = $"%A{test} : (%s{successMsg})"
+                printfn $"%s{report}"
+            | _ -> ()
+        | FrameworkEndExecution ->
+            printfn "\n"
+    )
+    
+    framework
+
 bow.Framework ()
 |> addManyTests [
     ``Framework Run Should``.``Test Cases``
@@ -17,4 +44,5 @@ bow.Framework ()
     ``TestEndExecution Event should``.``Test Cases``
     ``When running tests that throw exception framework should``.``Test Cases``
 ]
+|> reportWhileRunning
 |> runAndReport
