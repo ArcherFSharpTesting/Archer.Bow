@@ -33,7 +33,11 @@
         },
         {
             "name": "push",
-            "command": "gittey test && git push"
+            "command": "gittey test && gittey push:raw"
+        },
+        {
+            "name": "push:raw",
+            "command": "git push"
         },
         {
             "name": "build",
@@ -45,7 +49,7 @@
         },
         {
             "name": "pack",
-            "command": "gittey test && gittey up-version && gittey push && dotnet pack"
+            "command": "gittey test && gittey up-version && gittey push:raw && dotnet pack"
         },
         {
             "name": "pack-unsafe",
