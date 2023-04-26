@@ -6,7 +6,8 @@ open Archer.Bow.Executor
 open Archer.CoreTypes.InternalTypes
 open Archer.CoreTypes.InternalTypes.FrameworkTypes
 
-type Framework (tests: ITest list) as this =
+type Framework (startingTests: ITest list) as this =
+    let mutable tests = startingTests
     let lockObj = obj()
     let mutable cancel = false
     let setCancel value =
@@ -83,11 +84,13 @@ type Framework (tests: ITest list) as this =
             frameworkLifecycleEvent.Trigger (this, FrameworkEndExecution)
     
     member this.AddTests (newTests: ITest seq) =
-        let tsts =
-            newTests
-            |> List.ofSeq
-            
-        Framework tsts
+        tests <-
+            [
+                tests
+                (newTests |> List.ofSeq)
+            ] |> List.concat
+        
+        this
         
         
     interface IFramework with
