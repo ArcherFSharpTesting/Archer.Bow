@@ -2,10 +2,9 @@
 
 open System
 open Archer
-open Archer.Arrows.Helpers
+open Archer.Arrows
 open Archer.CoreTypes.InternalTypes
 open Archer.CoreTypes.InternalTypes.FrameworkTypes
-open Archer.MicroLang
 open Archer.Bow.Values
 
 let private container = Arrow.NewFeature ()

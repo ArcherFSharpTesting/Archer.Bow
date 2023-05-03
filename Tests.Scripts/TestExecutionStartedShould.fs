@@ -1,7 +1,7 @@
 module Archer.Tests.Scripts.``TestExecutionStarted Event should``
 
 open Archer
-open Archer.Arrows.Helpers
+open Archer.Arrows
 open Archer.CoreTypes.InternalTypes
 open Archer.CoreTypes.InternalTypes.FrameworkTypes
 open Archer.MicroLang

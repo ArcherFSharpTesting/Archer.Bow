@@ -1,6 +1,7 @@
 module Archer.Tests.Scripts.``TestEndExecution Event should``
 
 open Archer
+open Archer.Arrows
 open Archer.Arrows.Helpers
 open Archer.CoreTypes.InternalTypes
 open Archer.CoreTypes.InternalTypes.FrameworkTypes

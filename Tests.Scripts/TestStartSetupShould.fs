@@ -1,6 +1,6 @@
 module Archer.Tests.Scripts.``TestStartSetup Event should``
 
-open Archer.Arrows.Helpers
+open Archer.Arrows
 open Archer
 open Archer.CoreTypes.InternalTypes
 open Archer.CoreTypes.InternalTypes.FrameworkTypes

@@ -1,7 +1,7 @@
 ﻿module Archer.Tests.Scripts.``Framework Run Should``
 
 open System
-open Archer.Arrows.Helpers
+open Archer.Arrows
 open Archer.Bow
 open Archer
 open Archer.MicroLang
