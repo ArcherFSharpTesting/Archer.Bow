@@ -1,5 +1,4 @@
 ﻿module Archer.Tests.Scripts.Program
-// For more information see https://aka.ms/fsharp-console-apps
 
 open Archer
 open Archer.Bow
@@ -31,7 +30,7 @@ let reportWhileRunning (framework: IFramework) =
     framework
 
 bow.Framework ()
-|> addManyTests [
+|> addMany [
     ``Framework Run Should``.``Test Cases``
     ``FrameworkExecutionStarted Event should``.``Test Cases``
     ``FrameworkExecutionEnded Event should``.``Test Cases``
