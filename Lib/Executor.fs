@@ -3,14 +3,14 @@ namespace Archer.Bow
 open System
 open Archer
 open Archer.CoreTypes.InternalTypes
-open Archer.CoreTypes.InternalTypes.FrameworkTypes
+open Archer.CoreTypes.InternalTypes.RunnerTypes
 
 module Executor =
     let globalRandom = Random ()
     let runTest version (test: ITestExecutor) =
         let info = {
-            FrameworkName = "Archer.Bow"
-            FrameworkVersion = version
+            RunnerName = "Archer.Bow"
+            RunnerVersion = version
             TestInfo = test.Parent :> ITestInfo 
         }
         

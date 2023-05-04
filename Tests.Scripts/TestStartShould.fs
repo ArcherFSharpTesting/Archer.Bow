@@ -4,7 +4,7 @@ open Archer
 open Archer.Arrows
 open Archer.Arrows.Helpers
 open Archer.CoreTypes.InternalTypes
-open Archer.CoreTypes.InternalTypes.FrameworkTypes
+open Archer.CoreTypes.InternalTypes.RunnerTypes
 open Archer.MicroLang
 
 let private container = Arrow.NewFeature ()
@@ -15,15 +15,15 @@ let ``be raised with the given test when the framework is run`` =
         
         let mutable result = newFailure.With.TestExecutionWasNotRunValidationFailure () |> TestFailure
         
-        framework.FrameworkLifecycleEvent
+        framework.RunnerLifecycleEvent
         |> Event.filter (fun args ->
             match args with
-            | FrameworkTestLifeCycle(_, TestStart _, _) -> true
+            | RunnerTestLifeCycle(_, TestStart _, _) -> true
             | _ -> false
         )
         |> Event.add (fun args ->
             match args with
-            | FrameworkTestLifeCycle(currentTest, _, _) ->
+            | RunnerTestLifeCycle(currentTest, _, _) ->
                 result <-
                     currentTest
                     |> Should.BeEqualTo test
@@ -50,15 +50,15 @@ let ``should not run the test action when canceled from test arg`` =
             
         let framework, _ = buildTestFramework testAction successfulUnitSetup successfulTeardown
         
-        framework.FrameworkLifecycleEvent
+        framework.RunnerLifecycleEvent
         |> Event.filter (fun args ->
             match args with
-            | FrameworkTestLifeCycle(_, TestStart _, _) -> true
+            | RunnerTestLifeCycle(_, TestStart _, _) -> true
             | _ -> false
         )
         |> Event.add (fun args ->
             match args with
-            | FrameworkTestLifeCycle(_, TestStart cancelEventArgs, _) ->
+            | RunnerTestLifeCycle(_, TestStart cancelEventArgs, _) ->
                 cancelEventArgs.Cancel <- true
             | _ -> ()
         )
@@ -80,15 +80,15 @@ let ``should not run the test action when canceled from framework arg`` =
             
         let framework, _ = buildTestFramework testAction successfulUnitSetup successfulTeardown
         
-        framework.FrameworkLifecycleEvent
+        framework.RunnerLifecycleEvent
         |> Event.filter (fun args ->
             match args with
-            | FrameworkTestLifeCycle(_, TestStart _, _) -> true
+            | RunnerTestLifeCycle(_, TestStart _, _) -> true
             | _ -> false
         )
         |> Event.add (fun args ->
             match args with
-            | FrameworkTestLifeCycle(_, TestStart _, cancelEventArgs) ->
+            | RunnerTestLifeCycle(_, TestStart _, cancelEventArgs) ->
                 cancelEventArgs.Cancel <- true
             | _ -> ()
         )

@@ -4,7 +4,7 @@ open Archer
 open Archer.Arrows
 open Archer.Arrows.Helpers
 open Archer.CoreTypes.InternalTypes
-open Archer.CoreTypes.InternalTypes.FrameworkTypes
+open Archer.CoreTypes.InternalTypes.RunnerTypes
 open Archer.MicroLang
 
 let private feature = Arrow.NewFeature ()
@@ -15,15 +15,15 @@ let ``be raised from the given test when the framework is run`` =
 
         let mutable result = newFailure.With.TestExecutionWasNotRunValidationFailure () |> TestFailure
         
-        framework.FrameworkLifecycleEvent
+        framework.RunnerLifecycleEvent
         |> Event.filter (fun args ->
             match args with
-            | FrameworkTestLifeCycle(_, TestEndSetup _, _) -> true
+            | RunnerTestLifeCycle(_, TestEndSetup _, _) -> true
             | _ -> false
         )
         |> Event.add (fun args ->
             match args with
-            | FrameworkTestLifeCycle(currentTest, TestEndSetup _, _) ->
+            | RunnerTestLifeCycle(currentTest, TestEndSetup _, _) ->
                 result <-
                     currentTest
                     |> Should.BeEqualTo test
@@ -43,18 +43,18 @@ let ``should not be raised if FrameworkExecutionStart canceled`` =
         
         let mutable result = TestSuccess
         
-        framework.FrameworkLifecycleEvent
+        framework.RunnerLifecycleEvent
         |> Event.filter (fun args ->
             match args with
-            | FrameworkTestLifeCycle(_, TestEndSetup _, _)
-            | FrameworkStartExecution _ -> true
+            | RunnerTestLifeCycle(_, TestEndSetup _, _)
+            | RunnerStartExecution _ -> true
             | _ -> false
         )
         |> Event.add (fun args ->
             match args with
-            | FrameworkTestLifeCycle(_, TestEndSetup _, _) ->
+            | RunnerTestLifeCycle(_, TestEndSetup _, _) ->
                 result <- expects.NotToBeCalled ()
-            | FrameworkStartExecution cancelEventArgs ->
+            | RunnerStartExecution cancelEventArgs ->
                 cancelEventArgs.Cancel <- true
             | _ -> ()
         )
@@ -75,15 +75,15 @@ let ``should carry the result of the EndSetup event`` =
         
         let mutable result = newFailure.With.TestExecutionWasNotRunValidationFailure () |> TestFailure
         
-        framework.FrameworkLifecycleEvent
+        framework.RunnerLifecycleEvent
         |> Event.filter (fun args ->
             match args with
-            | FrameworkTestLifeCycle(_, TestEndSetup _, _) -> true
+            | RunnerTestLifeCycle(_, TestEndSetup _, _) -> true
             | _ -> false
         )
         |> Event.add (fun args ->
             match args with
-            | FrameworkTestLifeCycle(_, TestEndSetup (testResult, _), _) ->
+            | RunnerTestLifeCycle(_, TestEndSetup (testResult, _), _) ->
                 result <-
                     testResult
                     |> Should.BeEqualTo (expectedResult |> SetupFailure)

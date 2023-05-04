@@ -4,7 +4,7 @@ open Archer
 open Archer.Arrows
 open Archer.Arrows.Helpers
 open Archer.CoreTypes.InternalTypes
-open Archer.CoreTypes.InternalTypes.FrameworkTypes
+open Archer.CoreTypes.InternalTypes.RunnerTypes
 open Archer.MicroLang
 
 let private feature = Arrow.NewFeature ()
@@ -15,15 +15,15 @@ let ``be raised with the given test`` =
         
         let mutable result = newFailure.With.TestExecutionWasNotRunFailure () |> TestFailure
         
-        framework.FrameworkLifecycleEvent
+        framework.RunnerLifecycleEvent
         |> Event.filter (fun args ->
             match args with
-            | FrameworkTestLifeCycle (_, TestStartTeardown, _) -> true
+            | RunnerTestLifeCycle (_, TestStartTeardown, _) -> true
             | _ -> false
         )
         |> Event.add (fun args ->
             match args with
-            | FrameworkTestLifeCycle(currentTest, _, _) ->
+            | RunnerTestLifeCycle(currentTest, _, _) ->
                 result <-
                     currentTest
                     |> Should.BeEqualTo test

@@ -4,12 +4,12 @@ open System
 open Archer
 open Archer.Arrows
 open Archer.CoreTypes.InternalTypes
-open Archer.CoreTypes.InternalTypes.FrameworkTypes
+open Archer.CoreTypes.InternalTypes.RunnerTypes
 open Archer.Bow.Values
 
 let private container = Arrow.NewFeature ()
 
-type DummyTestExecutor (parent: ITest, action: FrameworkEnvironment -> TestExecutionResult) =
+type DummyTestExecutor (parent: ITest, action: RunnerEnvironment -> TestExecutionResult) =
     let dummyEvent = Event<TestExecutionDelegate, TestEventLifecycle> ()
     
     interface ITestExecutor with
@@ -19,7 +19,7 @@ type DummyTestExecutor (parent: ITest, action: FrameworkEnvironment -> TestExecu
         [<CLIEvent>]
         member this.TestLifecycleEvent = dummyEvent.Publish
 
-type DummyTest (containerPath: string, containerName: string, testName: string, action: FrameworkEnvironment -> TestExecutionResult, location: CodeLocation) =
+type DummyTest (containerPath: string, containerName: string, testName: string, action: RunnerEnvironment -> TestExecutionResult, location: CodeLocation) =
     interface ITest with
         member _.ContainerName = containerName
         member _.ContainerPath = containerPath

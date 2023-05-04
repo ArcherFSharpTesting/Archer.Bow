@@ -2,18 +2,18 @@
 module Archer.Bow.Values
 
 open Archer.CoreTypes.InternalTypes
-open Archer.CoreTypes.InternalTypes.FrameworkTypes
+open Archer.CoreTypes.InternalTypes.RunnerTypes
 
-let run (framework: IFramework) =
-    framework.Run ()
+let run (runner: IRunner) =
+    runner.Run ()
     
-let runWithSeed (seed: unit -> int) (framework: IFramework) =
-    framework.Run seed
+let runWithSeed (seed: unit -> int) (runner: IRunner) =
+    runner.Run seed
     
-let filterAndRun (predicate: ITest -> bool) (framework: IFramework) =
-    framework.Run predicate
+let filterAndRun (predicate: ITest -> bool) (runner: IRunner) =
+    runner.Run predicate
 
-let filterAndRunWith (seed: int) predicate (framework: IFramework) =
-    framework.Run (predicate, (fun _ -> seed))
+let filterAndRunWith (seed: int) predicate (runner: IRunner) =
+    runner.Run (predicate, (fun _ -> seed))
 
 let bow = Bow ()

@@ -5,7 +5,7 @@ open Archer
 open Archer.Bow
 open Archer.MicroLang
 
-let buildTestFramework (testAction: 'a -> FrameworkEnvironment -> TestResult) (setup: unit -> Result<'a, SetupTeardownFailure>) (teardown: Result<'a, SetupTeardownFailure> -> TestResult option -> Result<unit, SetupTeardownFailure>) =
+let buildTestFramework (testAction: 'a -> RunnerEnvironment -> TestResult) (setup: unit -> Result<'a, SetupTeardownFailure>) (teardown: Result<'a, SetupTeardownFailure> -> TestResult option -> Result<unit, SetupTeardownFailure>) =
     let framework = bow.Framework ()
     let container = suite.Container (ignoreString (), ignoreString ())
     let test = container.Test (SetupPart setup, testAction, TeardownPart teardown)

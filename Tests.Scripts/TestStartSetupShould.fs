@@ -3,7 +3,7 @@ module Archer.Tests.Scripts.``TestStartSetup Event should``
 open Archer.Arrows
 open Archer
 open Archer.CoreTypes.InternalTypes
-open Archer.CoreTypes.InternalTypes.FrameworkTypes
+open Archer.CoreTypes.InternalTypes.RunnerTypes
 open Archer.MicroLang
 
 let private defaultSeed = 33
@@ -17,15 +17,15 @@ let ``be raised from the given test when the framework is run`` =
 
         let mutable result = "Not Called" |> newFailure.With.TestOtherExpectationFailure |> TestFailure
         
-        framework.FrameworkLifecycleEvent
+        framework.RunnerLifecycleEvent
         |> Event.filter (fun args ->
             match args with
-            | FrameworkTestLifeCycle (_, TestStartSetup _, _) -> true
+            | RunnerTestLifeCycle (_, TestStartSetup _, _) -> true
             | _ -> false
         )
         |> Event.add (fun args ->
             match args with
-            | FrameworkTestLifeCycle (currentTest, _, _) ->
+            | RunnerTestLifeCycle (currentTest, _, _) ->
                 result <-
                     currentTest
                     |> expects.ToBe test
@@ -45,18 +45,18 @@ let ``not be raised if FrameworkExecutionStarted was canceled`` =
          
         let mutable result = TestSuccess
         
-        framework.FrameworkLifecycleEvent
+        framework.RunnerLifecycleEvent
         |> Event.filter (fun args ->
             match args with
-            | FrameworkStartExecution _
-            | FrameworkTestLifeCycle(_, TestStartExecution _, _) -> true
+            | RunnerStartExecution _
+            | RunnerTestLifeCycle(_, TestStartExecution _, _) -> true
             | _ -> false
         )
         |> Event.add (fun args ->
             match args with
-            | FrameworkStartExecution cancelEventArgs ->
+            | RunnerStartExecution cancelEventArgs ->
                 cancelEventArgs.Cancel <- true
-            | FrameworkTestLifeCycle _ ->
+            | RunnerTestLifeCycle _ ->
                 result <- expects.NotToBeCalled ()
             | _ -> ()
         )

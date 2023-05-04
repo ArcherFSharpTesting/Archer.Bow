@@ -4,9 +4,9 @@ open System
 open System.ComponentModel
 open Archer.Bow.Executor
 open Archer.CoreTypes.InternalTypes
-open Archer.CoreTypes.InternalTypes.FrameworkTypes
+open Archer.CoreTypes.InternalTypes.RunnerTypes
 
-type Framework (startingTests: ITest list) as this =
+type Runner (startingTests: ITest list) as this =
     let mutable tests = startingTests
     let lockObj = obj()
     let mutable cancel = false
@@ -17,7 +17,7 @@ type Framework (startingTests: ITest list) as this =
     let readCancel () =
         lock lockObj (fun () -> cancel)
         
-    let frameworkLifecycleEvent = Event<FrameworkExecutionDelegate, FrameworkEventLifecycle> ()
+    let RunnerLifecycleEvent = Event<RunnerExecutionDelegate, RunnerEventLifecycle> ()
     let handleTestEvents (test: obj) (event: TestEventLifecycle) =
         match test with
         | :? ITest as tst ->
@@ -27,19 +27,19 @@ type Framework (startingTests: ITest list) as this =
             | TestEndSetup (_, cancelEventArgs)
             | TestStart cancelEventArgs as eventType ->
                 cancelEventArgs.Cancel <- cancelEventArgs.Cancel || readCancel ()
-                frameworkLifecycleEvent.Trigger (this, FrameworkTestLifeCycle (tst, eventType, cancelEventArgs))
+                RunnerLifecycleEvent.Trigger (this, RunnerTestLifeCycle (tst, eventType, cancelEventArgs))
                 setCancel cancelEventArgs.Cancel |> ignore
             | TestEnd _
             | TestStartTeardown
             | TestEndExecution _ as eventType ->
                 let cancelEventArgs = readCancel () |> CancelEventArgs
-                frameworkLifecycleEvent.Trigger (this, FrameworkTestLifeCycle (tst, eventType, cancelEventArgs))
+                RunnerLifecycleEvent.Trigger (this, RunnerTestLifeCycle (tst, eventType, cancelEventArgs))
                 
         | _ -> ()
         
     new () =
         let tests: ITest list = []
-        Framework tests
+        Runner tests
         
     member this.Run () =
         this.Run(fun () -> globalRandom.Next ())
@@ -53,7 +53,7 @@ type Framework (startingTests: ITest list) as this =
     member this.Run (predicate: ITest -> bool, getSeed: unit -> int) =
         let seed = getSeed ()
         let startArgs = CancelEventArgs ()
-        frameworkLifecycleEvent.Trigger (this, FrameworkStartExecution startArgs)
+        RunnerLifecycleEvent.Trigger (this, RunnerStartExecution startArgs)
         
         let hookEvents (executor: ITestExecutor) =
             executor.TestLifecycleEvent.AddHandler handleTestEvents
@@ -81,7 +81,7 @@ type Framework (startingTests: ITest list) as this =
                 report
         finally
             executors |> List.iter unhookEvents
-            frameworkLifecycleEvent.Trigger (this, FrameworkEndExecution)
+            RunnerLifecycleEvent.Trigger (this, RunnerEndExecution)
     
     member this.AddTests (newTests: ITest seq) =
         tests <-
@@ -93,7 +93,7 @@ type Framework (startingTests: ITest list) as this =
         this
         
         
-    interface IFramework with
+    interface IRunner with
         member this.AddTests newTests = this.AddTests newTests
         
         member this.Run () = this.Run ()
@@ -103,7 +103,7 @@ type Framework (startingTests: ITest list) as this =
         member this.Run (predicate, getSeed) = this.Run (predicate, getSeed)
         
         [<CLIEvent>]
-        member this.FrameworkLifecycleEvent = frameworkLifecycleEvent.Publish
+        member this.RunnerLifecycleEvent = RunnerLifecycleEvent.Publish
         
 type Bow () =
-    member _.Framework () = Framework () :> IFramework
+    member _.Framework () = Runner () :> IRunner

@@ -5,7 +5,7 @@ open Archer.Arrows
 open Archer.Bow
 open Archer
 open Archer.MicroLang
-open Archer.CoreTypes.InternalTypes.FrameworkTypes
+open Archer.CoreTypes.InternalTypes.RunnerTypes
 
 let private defaultSeed = 42
 let private getDefaultSeed () = defaultSeed
@@ -241,7 +241,7 @@ let ``run asynchronously`` =
     
 let ``run a test with the correct framework name`` =
     feature.Test(fun _ env ->
-        env.FrameworkEnvironment.FrameworkName
+        env.RunnerEnvironment.FrameworkName
         |> expects.ToBe "Archer.Bow"
     )
     
@@ -250,7 +250,7 @@ let ``run a test with the correct framework version`` =
         let typeBow = bow.GetType ()
         let version = typeBow.Assembly.GetName().Version
         
-        env.FrameworkEnvironment.FrameworkVersion
+        env.RunnerEnvironment.FrameworkVersion
         |> expects.ToBe version
     )
     

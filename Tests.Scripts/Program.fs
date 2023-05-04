@@ -3,16 +3,16 @@
 open Archer
 open Archer.Bow
 open Archer.CoreTypes.InternalTypes
-open Archer.CoreTypes.InternalTypes.FrameworkTypes
+open Archer.CoreTypes.InternalTypes.RunnerTypes
 open Archer.MicroLang.Lang
 
-let reportWhileRunning (framework: IFramework) =
-    framework.FrameworkLifecycleEvent
+let reportWhileRunning (framework: IRunner) =
+    framework.RunnerLifecycleEvent
     |> Event.add (fun args ->
         match args with
-        | FrameworkStartExecution _ ->
+        | RunnerStartExecution _ ->
             printfn ""
-        | FrameworkTestLifeCycle (test, testEventLifecycle, _) ->
+        | RunnerTestLifeCycle (test, testEventLifecycle, _) ->
             match testEventLifecycle with
             | TestEndExecution testExecutionResult ->
                 let successMsg =

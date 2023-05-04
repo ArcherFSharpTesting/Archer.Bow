@@ -3,7 +3,7 @@ module Archer.Tests.Scripts.``FrameworkExecutionStarted Event should``
 open Archer.Arrows
 open Archer.Bow
 open Archer
-open Archer.CoreTypes.InternalTypes.FrameworkTypes
+open Archer.CoreTypes.InternalTypes.RunnerTypes
 open Archer.MicroLang
 
 let private defaultSeed = 33
@@ -17,15 +17,15 @@ let ``be raised when framework is run`` =
 
         let mutable result = "Not Run" |> newFailure.With.TestOtherExpectationFailure |> TestFailure
         
-        framework.FrameworkLifecycleEvent
+        framework.RunnerLifecycleEvent
         |> Event.filter (fun args ->
             match args with
-            | FrameworkStartExecution _ -> true
+            | RunnerStartExecution _ -> true
             | _ -> false
         )
         |> Event.add (fun args ->
             match args with
-            | FrameworkStartExecution _ ->
+            | RunnerStartExecution _ ->
                 result <- TestSuccess
             | _ -> ()
         ) 
