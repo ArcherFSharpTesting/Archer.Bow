@@ -9,13 +9,13 @@ open Archer.MicroLang
 
 let private container = Arrow.NewFeature ()
 
-let ``be raised with the given test when the framework is run`` =
+let ``be raised with the given test when the runner is run`` =
     container.Test (fun _ ->
-        let framework, test = buildBasicFramework ()
+        let runner, test = buildBasicRunner ()
         
         let mutable result = newFailure.With.TestExecutionWasNotRunValidationFailure () |> TestFailure
         
-        framework.RunnerLifecycleEvent
+        runner.RunnerLifecycleEvent
         |> Event.filter (fun args ->
             match args with
             | RunnerTestLifeCycle(_, TestStart _, _) -> true
@@ -31,7 +31,7 @@ let ``be raised with the given test when the framework is run`` =
         )
         
         ()
-        |> framework.Run
+        |> runner.Run
         |> ignore
         
         result
@@ -48,9 +48,9 @@ let ``should not run the test action when canceled from test arg`` =
                 TestSuccess
             )
             
-        let framework, _ = buildTestFramework testAction successfulUnitSetup successfulTeardown
+        let runner, _ = buildTestRunner testAction successfulUnitSetup successfulTeardown
         
-        framework.RunnerLifecycleEvent
+        runner.RunnerLifecycleEvent
         |> Event.filter (fun args ->
             match args with
             | RunnerTestLifeCycle(_, TestStart _, _) -> true
@@ -67,7 +67,7 @@ let ``should not run the test action when canceled from test arg`` =
         |> Should.BeEqualTo expectedFailure
     )
     
-let ``should not run the test action when canceled from framework arg`` =
+let ``should not run the test action when canceled from runner arg`` =
     container.Test (fun _ ->
         let expectedFailure = newFailure.With.TestExecutionWasNotRunValidationFailure () |> TestFailure 
         let mutable result = expectedFailure
@@ -78,9 +78,9 @@ let ``should not run the test action when canceled from framework arg`` =
                 TestSuccess
             )
             
-        let framework, _ = buildTestFramework testAction successfulUnitSetup successfulTeardown
+        let runner, _ = buildTestRunner testAction successfulUnitSetup successfulTeardown
         
-        framework.RunnerLifecycleEvent
+        runner.RunnerLifecycleEvent
         |> Event.filter (fun args ->
             match args with
             | RunnerTestLifeCycle(_, TestStart _, _) -> true

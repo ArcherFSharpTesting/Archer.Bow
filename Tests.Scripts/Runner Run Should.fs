@@ -1,4 +1,4 @@
-﻿module Archer.Tests.Scripts.``Framework Run Should``
+﻿module Archer.Tests.Scripts.``Runner Run Should``
 
 open System
 open Archer.Arrows
@@ -16,8 +16,8 @@ let ``return empty results when it has no tests`` =
     feature.Test (fun _ ->
         let seed = 5
                 
-        let framework = bow.Framework ()
-        let result = framework.Run (fun () -> seed)
+        let runner = bow.Runner ()
+        let result = runner.Run (fun () -> seed)
                 
         let expected = {
             Failures = []
@@ -33,8 +33,8 @@ let ``return empty results with different seed when it has no tests and provided
     feature.Test (fun _ ->
         let seed = 258
                 
-        let framework = bow.Framework ()
-        let result = framework.Run (fun () -> seed)
+        let runner = bow.Runner ()
+        let result = runner.Run (fun () -> seed)
                 
         let expected = {
             Failures = []
@@ -48,7 +48,7 @@ let ``return empty results with different seed when it has no tests and provided
     
 let ``return a successful result when one test passes`` =
     feature.Test (fun _ ->
-        let framework = bow.Framework ()
+        let runner = bow.Runner ()
         let containerPath = "A Test Suite"
         let containerName = "with a passing test"
         let container = suite.Container (containerPath, containerName)
@@ -56,7 +56,7 @@ let ``return a successful result when one test passes`` =
 
         
         let result =
-            framework.AddTests [test]
+            runner.AddTests [test]
             |> runWithSeed getDefaultSeed
         
         let expected = {
@@ -75,7 +75,7 @@ let ``return a successful result when one test passes`` =
     
 let ``return a successful result when two tests pass`` =
     feature.Test (fun _ ->
-        let framework = bow.Framework ()
+        let runner = bow.Runner ()
         let containerPath = "A test Suite"
         let containerName = "with two passing tests"
         let container = suite.Container (containerPath, containerName)
@@ -96,7 +96,7 @@ let ``return a successful result when two tests pass`` =
 
         
         let result =
-            framework.AddTests [test1; test2]
+            runner.AddTests [test1; test2]
             |> runWithSeed getDefaultSeed
 
         result |> Should.BeEqualTo expected
@@ -104,7 +104,7 @@ let ``return a successful result when two tests pass`` =
     
 let ``return failure when a test fails`` =
     feature.Test ("", fun _ -> 
-        let framework = bow.Framework ()
+        let runner = bow.Runner ()
         let containerPath = "A test Suite"
         let containerName = "to hold tests"
         let container = suite.Container (containerPath, containerName)
@@ -129,7 +129,7 @@ let ``return failure when a test fails`` =
             }
 
         let result =
-            framework.AddTests [testF; test2]
+            runner.AddTests [testF; test2]
             |> runWithSeed getDefaultSeed
 
         result |> Should.BeEqualTo expected
@@ -137,7 +137,7 @@ let ``return failure when a test fails`` =
     
 let ``return failure when second test fails`` =
     feature.Test (fun _ -> 
-        let framework = bow.Framework ()
+        let runner = bow.Runner ()
         let containerPath = "A test Suite"
         let containerName = "to hold tests"
         let container = suite.Container (containerPath, containerName)
@@ -162,7 +162,7 @@ let ``return failure when second test fails`` =
             }
 
         let result =
-            framework.AddTests [test1; testF]
+            runner.AddTests [test1; testF]
             |> runWithSeed getDefaultSeed
 
         result |> Should.BeEqualTo expected
@@ -170,7 +170,7 @@ let ``return failure when second test fails`` =
     
 let ``return failure all second test fail`` =
     feature.Test (fun _ -> 
-        let framework = bow.Framework ()
+        let runner = bow.Runner ()
         let containerPath = "A test Suite"
         let containerName = "to hold tests"
         let container = suite.Container (containerPath, containerName)
@@ -192,7 +192,7 @@ let ``return failure all second test fail`` =
             }
 
         let result =
-            framework.AddTests [testF2; testF]
+            runner.AddTests [testF2; testF]
             |> runWithSeed getDefaultSeed
 
         result |> Should.BeEqualTo expected
@@ -203,7 +203,7 @@ let ``run asynchronously`` =
         let monitor = obj ()
         let mutable isRunning = false
         
-        let framework = bow.Framework ()
+        let runner = bow.Runner ()
         let random = Random ()
         
         let mutable result = newFailure.With.TestExecutionWasNotRunValidationFailure () |> TestFailure
@@ -228,7 +228,7 @@ let ``run asynchronously`` =
         let t2 = feature.Test ("Test B", run)
         let t3 = feature.Test ("Test C", run)
         
-        framework.AddTests [
+        runner.AddTests [
             t1
             t2
             t3
@@ -239,18 +239,18 @@ let ``run asynchronously`` =
         result
     )
     
-let ``run a test with the correct framework name`` =
+let ``run a test with the correct runner name`` =
     feature.Test(fun _ env ->
-        env.RunnerEnvironment.FrameworkName
+        env.RunEnvironment.RunnerName
         |> expects.ToBe "Archer.Bow"
     )
     
-let ``run a test with the correct framework version`` =
+let ``run a test with the correct runner version`` =
     feature.Test(fun _ env ->
         let typeBow = bow.GetType ()
         let version = typeBow.Assembly.GetName().Version
         
-        env.RunnerEnvironment.FrameworkVersion
+        env.RunEnvironment.RunnerVersion
         |> expects.ToBe version
     )
     
@@ -281,11 +281,11 @@ let ``run a test with the correct test info`` =
             |> andResult testNameResult
         )
         
-        let framework = bow.Framework ()
+        let runner = bow.Runner ()
         
         
         let result =
-            framework.AddTests [test]
+            runner.AddTests [test]
             |> run
         
         let a = 

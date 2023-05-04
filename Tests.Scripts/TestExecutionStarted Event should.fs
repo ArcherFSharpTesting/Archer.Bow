@@ -1,24 +1,26 @@
-module Archer.Tests.Scripts.``TestStartTearDown Event should``
+module Archer.Tests.Scripts.``TestExecutionStarted Event should``
 
 open Archer
 open Archer.Arrows
-open Archer.Arrows.Helpers
 open Archer.CoreTypes.InternalTypes
 open Archer.CoreTypes.InternalTypes.RunnerTypes
 open Archer.MicroLang
 
+let private defaultSeed = 33
+let private getDefaultSeed () = defaultSeed
+
 let private feature = Arrow.NewFeature ()
 
-let ``be raised with the given test`` =
+let ``be raised from the given test when runner is run`` =
     feature.Test (fun _ ->
-        let framework, test = buildBasicFramework ()
+        let runner, test = buildTestRunner successfulEnvironmentTest successfulUnitSetup successfulTeardown
+
+        let mutable result = "Not Called" |> newFailure.With.TestOtherExpectationFailure |> TestFailure
         
-        let mutable result = newFailure.With.TestExecutionWasNotRunFailure () |> TestFailure
-        
-        framework.RunnerLifecycleEvent
+        runner.RunnerLifecycleEvent
         |> Event.filter (fun args ->
             match args with
-            | RunnerTestLifeCycle (_, TestStartTeardown, _) -> true
+            | RunnerTestLifeCycle (_, TestStartExecution _, _) -> true
             | _ -> false
         )
         |> Event.add (fun args ->
@@ -26,14 +28,14 @@ let ``be raised with the given test`` =
             | RunnerTestLifeCycle(currentTest, _, _) ->
                 result <-
                     currentTest
-                    |> Should.BeEqualTo test
+                    |> expects.ToBe test
             | _ -> ()
         )
-        
-        ()
-        |> framework.Run
+
+        getDefaultSeed
+        |> runner.Run
         |> ignore
-        
+
         result
     )
     

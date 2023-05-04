@@ -6,8 +6,8 @@ open Archer.CoreTypes.InternalTypes
 open Archer.CoreTypes.InternalTypes.RunnerTypes
 open Archer.MicroLang.Lang
 
-let reportWhileRunning (framework: IRunner) =
-    framework.RunnerLifecycleEvent
+let reportWhileRunning (runner: IRunner) =
+    runner.RunnerLifecycleEvent
     |> Event.add (fun args ->
         match args with
         | RunnerStartExecution _ ->
@@ -23,17 +23,17 @@ let reportWhileRunning (framework: IRunner) =
                 let report = $"%A{test} : (%s{successMsg})"
                 printfn $"%s{report}"
             | _ -> ()
-        | FrameworkEndExecution ->
+        | RunnerEndExecution ->
             printfn "\n"
     )
     
-    framework
+    runner
 
-bow.Framework ()
+bow.Runner ()
 |> addMany [
-    ``Framework Run Should``.``Test Cases``
-    ``FrameworkExecutionStarted Event should``.``Test Cases``
-    ``FrameworkExecutionEnded Event should``.``Test Cases``
+    ``Runner Run Should``.``Test Cases``
+    ``RunnerExecutionStarted Event should``.``Test Cases``
+    ``RunnerExecutionEnded Event should``.``Test Cases``
     ``TestExecutionStarted Event should``.``Test Cases``
     ``TestStartSetup Event should``.``Test Cases``
     ``TestEndSetup Event should``.``Test Cases``
@@ -41,7 +41,7 @@ bow.Framework ()
     ``TestEnd Event should``.``Test Cases``
     ``TestStartTearDown Event should``.``Test Cases``
     ``TestEndExecution Event should``.``Test Cases``
-    ``When running tests that throw exception framework should``.``Test Cases``
+    ``When running tests that throw exception runner should``.``Test Cases``
 ]
 |> reportWhileRunning
 |> runAndReport

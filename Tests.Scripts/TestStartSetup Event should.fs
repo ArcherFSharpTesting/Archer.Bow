@@ -11,13 +11,13 @@ let private getDefaultSeed () = defaultSeed
 
 let private feature = Arrow.NewFeature ()
 
-let ``be raised from the given test when the framework is run`` =
+let ``be raised from the given test when the runner is run`` =
     feature.Test (fun _ ->
-        let framework, test = buildTestFramework successfulEnvironmentTest successfulUnitSetup successfulTeardown
+        let runner, test = buildTestRunner successfulEnvironmentTest successfulUnitSetup successfulTeardown
 
         let mutable result = "Not Called" |> newFailure.With.TestOtherExpectationFailure |> TestFailure
         
-        framework.RunnerLifecycleEvent
+        runner.RunnerLifecycleEvent
         |> Event.filter (fun args ->
             match args with
             | RunnerTestLifeCycle (_, TestStartSetup _, _) -> true
@@ -33,19 +33,19 @@ let ``be raised from the given test when the framework is run`` =
         )
 
         getDefaultSeed
-        |> framework.Run
+        |> runner.Run
         |> ignore
 
         result
     )
     
-let ``not be raised if FrameworkExecutionStarted was canceled`` =
+let ``not be raised if RunnerExecutionStarted was canceled`` =
     feature.Test (fun _ ->
-        let framework, _ = buildTestFramework successfulEnvironmentTest successfulUnitSetup successfulTeardown
+        let runner, _ = buildTestRunner successfulEnvironmentTest successfulUnitSetup successfulTeardown
          
         let mutable result = TestSuccess
         
-        framework.RunnerLifecycleEvent
+        runner.RunnerLifecycleEvent
         |> Event.filter (fun args ->
             match args with
             | RunnerStartExecution _
@@ -61,7 +61,7 @@ let ``not be raised if FrameworkExecutionStarted was canceled`` =
             | _ -> ()
         )
         
-        framework.Run () |> ignore
+        runner.Run () |> ignore
         
         result
     )

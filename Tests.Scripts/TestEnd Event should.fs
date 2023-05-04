@@ -11,11 +11,11 @@ let private feature = Arrow.NewFeature ()
 
 let ``raise event with given test`` =
     feature.Test (fun _ ->
-        let framework, test = buildBasicFramework ()
+        let runner, test = buildBasicRunner ()
         
         let mutable result = newFailure.With.TestExecutionWasNotRunValidationFailure () |> TestFailure
         
-        framework.RunnerLifecycleEvent
+        runner.RunnerLifecycleEvent
         |> Event.filter (fun args ->
             match args with
             | RunnerTestLifeCycle(_, TestEnd _, _) -> true
@@ -31,7 +31,7 @@ let ``raise event with given test`` =
         )
         
         ()
-        |> framework.Run
+        |> runner.Run
         |> ignore
         
         result

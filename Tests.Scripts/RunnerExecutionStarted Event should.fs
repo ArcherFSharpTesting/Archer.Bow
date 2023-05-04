@@ -1,4 +1,4 @@
-module Archer.Tests.Scripts.``FrameworkExecutionStarted Event should``
+module Archer.Tests.Scripts.``RunnerExecutionStarted Event should``
 
 open Archer.Arrows
 open Archer.Bow
@@ -11,13 +11,13 @@ let private getDefaultSeed () = defaultSeed
 
 let private feature = Arrow.NewFeature ()
 
-let ``be raised when framework is run`` =
+let ``be raised when runner is run`` =
     feature.Test (fun _ ->
-        let framework = bow.Framework ()
+        let runner = bow.Runner ()
 
         let mutable result = "Not Run" |> newFailure.With.TestOtherExpectationFailure |> TestFailure
         
-        framework.RunnerLifecycleEvent
+        runner.RunnerLifecycleEvent
         |> Event.filter (fun args ->
             match args with
             | RunnerStartExecution _ -> true
@@ -30,7 +30,7 @@ let ``be raised when framework is run`` =
             | _ -> ()
         ) 
         
-        framework.Run getDefaultSeed |> ignore
+        runner.Run getDefaultSeed |> ignore
 
         result        
     )

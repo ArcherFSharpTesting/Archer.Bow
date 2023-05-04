@@ -9,13 +9,13 @@ open Archer.MicroLang
 
 let private feature = Arrow.NewFeature ()
 
-let ``be raised from the given test when the framework is run`` =
+let ``be raised from the given test when the runner is run`` =
     feature.Test (fun _ ->
-        let framework, test = buildTestFramework successfulEnvironmentTest successfulUnitSetup successfulTeardown
+        let runner, test = buildTestRunner successfulEnvironmentTest successfulUnitSetup successfulTeardown
 
         let mutable result = newFailure.With.TestExecutionWasNotRunValidationFailure () |> TestFailure
         
-        framework.RunnerLifecycleEvent
+        runner.RunnerLifecycleEvent
         |> Event.filter (fun args ->
             match args with
             | RunnerTestLifeCycle(_, TestEndSetup _, _) -> true
@@ -31,19 +31,19 @@ let ``be raised from the given test when the framework is run`` =
         )
 
         ()
-        |> framework.Run
+        |> runner.Run
         |> ignore
 
         result
     )
     
-let ``should not be raised if FrameworkExecutionStart canceled`` =
+let ``should not be raised if RunnerExecutionStart canceled`` =
     feature.Test (fun _ ->
-        let framework, _test = buildTestFramework successfulEnvironmentTest successfulUnitSetup successfulTeardown
+        let runner, _test = buildTestRunner successfulEnvironmentTest successfulUnitSetup successfulTeardown
         
         let mutable result = TestSuccess
         
-        framework.RunnerLifecycleEvent
+        runner.RunnerLifecycleEvent
         |> Event.filter (fun args ->
             match args with
             | RunnerTestLifeCycle(_, TestEndSetup _, _)
@@ -60,7 +60,7 @@ let ``should not be raised if FrameworkExecutionStart canceled`` =
         )
         
         ()
-        |> framework.Run
+        |> runner.Run
         |> ignore
         
         result
@@ -71,11 +71,11 @@ let ``should carry the result of the EndSetup event`` =
         let expectedResult = ("Should blow up", { FilePath = ignoreString (); FileName = ignoreString (); LineNumber = ignoreInt () }) |> GeneralSetupTeardownFailure
         let setup _ = Error expectedResult
         
-        let framework, _test = buildTestFramework successfulEnvironmentTest setup successfulTeardown
+        let runner, _test = buildTestRunner successfulEnvironmentTest setup successfulTeardown
         
         let mutable result = newFailure.With.TestExecutionWasNotRunValidationFailure () |> TestFailure
         
-        framework.RunnerLifecycleEvent
+        runner.RunnerLifecycleEvent
         |> Event.filter (fun args ->
             match args with
             | RunnerTestLifeCycle(_, TestEndSetup _, _) -> true
@@ -91,7 +91,7 @@ let ``should carry the result of the EndSetup event`` =
         )
         
         ()
-        |> framework.Run
+        |> runner.Run
         |> ignore
         
         result

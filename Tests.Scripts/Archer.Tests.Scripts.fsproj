@@ -9,17 +9,17 @@
 
   <ItemGroup>
     <Compile Include="TestHelpers.fs" />
-    <Compile Include="FrameworkRunShould.fs" />
-    <Compile Include="FrameworkExecutionStartedShould.fs" />
-    <Compile Include="FrameworkExecutionEndedShould.fs" />
-    <Compile Include="TestExecutionStartedShould.fs" />
-    <Compile Include="TestStartSetupShould.fs" />
-    <Compile Include="TestEndSetupShould.fs" />
-    <Compile Include="TestStartShould.fs" />
-    <Compile Include="TestEndShould.fs" />
-    <Compile Include="TestStartTearDownShould.fs" />
-    <Compile Include="TestEndExecutionShould.fs" />
-    <Compile Include="RuningTestsWhenExeceptionIsThrownShould.fs" />
+    <Compile Include="Runner Run Should.fs" />
+    <Compile Include="RunnerExecutionStarted Event should.fs" />
+    <Compile Include="RunnerExecutionEnded Event should.fs" />
+    <Compile Include="TestExecutionStarted Event should.fs" />
+    <Compile Include="TestStartSetup Event should.fs" />
+    <Compile Include="TestEndSetup Event should.fs" />
+    <Compile Include="TestStart Event should.fs" />
+    <Compile Include="TestEnd Event should.fs" />
+    <Compile Include="TestStartTearDown Event should.fs" />
+    <Compile Include="TestEndExecution Event should.fs" />
+    <Compile Include="When running tests that throw exception runner should.fs" />
     <Compile Include="Program.fs" />
   </ItemGroup>
 
@@ -28,11 +28,11 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Archer.Arrow.Lib" Version="0.0.0.27" />
+    <PackageReference Include="Archer.Arrow.Lib" Version="0.0.0.28" />
     <PackageReference Include="Archer.CoreTypes.Lib" Version="0.0.13.35" />
     <PackageReference Include="Archer.Extension" Version="1.0.4" />
     <PackageReference Include="Archer.Fletching.Lib" Version="0.0.0.9" />
-    <PackageReference Include="MicroLang.Lib" Version="0.0.12.42" />
+    <PackageReference Include="MicroLang.Lib" Version="0.0.12.43" />
     <PackageReference Update="FSharp.Core" Version="7.0.200" />
   </ItemGroup>
 

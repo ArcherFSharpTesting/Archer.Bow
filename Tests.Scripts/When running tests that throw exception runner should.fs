@@ -1,4 +1,4 @@
-﻿module Archer.Tests.Scripts.``When running tests that throw exception framework should``
+﻿module Archer.Tests.Scripts.``When running tests that throw exception runner should``
 
 open System
 open Archer
@@ -7,7 +7,7 @@ open Archer.CoreTypes.InternalTypes
 open Archer.CoreTypes.InternalTypes.RunnerTypes
 open Archer.Bow.Values
 
-let private container = Arrow.NewFeature ()
+let private feature = Arrow.NewFeature ()
 
 type DummyTestExecutor (parent: ITest, action: RunnerEnvironment -> TestExecutionResult) =
     let dummyEvent = Event<TestExecutionDelegate, TestEventLifecycle> ()
@@ -29,7 +29,7 @@ type DummyTest (containerPath: string, containerName: string, testName: string, 
         member _.TestName = testName
         
 let ``Return ExceptionFailure`` =
-    container.Test (fun _ ->
+    feature.Test (fun _ ->
         let expectedException = Exception "Bad Behavior"
         let badThrowingTestAction _ = raise expectedException
         
@@ -37,9 +37,9 @@ let ``Return ExceptionFailure`` =
         let containerName = "And Abound"
         let badTest = DummyTest (containerPath, containerName,  "Throws Exception", badThrowingTestAction, { FilePath = "BadFilePath"; FileName = "BadFileName.fs"; LineNumber = 32 })
         
-        let framework = bow.Framework ()
+        let runner = bow.Runner ()
         
-        framework.AddTests [badTest]
+        runner.AddTests [badTest]
         |> runWithSeed (fun () -> 155)
         |> Should.BeEqualTo {
             Successes = []
@@ -59,4 +59,4 @@ let ``Return ExceptionFailure`` =
         }
     )
 
-let ``Test Cases`` = container.GetTests ()
+let ``Test Cases`` = feature.GetTests ()

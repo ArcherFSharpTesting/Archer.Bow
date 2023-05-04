@@ -106,4 +106,4 @@ type Runner (startingTests: ITest list) as this =
         member this.RunnerLifecycleEvent = RunnerLifecycleEvent.Publish
         
 type Bow () =
-    member _.Framework () = Runner () :> IRunner
+    member _.Runner () = Runner () :> IRunner
