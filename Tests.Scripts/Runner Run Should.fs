@@ -4,6 +4,7 @@ open System
 open Archer.Arrows
 open Archer.Bow
 open Archer
+open Archer.CoreTypes.InternalTypes
 open Archer.MicroLang
 open Archer.CoreTypes.InternalTypes.RunnerTypes
 
@@ -51,8 +52,8 @@ let ``return a successful result when one test passes`` =
         let runner = bow.Runner ()
         let containerPath = "A Test Suite"
         let containerName = "with a passing test"
-        let container = suite.Container (containerPath, containerName)
-        let test = container.Test ("A Passing Test", fun _ -> TestSuccess)
+        let testFeature = Arrow.NewFeature (containerPath, containerName)
+        let test = testFeature.Test ("A Passing Test", fun _ -> TestSuccess)
 
         
         let result =
@@ -78,10 +79,10 @@ let ``return a successful result when two tests pass`` =
         let runner = bow.Runner ()
         let containerPath = "A test Suite"
         let containerName = "with two passing tests"
-        let container = suite.Container (containerPath, containerName)
+        let testFeature = Arrow.NewFeature (containerPath, containerName)
         
-        let test1 = container.Test ("Fist Passing Test", fun _ -> TestSuccess)
-        let test2 = container.Test ("Second Passing Test", fun _ -> TestSuccess)
+        let test1 = testFeature.Test ("Fist Passing Test", fun _ -> TestSuccess)
+        let test2 = testFeature.Test ("Second Passing Test", fun _ -> TestSuccess)
 
         let expected = {
                 Failures = []
@@ -103,7 +104,7 @@ let ``return a successful result when two tests pass`` =
     )
     
 let ``return failure when a test fails`` =
-    feature.Test ("", fun _ -> 
+    feature.Test (fun _ -> 
         let runner = bow.Runner ()
         let containerPath = "A test Suite"
         let containerName = "to hold tests"
@@ -173,12 +174,12 @@ let ``return failure all second test fail`` =
         let runner = bow.Runner ()
         let containerPath = "A test Suite"
         let containerName = "to hold tests"
-        let container = suite.Container (containerPath, containerName)
+        let testFeature = Arrow.NewFeature (containerPath, containerName)
 
         let failure1 = "Boom Again" |> newFailure.With.TestOtherExpectationFailure
         let failure2 = newFailure.With.TestExecutionWasNotRunValidationFailure ()
-        let testF = container.Test ("Second Test Fails", fun _ -> failure2 |> TestFailure)
-        let testF2 = container.Test ("First Test fails", fun _ -> failure1 |> TestFailure)
+        let testF = testFeature.Test ("Second Test Fails", fun _ -> failure2 |> TestFailure)
+        let testF2 = testFeature.Test ("First Test fails", fun _ -> failure1 |> TestFailure)
 
         let expected = {
                 Failures = [
@@ -223,10 +224,10 @@ let ``run asynchronously`` =
             
             TestSuccess
             
-        
-        let t1 = feature.Test ("Test A", run)
-        let t2 = feature.Test ("Test B", run)
-        let t3 = feature.Test ("Test C", run)
+        let testFeature = Arrow.NewFeature ()
+        let t1 = testFeature.Test ("Test A", run)
+        let t2 = testFeature.Test ("Test B", run)
+        let t3 = testFeature.Test ("Test C", run)
         
         runner.AddTests [
             t1
@@ -259,9 +260,9 @@ let ``run a test with the correct test info`` =
         let containerPath = "The Path"
         let containerName = "My new container"
         let testName = "Testing the test info"
-        let c = suite.Container (containerPath, containerName)
+        let c = Arrow.NewFeature (containerPath, containerName)
         
-        let test = c.Test (testName, fun e ->
+        let test = c.Test (testName, fun _ e ->
             let info = e.TestInfo
             
             let pathResult =
@@ -283,7 +284,6 @@ let ``run a test with the correct test info`` =
         
         let runner = bow.Runner ()
         
-        
         let result =
             runner.AddTests [test]
             |> run
@@ -304,6 +304,46 @@ let ``run a test with the correct test info`` =
             
         a
         |> andResult b
+    )
+    
+let ``run only tests marked with Only Tag if no filter is given`` =
+    feature.Test (fun _ ->
+        let runner = bow.Runner ()
+        
+        let testFeature = Arrow.NewFeature ("a", "b")
+        
+        let _a = testFeature.Test ("Successful test A", fun _ -> TestSuccess)
+        let b = testFeature.Test ("Successful test B", TestTags [Only],fun _ -> TestSuccess)
+        let _c = testFeature.Test ("Successful test C", fun _ -> TestSuccess)
+        let d = testFeature.Test ("Successful test D", TestTags [Only],fun _ -> TestSuccess)
+        
+        testFeature.GetTests () |> runner.AddTests  |> ignore
+        let result = runner.Run()
+        
+        let contains (target: ITest) (containers: TestSuccessContainer list) =
+            let rec contains (containers: TestSuccessContainer list) =
+                match containers with
+                | [] -> false
+                | head::tail ->
+                    match head with
+                    | EmptySuccesses -> contains tail
+                    | SucceededTests tests ->
+                        let a = tests |> List.contains target
+                        if a then a
+                        else contains tail
+                    | SuccessContainer(name, testSuccessContainers) ->
+                        let a = contains testSuccessContainers
+                        if a then a
+                        else contains tail
+                        
+            contains containers
+        
+        result.Successes
+        |> Should.PassAllOf [
+            List.length >> Should.BeEqualTo 2 >> withMessage "Not correct number of results"
+            contains b >> Should.BeTrue >> withMessage $"Missing %s{b.ToString ()}"
+            contains d >> Should.BeTrue >> withMessage $"Missing %s{d.ToString ()}"
+        ]
     )
     
 let ``Test Cases`` = feature.GetTests ()

@@ -45,12 +45,12 @@ type Runner (startingTests: ITest list) as this =
         this.Run(fun () -> globalRandom.Next ())
         
     member this.Run (getSeed: unit -> int) =
-        this.Run ((fun _ -> true), getSeed)
+        this.Run (ifOnlyFilter, getSeed)
         
-    member this.Run (predicate: ITest -> bool) =
-        this.Run (predicate, fun () -> globalRandom.Next ())
+    member this.Run (filter: ITest list -> ITest list) =
+        this.Run (filter, fun () -> globalRandom.Next ())
     
-    member this.Run (predicate: ITest -> bool, getSeed: unit -> int) =
+    member this.Run (filter: ITest list -> ITest list, getSeed: unit -> int) =
         let seed = getSeed ()
         let startArgs = CancelEventArgs ()
         RunnerLifecycleEvent.Trigger (this, RunnerStartExecution startArgs)
@@ -64,7 +64,7 @@ type Runner (startingTests: ITest list) as this =
 
         let executors =
             tests
-            |> List.filter predicate
+            |> filter
             |> List.map (fun t -> t.GetExecutor () |> hookEvents)
 
         try
@@ -99,11 +99,17 @@ type Runner (startingTests: ITest list) as this =
         member this.Run () = this.Run ()
         
         member this.Run (getSeed: unit -> int) = this.Run getSeed
-        member this.Run (predicate: ITest -> bool) = this.Run predicate
-        member this.Run (predicate, getSeed) = this.Run (predicate, getSeed)
+        member this.Run (filter: ITest list -> ITest list) = this.Run filter
+        member this.Run (filter, getSeed) = this.Run (filter, getSeed)
         
         [<CLIEvent>]
         member this.RunnerLifecycleEvent = RunnerLifecycleEvent.Publish
+
+        member this.TestTags =
+            tests
+            |> List.map (getTags >> Seq.toList)
+            |> List.concat
+            |> List.distinct
         
 type Bow () =
     member _.Runner () = Runner () :> IRunner

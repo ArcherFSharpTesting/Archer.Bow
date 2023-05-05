@@ -10,10 +10,10 @@ let run (runner: IRunner) =
 let runWithSeed (seed: unit -> int) (runner: IRunner) =
     runner.Run seed
     
-let filterAndRun (predicate: ITest -> bool) (runner: IRunner) =
-    runner.Run predicate
+let filterAndRun (filter: ITest list -> ITest list) (runner: IRunner) =
+    runner.Run filter
 
-let filterAndRunWith (seed: int) predicate (runner: IRunner) =
-    runner.Run (predicate, (fun _ -> seed))
+let filterAndRunWith (seed: int) filter (runner: IRunner) =
+    runner.Run (filter, (fun _ -> seed))
 
 let bow = Bow ()

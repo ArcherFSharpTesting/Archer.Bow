@@ -28,8 +28,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Archer.Arrow.Lib" Version="0.0.0.28" />
-    <PackageReference Include="Archer.CoreTypes.Lib" Version="0.0.13.36" />
+    <PackageReference Include="Archer.Arrow.Lib" Version="0.0.0.30" />
+    <PackageReference Include="Archer.CoreTypes.Lib" Version="0.0.13.37" />
     <PackageReference Include="Archer.Extension" Version="1.0.4" />
     <PackageReference Include="Archer.Fletching.Lib" Version="0.0.0.11" />
     <PackageReference Include="MicroLang.Lib" Version="0.0.12.45" />

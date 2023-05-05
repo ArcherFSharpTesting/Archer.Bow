@@ -1,148 +1,163 @@
-namespace Archer.Bow
+module Archer.Bow.Executor
 
 open System
 open Archer
 open Archer.CoreTypes.InternalTypes
 open Archer.CoreTypes.InternalTypes.RunnerTypes
 
-module Executor =
-    let globalRandom = Random ()
-    let runTest version (test: ITestExecutor) =
-        let info = {
-            RunnerName = "Archer.Bow"
-            RunnerVersion = version
-            TestInfo = test.Parent :> ITestInfo 
-        }
-        
-        async {
-            try
-                let result = test.Execute info
-                return (result, test.Parent)
-            with
-            | e -> return (e |> TestExceptionFailure |> TestFailure |> TestExecutionResult, test.Parent)
-        }
-        
-    let buildReport (failures: (TestFailureType * ITest) list, ignored: (string option * CodeLocation * ITest) list, successes: ITest list, seed) =
-        let failures =
-            failures
-            |> List.groupBy (fun (_, test) -> test.ContainerPath)
-            |> List.map (fun (path, results) ->
-                let reports =
-                    results
-                    |> List.groupBy (fun (_, test) -> test.ContainerName)
-                    |> List.map (fun (container, tests) ->
-                        FailContainer (container, [FailedTests tests])
-                    )
-                    
-                if path |> String.IsNullOrEmpty then reports
-                else [FailContainer (path, reports)]
-            )
-            |> List.concat
+let globalRandom = Random ()
+
+let ifOnlyFilter (tests: ITest list) =
+    let containsOnly (tags: TestTag seq) =
+        let onlyTags =
+            tags
+            |> Seq.filter (fun t -> t = Only)
             
-        let successes =
-            successes
-            |> List.groupBy (fun t -> t.ContainerPath)
-            |> List.map (fun (path, results) ->
-                    let reports =
-                        results
-                        |> List.groupBy (fun test -> test.ContainerName)
-                        |> List.map (fun (container, tests) ->
-                            SuccessContainer (container, [SucceededTests tests])
-                        )
-                        
-                    if path |> String.IsNullOrEmpty then reports
-                    else [SuccessContainer (path, reports)]
-            )
-            |> List.concat
-            
-        let ignored =
-            ignored
-            |> List.groupBy (fun (_, _, test) -> test.ContainerPath)
-            |> List.map(fun (path, results) ->
-                let reports =
-                    results
-                    |> List.groupBy (fun (_, _, test) -> test.ContainerName)
-                    |> List.map (fun (container, tests) ->
-                        IgnoreContainer (container, [IgnoredTests tests]) 
-                    )
-                    
-                if path |> String.IsNullOrEmpty then reports
-                else [IgnoreContainer (path, reports)]
-            )
-            |> List.concat
-            
-        {
-            Failures = failures
-            Successes = successes
-            Ignored = ignored
-            Seed = seed
-        }
+        0 < (onlyTags |> Seq.length)
         
-    let shuffle seed (items: 'a seq) =
-        let random = Random seed
-        let bucket = System.Collections.Generic.List<'a> items
+    let possible =
+        tests
+        |> List.filter (getTags >> containsOnly)
         
-        let rec shuffle acc =
-            if bucket.Count <= 0 then
-                acc
-            else
-                let index = random.Next (0, bucket.Count)
-                let item = bucket[index]
-                bucket.RemoveAt index
-                
-                item::acc
-                |> shuffle
-                
-        shuffle []
+    if 0 < possible.Length then possible
+    else tests
+
+let runTest version (test: ITestExecutor) =
+    let info = {
+        RunnerName = "Archer.Bow"
+        RunnerVersion = version
+        TestInfo = test.Parent :> ITestInfo 
+    }
     
-    let runTests seed (tests: ITestExecutor seq) =
-        let assembly = System.Reflection.Assembly.GetExecutingAssembly ()
-        let version = assembly.GetName().Version
+    async {
+        try
+            let result = test.Execute info
+            return (result, test.Parent)
+        with
+        | e -> return (e |> TestExceptionFailure |> TestFailure |> TestExecutionResult, test.Parent)
+    }
+    
+let buildReport (failures: (TestFailureType * ITest) list, ignored: (string option * CodeLocation * ITest) list, successes: ITest list, seed) =
+    let failures =
+        failures
+        |> List.groupBy (fun (_, test) -> test.ContainerPath)
+        |> List.map (fun (path, results) ->
+            let reports =
+                results
+                |> List.groupBy (fun (_, test) -> test.ContainerName)
+                |> List.map (fun (container, tests) ->
+                    FailContainer (container, [FailedTests tests])
+                )
+                
+            if path |> String.IsNullOrEmpty then reports
+            else [FailContainer (path, reports)]
+        )
+        |> List.concat
         
-        let shuffled = shuffle seed tests
-        let results =
-            shuffled
-            |> List.map (runTest version)
-            |> Async.Parallel
-            |> Async.RunSynchronously
-            |> List.ofArray
-            
-        let successes =
-            results
-            |> List.filter (fun (result, _) ->
-                match result with
-                | TestExecutionResult TestSuccess -> true
-                | _ -> false
-            )
-            |> List.map snd
-
-        let failures =
-            results
-            |> List.filter (fun (result, _) ->
-                match result with
-                | TestExecutionResult TestSuccess
-                | TestExecutionResult (TestFailure (TestIgnored _))  -> false
-                | _ -> true
-            )
-            |> List.map (fun (testResult, test) ->
-                let failure = 
-                    match testResult with
-                    | GeneralExecutionFailure generalTestingFailure -> GeneralFailureType generalTestingFailure
-                    | SetupExecutionFailure setupTearDownFailure -> SetupFailureType setupTearDownFailure
-                    | TestExecutionResult (TestFailure testFailure) -> TestRunFailureType testFailure
-                    | TeardownExecutionFailure setupTearDownFailure -> TeardownFailureType setupTearDownFailure
+    let successes =
+        successes
+        |> List.groupBy (fun t -> t.ContainerPath)
+        |> List.map (fun (path, results) ->
+                let reports =
+                    results
+                    |> List.groupBy (fun test -> test.ContainerName)
+                    |> List.map (fun (container, tests) ->
+                        SuccessContainer (container, [SucceededTests tests])
+                    )
                     
-                failure, test
-            )
-            |> List.ofSeq
+                if path |> String.IsNullOrEmpty then reports
+                else [SuccessContainer (path, reports)]
+        )
+        |> List.concat
+        
+    let ignored =
+        ignored
+        |> List.groupBy (fun (_, _, test) -> test.ContainerPath)
+        |> List.map(fun (path, results) ->
+            let reports =
+                results
+                |> List.groupBy (fun (_, _, test) -> test.ContainerName)
+                |> List.map (fun (container, tests) ->
+                    IgnoreContainer (container, [IgnoredTests tests]) 
+                )
+                
+            if path |> String.IsNullOrEmpty then reports
+            else [IgnoreContainer (path, reports)]
+        )
+        |> List.concat
+        
+    {
+        Failures = failures
+        Successes = successes
+        Ignored = ignored
+        Seed = seed
+    }
+    
+let shuffle seed (items: 'a seq) =
+    let random = Random seed
+    let bucket = System.Collections.Generic.List<'a> items
+    
+    let rec shuffle acc =
+        if bucket.Count <= 0 then
+            acc
+        else
+            let index = random.Next (0, bucket.Count)
+            let item = bucket[index]
+            bucket.RemoveAt index
             
-        let ignored =
-            results
-            |> List.filter (fun (result, _) ->
-                match result with
-                | TestExecutionResult (TestFailure (TestIgnored _)) -> true
-                | _ -> false
-            )
-            |> List.map (fun (TestExecutionResult (TestFailure (TestIgnored (s, location))), test) -> s, location, test)
+            item::acc
+            |> shuffle
+            
+    shuffle []
 
-        (failures, ignored, successes, seed)
+let runTests seed (tests: ITestExecutor seq) =
+    let assembly = System.Reflection.Assembly.GetExecutingAssembly ()
+    let version = assembly.GetName().Version
+    
+    let shuffled = shuffle seed tests
+    let results =
+        shuffled
+        |> List.map (runTest version)
+        |> Async.Parallel
+        |> Async.RunSynchronously
+        |> List.ofArray
+        
+    let successes =
+        results
+        |> List.filter (fun (result, _) ->
+            match result with
+            | TestExecutionResult TestSuccess -> true
+            | _ -> false
+        )
+        |> List.map snd
+
+    let failures =
+        results
+        |> List.filter (fun (result, _) ->
+            match result with
+            | TestExecutionResult TestSuccess
+            | TestExecutionResult (TestFailure (TestIgnored _))  -> false
+            | _ -> true
+        )
+        |> List.map (fun (testResult, test) ->
+            let failure = 
+                match testResult with
+                | GeneralExecutionFailure generalTestingFailure -> GeneralFailureType generalTestingFailure
+                | SetupExecutionFailure setupTearDownFailure -> SetupFailureType setupTearDownFailure
+                | TestExecutionResult (TestFailure testFailure) -> TestRunFailureType testFailure
+                | TeardownExecutionFailure setupTearDownFailure -> TeardownFailureType setupTearDownFailure
+                
+            failure, test
+        )
+        |> List.ofSeq
+        
+    let ignored =
+        results
+        |> List.filter (fun (result, _) ->
+            match result with
+            | TestExecutionResult (TestFailure (TestIgnored _)) -> true
+            | _ -> false
+        )
+        |> List.map (fun (TestExecutionResult (TestFailure (TestIgnored (s, location))), test) -> s, location, test)
+
+    (failures, ignored, successes, seed)
