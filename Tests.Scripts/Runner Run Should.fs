@@ -331,16 +331,30 @@ let ``run only tests marked with Only Tag if no filter is given`` =
                         let a = tests |> List.contains target
                         if a then a
                         else contains tail
-                    | SuccessContainer(name, testSuccessContainers) ->
+                    | SuccessContainer (_, testSuccessContainers) ->
                         let a = contains testSuccessContainers
                         if a then a
                         else contains tail
                         
             contains containers
+            
+        let getNumberOfTests (containers: TestSuccessContainer list) =
+            let rec getLength (containers: TestSuccessContainer list) acc =
+                match containers with
+                | [] -> acc
+                | head::tail ->
+                    match head with
+                    | EmptySuccesses -> acc |> getLength tail
+                    | SucceededTests tests -> (tests.Length + acc) |> getLength tail
+                    | SuccessContainer (_, items) ->
+                        let a = getLength items acc
+                        a |> getLength tail
+                        
+            getLength containers 0
         
         result.Successes
         |> Should.PassAllOf [
-            List.length >> Should.BeEqualTo 2 >> withMessage "Not correct number of results"
+            getNumberOfTests >> Should.BeEqualTo 2 >> withMessage "Not correct number of results"
             contains b >> Should.BeTrue >> withMessage $"Missing %s{b.ToString ()}"
             contains d >> Should.BeTrue >> withMessage $"Missing %s{d.ToString ()}"
         ]
