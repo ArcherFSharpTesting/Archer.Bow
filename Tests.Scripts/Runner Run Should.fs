@@ -11,7 +11,11 @@ open Archer.CoreTypes.InternalTypes.RunnerTypes
 let private defaultSeed = 42
 let private getDefaultSeed () = defaultSeed
 
-let private feature = Arrow.NewFeature ()
+let private feature = Arrow.NewFeature (
+    TestTags [
+        Category "Runner"
+    ]
+)
 
 let ``return empty results when it has no tests`` =
     feature.Test (fun _ ->

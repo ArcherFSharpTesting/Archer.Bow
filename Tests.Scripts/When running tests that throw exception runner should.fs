@@ -7,7 +7,12 @@ open Archer.CoreTypes.InternalTypes
 open Archer.CoreTypes.InternalTypes.RunnerTypes
 open Archer.Bow.Values
 
-let private feature = Arrow.NewFeature ()
+let private feature = Arrow.NewFeature (
+    TestTags [
+        Category "Runner"
+        Category "Exception Handling"
+    ]
+)
 
 type DummyTestExecutor (parent: ITest, action: RunnerEnvironment -> TestExecutionResult) =
     let dummyEvent = Event<TestExecutionDelegate, TestEventLifecycle> ()

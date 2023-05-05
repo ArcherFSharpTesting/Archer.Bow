@@ -7,7 +7,12 @@ open Archer.CoreTypes.InternalTypes
 open Archer.CoreTypes.InternalTypes.RunnerTypes
 open Archer.MicroLang
 
-let private feature = Arrow.NewFeature ()
+let private feature = Arrow.NewFeature (
+    TestTags [
+        Category "Runner"
+        Category "RunnerLifecycleEvent"
+    ]
+)
 
 let ``raise event with given test`` =
     feature.Test (fun _ ->

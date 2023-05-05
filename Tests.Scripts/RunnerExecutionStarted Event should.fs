@@ -9,7 +9,12 @@ open Archer.MicroLang
 let private defaultSeed = 33
 let private getDefaultSeed () = defaultSeed
 
-let private feature = Arrow.NewFeature ()
+let private feature = Arrow.NewFeature (
+    TestTags [
+        Category "Runner"
+        Category "RunnerLifecycleEvent"
+    ]
+)
 
 let ``be raised when runner is run`` =
     feature.Test (fun _ ->
