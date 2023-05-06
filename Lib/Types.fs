@@ -1,6 +1,7 @@
 ﻿namespace Archer.Bow
 
 open System.ComponentModel
+open Archer
 open Archer.Bow.Executor
 open Archer.CoreTypes.InternalTypes
 open Archer.CoreTypes.InternalTypes.RunnerTypes
@@ -70,9 +71,18 @@ type Runner (startingTests: ITest list) as this =
             if startArgs.Cancel then
                 buildReport ([], [], [], seed)
             else
-                let shuffled = executors |> shuffle seed
+                let groups =
+                    executors
+                    |> List.groupBy
+                        (fun exe ->
+                            exe.Parent.Tags |> Seq.contains Serial
+                        )
+                let parallelGroup = groups |> List.filter fst |> List.map snd |> List.concat |> shuffle seed
+                let serialGroup = groups |> List.filter (fst >> not) |> List.map snd |> List.concat |> shuffle seed
                 let results =
-                    runTests seed shuffled
+                    let pFailures, pIgnored, pSuccesses, _seed = runTestsParallel seed parallelGroup
+                    let sFailures, sIgnored, sSuccesses, _seed = runTestsSerial seed serialGroup
+                    ([pFailures; sFailures] |> List.concat, [pIgnored; sIgnored] |> List.concat, [pSuccesses; sSuccesses] |> List.concat, seed)
                 let report =
                     results
                     |> buildReport

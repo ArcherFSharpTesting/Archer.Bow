@@ -21,13 +21,26 @@ let ifOnlyFilter (tests: ITest list) =
         
     if 0 < possible.Length then possible
     else tests
-
-let runTest version (test: ITestExecutor) =
-    let info = {
+    
+let getRunInfo (test: ITestExecutor) =
+    let assembly = System.Reflection.Assembly.GetExecutingAssembly ()
+    {
         RunnerName = "Archer.Bow"
-        RunnerVersion = version
+        RunnerVersion = assembly.GetName().Version
         TestInfo = test.Parent :> ITestInfo 
     }
+    
+let runTestSynchronous (test: ITestExecutor) = 
+    let info = getRunInfo test
+    
+    try
+        let result = test.Execute info
+        (result, test.Parent)
+    with
+    | e -> (e |> TestExceptionFailure |> TestFailure |> TestExecutionResult, test.Parent)
+
+let runTestParallel (test: ITestExecutor) =
+    let info = getRunInfo test
     
     async {
         try
@@ -109,18 +122,12 @@ let shuffle seed (items: 'a seq) =
             |> shuffle
             
     shuffle []
-
-let runTests seed (tests: ITestExecutor seq) =
-    let assembly = System.Reflection.Assembly.GetExecutingAssembly ()
-    let version = assembly.GetName().Version
     
+let runTests (runner: ITestExecutor list -> (TestExecutionResult * ITest) list) seed (tests: ITestExecutor seq) =
     let shuffled = shuffle seed tests
     let results =
         shuffled
-        |> List.map (runTest version)
-        |> Async.Parallel
-        |> Async.RunSynchronously
-        |> List.ofArray
+        |> runner
         
     let successes =
         results
@@ -161,3 +168,19 @@ let runTests seed (tests: ITestExecutor seq) =
         |> List.map (fun (TestExecutionResult (TestFailure (TestIgnored (s, location))), test) -> s, location, test)
 
     (failures, ignored, successes, seed)
+    
+let runTestsSerial seed (tests: ITestExecutor seq) =
+    let runner (tests: ITestExecutor list) =
+        tests |> List.map runTestSynchronous
+        
+    runTests runner seed tests
+    
+let runTestsParallel seed (tests: ITestExecutor seq) =
+    let runner (tests: ITestExecutor list) =
+        tests
+        |> List.map runTestParallel
+        |> Async.Parallel
+        |> Async.RunSynchronously
+        |> List.ofArray
+        
+    runTests runner seed tests
