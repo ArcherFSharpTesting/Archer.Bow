@@ -1,6 +1,5 @@
 ﻿namespace Archer.Bow
 
-open System
 open System.ComponentModel
 open Archer.Bow.Executor
 open Archer.CoreTypes.InternalTypes
@@ -88,7 +87,22 @@ type Runner (startingTests: ITest list) as this =
             [
                 tests
                 (newTests |> List.ofSeq)
-            ] |> List.concat
+            ]
+            |> List.concat
+            |> List.distinct
+            
+        let names =
+            tests
+            |> List.map (fun test -> test.ContainerPath, test.ContainerName, test.TestName)
+            
+        let errors =
+            names
+            |> List.countBy id
+            |> List.filter (fun (_, cnt) -> 1 < cnt)
+            |> List.map (fst >> (fun (path, container, test) -> $"%s{path}.%s{container}.%s{test}"))
+            
+        if 0 < errors.Length then
+            failwith $"Each test name must be unique:\n%A{errors}"
         
         this
         
