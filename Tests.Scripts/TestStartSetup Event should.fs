@@ -17,7 +17,7 @@ let private feature = Arrow.NewFeature (
 )
 
 let ``be raised from the given test when the runner is run`` =
-    feature.Test (fun _ ->
+    feature.Test (fun () ->
         let runner, test = buildTestRunner successfulEnvironmentTest successfulUnitSetup successfulTeardown
 
         let mutable result = "Not Called" |> newFailure.With.TestOtherExpectationFailure |> TestFailure
@@ -45,7 +45,7 @@ let ``be raised from the given test when the runner is run`` =
     )
     
 let ``not be raised if RunnerExecutionStarted was canceled`` =
-    feature.Test (fun _ ->
+    feature.Test (fun () ->
         let runner, _ = buildTestRunner successfulEnvironmentTest successfulUnitSetup successfulTeardown
          
         let mutable result = TestSuccess

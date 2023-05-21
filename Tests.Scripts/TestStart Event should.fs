@@ -15,7 +15,7 @@ let private container = Arrow.NewFeature (
 )
 
 let ``be raised with the given test when the runner is run`` =
-    container.Test (fun _ ->
+    container.Test (fun () ->
         let runner, test = buildBasicRunner ()
         
         let mutable result = newFailure.With.TestExecutionWasNotRunValidationFailure () |> TestFailure
@@ -43,12 +43,12 @@ let ``be raised with the given test when the runner is run`` =
     )
     
 let ``should not run the test action when canceled from test arg`` =
-    container.Test (fun _ ->
+    container.Test (fun () ->
         let expectedFailure = newFailure.With.TestExecutionWasNotRunValidationFailure () |> TestFailure
         let mutable result = expectedFailure 
         
         let testAction =
-            (fun _ _ ->
+            (fun () _ ->
                 result <- expects.NotToBeCalled ()
                 TestSuccess
             )
@@ -73,12 +73,12 @@ let ``should not run the test action when canceled from test arg`` =
     )
     
 let ``should not run the test action when canceled from runner arg`` =
-    container.Test (fun _ ->
+    container.Test (fun () ->
         let expectedFailure = newFailure.With.TestExecutionWasNotRunValidationFailure () |> TestFailure 
         let mutable result = expectedFailure
         
         let testAction =
-            (fun _ _ ->
+            (fun () _ ->
                 result <- expects.NotToBeCalled ()
                 TestSuccess
             )

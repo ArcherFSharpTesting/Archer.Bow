@@ -34,7 +34,7 @@ type DummyTest (containerPath: string, containerName: string, testName: string, 
         member _.TestName = testName
         
 let ``Return ExceptionFailure`` =
-    feature.Test (fun _ ->
+    feature.Test (fun () ->
         let expectedException = Exception "Bad Behavior"
         let badThrowingTestAction _ = raise expectedException
         

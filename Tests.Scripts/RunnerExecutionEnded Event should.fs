@@ -17,7 +17,7 @@ let private feature = Arrow.NewFeature (
 )
 
 let ``be raised when the runner is run`` =
-    feature.Test (fun _ ->
+    feature.Test (fun () ->
         let runner = bow.Runner ()
 
         let mutable result = "Not Called" |> newFailure.With.TestOtherExpectationFailure |> TestFailure

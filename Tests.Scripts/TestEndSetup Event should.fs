@@ -15,7 +15,7 @@ let private feature = Arrow.NewFeature (
 )
 
 let ``be raised from the given test when the runner is run`` =
-    feature.Test (fun _ ->
+    feature.Test (fun () ->
         let runner, test = buildTestRunner successfulEnvironmentTest successfulUnitSetup successfulTeardown
 
         let mutable result = newFailure.With.TestExecutionWasNotRunValidationFailure () |> TestFailure
@@ -43,7 +43,7 @@ let ``be raised from the given test when the runner is run`` =
     )
     
 let ``should not be raised if RunnerExecutionStart canceled`` =
-    feature.Test (fun _ ->
+    feature.Test (fun () ->
         let runner, _test = buildTestRunner successfulEnvironmentTest successfulUnitSetup successfulTeardown
         
         let mutable result = TestSuccess
@@ -72,7 +72,7 @@ let ``should not be raised if RunnerExecutionStart canceled`` =
     )
     
 let ``should carry the result of the EndSetup event`` =
-    feature.Test (fun _ ->
+    feature.Test (fun () ->
         let expectedResult = ("Should blow up", { FilePath = ignoreString (); FileName = ignoreString (); LineNumber = ignoreInt () }) |> GeneralSetupTeardownFailure
         let setup _ = Error expectedResult
         

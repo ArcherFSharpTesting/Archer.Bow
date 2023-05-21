@@ -15,7 +15,7 @@ let private feature = Arrow.NewFeature (
 )
 
 let ``be raised with the given test`` =
-    feature.Test (fun _ ->
+    feature.Test (fun () ->
         let runner, test = buildTestRunner successfulEnvironmentTest successfulUnitSetup successfulTeardown
         
         let mutable result = newFailure.With.TestExecutionWasNotRunValidationFailure () |> TestFailure
