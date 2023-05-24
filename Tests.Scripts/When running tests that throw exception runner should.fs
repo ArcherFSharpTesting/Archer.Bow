@@ -44,8 +44,11 @@ let ``Return ExceptionFailure`` =
         
         let runner = bow.Runner ()
         
-        runner.AddTests [badTest]
-        |> runWithSeed (fun () -> 155)
+        let result = 
+            runner.AddTests [badTest]
+            |> runWithSeed (fun () -> 155)
+            
+        result
         |> Should.BeEqualTo {
             Successes = []
             Failures = [
@@ -60,7 +63,9 @@ let ``Return ExceptionFailure`` =
                 )
             ]
             Ignored = []
-            Seed = 155 
+            Seed = 155
+            Began = result.Began
+            End = result.End 
         }
     )
 

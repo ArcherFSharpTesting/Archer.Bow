@@ -69,8 +69,10 @@ type Runner (startingTests: ITest list) as this =
 
         try
             if startArgs.Cancel then
-                buildReport ([], [], [], seed)
+                let tm = System.DateTime.Now
+                buildReport tm tm ([], [], [], seed)
             else
+                let startTm = System.DateTime.Now
                 let groups =
                     executors
                     |> List.groupBy
@@ -83,9 +85,11 @@ type Runner (startingTests: ITest list) as this =
                     let pFailures, pIgnored, pSuccesses, _seed = runTestsParallel seed parallelGroup
                     let sFailures, sIgnored, sSuccesses, _seed = runTestsSerial seed serialGroup
                     ([pFailures; sFailures] |> List.concat, [pIgnored; sIgnored] |> List.concat, [pSuccesses; sSuccesses] |> List.concat, seed)
+                let endTm = System.DateTime.Now
+                
                 let report =
                     results
-                    |> buildReport
+                    |> buildReport startTm endTm
                 
                 report
         finally

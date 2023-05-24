@@ -29,6 +29,8 @@ let ``return empty results when it has no tests`` =
             Successes = []
             Ignored = [] 
             Seed = seed
+            Began = result.Began
+            End = result.End
         }
                 
         result |> Should.BeEqualTo expected
@@ -46,6 +48,8 @@ let ``return empty results with different seed when it has no tests and provided
             Successes = []
             Ignored = [] 
             Seed = seed
+            Began = result.Began
+            End = result.End
         }
                 
         result |> Should.BeEqualTo expected
@@ -73,6 +77,8 @@ let ``return a successful result when one test passes`` =
             ]
             Ignored = [] 
             Seed = defaultSeed
+            Began = result.Began
+            End = result.End
         }
 
         result |> Should.BeEqualTo expected
@@ -87,6 +93,10 @@ let ``return a successful result when two tests pass`` =
         
         let test1 = testFeature.Test ("Fist Passing Test", fun () -> TestSuccess)
         let test2 = testFeature.Test ("Second Passing Test", fun () -> TestSuccess)
+        
+        let result =
+            runner.AddTests [test1; test2]
+            |> runWithSeed getDefaultSeed
 
         let expected = {
                 Failures = []
@@ -97,13 +107,10 @@ let ``return a successful result when two tests pass`` =
                 ]
                 Ignored = [] 
                 Seed = defaultSeed
+                Began = result.Began
+                End = result.End
             }
-
         
-        let result =
-            runner.AddTests [test1; test2]
-            |> runWithSeed getDefaultSeed
-
         result |> Should.BeEqualTo expected
     )
     
@@ -118,6 +125,10 @@ let ``return failure when a test fails`` =
         let testF = container.Test ("First Test Fails", (fun _ -> failure |> TestFailure))
         let test2 = container.Test ("Second Test Passes", (fun _ -> TestSuccess))
 
+        let result =
+            runner.AddTests [testF; test2]
+            |> runWithSeed getDefaultSeed
+
         let expected = {
                 Failures = [
                     FailContainer (containerPath, [
@@ -131,11 +142,9 @@ let ``return failure when a test fails`` =
                 ]
                 Ignored = [] 
                 Seed = defaultSeed
+                Began = result.Began
+                End = result.End
             }
-
-        let result =
-            runner.AddTests [testF; test2]
-            |> runWithSeed getDefaultSeed
 
         result |> Should.BeEqualTo expected
     )
@@ -151,6 +160,10 @@ let ``return failure when second test fails`` =
         let test1 = container.Test ("First Test Passes", fun _ -> TestSuccess)
         let testF = container.Test ("Second Test Fails", fun _ -> failure |> TestFailure)
 
+        let result =
+            runner.AddTests [test1; testF]
+            |> runWithSeed getDefaultSeed
+
         let expected = {
                 Failures = [
                     FailContainer (containerPath, [
@@ -164,11 +177,9 @@ let ``return failure when second test fails`` =
                 ]
                 Ignored = [] 
                 Seed = defaultSeed
+                Began = result.Began
+                End = result.End
             }
-
-        let result =
-            runner.AddTests [test1; testF]
-            |> runWithSeed getDefaultSeed
 
         result |> Should.BeEqualTo expected
     )
@@ -185,6 +196,10 @@ let ``return failure all second test fail`` =
         let testF = testFeature.Test ("Second Test Fails", fun () -> failure2 |> TestFailure)
         let testF2 = testFeature.Test ("First Test fails", fun () -> failure1 |> TestFailure)
 
+        let result =
+            runner.AddTests [testF2; testF]
+            |> runWithSeed getDefaultSeed
+
         let expected = {
                 Failures = [
                     FailContainer (containerPath, [
@@ -194,11 +209,9 @@ let ``return failure all second test fail`` =
                 Successes = []
                 Ignored = [] 
                 Seed = defaultSeed
+                Began = result.Began
+                End = result.End
             }
-
-        let result =
-            runner.AddTests [testF2; testF]
-            |> runWithSeed getDefaultSeed
 
         result |> Should.BeEqualTo expected
     )

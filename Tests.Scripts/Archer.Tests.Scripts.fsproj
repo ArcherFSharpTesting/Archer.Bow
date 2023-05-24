@@ -28,10 +28,10 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Archer.Arrow.Lib" Version="0.0.0.39" />
-    <PackageReference Include="Archer.CoreTypes.Lib" Version="0.0.13.41" />
+    <PackageReference Include="Archer.Arrow.Lib" Version="0.0.0.41" />
+    <PackageReference Include="Archer.CoreTypes.Lib" Version="0.0.13.42" />
     <PackageReference Include="Archer.Extension" Version="1.0.4" />
-    <PackageReference Include="Archer.Fletching.Lib" Version="0.0.0.22" />
+    <PackageReference Include="Archer.Fletching.Lib" Version="0.0.0.27" />
     <PackageReference Include="MicroLang.Lib" Version="0.0.12.50" />
     <PackageReference Update="FSharp.Core" Version="7.0.300" />
   </ItemGroup>

@@ -50,7 +50,7 @@ let runTestParallel (test: ITestExecutor) =
         | e -> return (e |> TestExceptionFailure |> TestFailure |> TestExecutionResult, test.Parent)
     }
     
-let buildReport (failures: (TestFailureType * ITest) list, ignored: (string option * CodeLocation * ITest) list, successes: ITest list, seed) =
+let buildReport startTm endTm (failures: (TestFailureType * ITest) list, ignored: (string option * CodeLocation * ITest) list, successes: ITest list, seed) =
     let failures =
         failures
         |> List.groupBy (fun (_, test) -> test.ContainerPath)
@@ -104,6 +104,8 @@ let buildReport (failures: (TestFailureType * ITest) list, ignored: (string opti
         Successes = successes
         Ignored = ignored
         Seed = seed
+        Began = startTm
+        End = endTm
     }
     
 let shuffle seed (items: 'a seq) =
