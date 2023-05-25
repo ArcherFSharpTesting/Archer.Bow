@@ -4,6 +4,7 @@ open Archer
 open Archer.Bow
 open Archer.CoreTypes.InternalTypes
 open Archer.CoreTypes.InternalTypes.RunnerTypes
+open Archer.Logger.Summaries
 open Archer.MicroLang.Lang
 
 let reportWhileRunning (runner: IRunner) =
@@ -15,13 +16,12 @@ let reportWhileRunning (runner: IRunner) =
         | RunnerTestLifeCycle (test, testEventLifecycle, _) ->
             match testEventLifecycle with
             | TestEndExecution testExecutionResult ->
-                let successMsg =
-                    match testExecutionResult with
-                    | TestExecutionResult TestSuccess -> "Success"
-                    | _ -> "Fail"
-                    
-                let report = $"%A{test} : (%s{successMsg})"
-                printfn $"%s{report}"
+                match testExecutionResult with
+                | TestExecutionResult TestSuccess -> ()
+                | result ->
+                    let transformedResult = defaultTestExecutionResultSummaryTransformer result test
+                    printfn $"%s{transformedResult}"
+                
             | _ -> ()
         | RunnerEndExecution ->
             printfn "\n"
