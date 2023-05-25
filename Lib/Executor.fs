@@ -1,6 +1,7 @@
 module Archer.Bow.Executor
 
 open System
+open System.Threading.Tasks
 open Archer
 open Archer.CoreTypes.InternalTypes
 open Archer.CoreTypes.InternalTypes.RunnerTypes
@@ -42,7 +43,7 @@ let runTestSynchronous (test: ITestExecutor) =
 let runTestParallel (test: ITestExecutor) =
     let info = getRunInfo test
     
-    async {
+    task {
         try
             let result = test.Execute info
             return (result, test.Parent)
@@ -179,10 +180,13 @@ let runTestsSerial seed (tests: ITestExecutor seq) =
     
 let runTestsParallel seed (tests: ITestExecutor seq) =
     let runner (tests: ITestExecutor list) =
-        tests
-        |> List.map runTestParallel
-        |> Async.Parallel
-        |> Async.RunSynchronously
+        let results = 
+            tests
+            |> Array.ofList
+            |> Array.map runTestParallel
+            |> Task.WhenAll
+            
+        results.Result
         |> List.ofArray
-        
+            
     runTests runner seed tests
