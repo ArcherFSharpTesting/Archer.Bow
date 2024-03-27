@@ -79,8 +79,8 @@ type Runner (startingTests: ITest list) as this =
                         (fun exe ->
                             exe.Parent.Tags |> Seq.contains Serial
                         )
-                let parallelGroup = groups |> List.filter fst |> List.map snd |> List.concat |> shuffle seed
-                let serialGroup = groups |> List.filter (fst >> not) |> List.map snd |> List.concat |> shuffle seed
+                let parallelGroup = groups |> List.filter (fst >> not) |> List.map snd |> List.concat |> shuffle seed
+                let serialGroup = groups |> List.filter fst |> List.map snd |> List.concat |> shuffle seed
                 let results =
                     let pFailures, pIgnored, pSuccesses, _seed = runTestsParallel seed parallelGroup
                     let sFailures, sIgnored, sSuccesses, _seed = runTestsSerial seed serialGroup
@@ -131,9 +131,9 @@ type Runner (startingTests: ITest list) as this =
         member this.Run (filter, getSeed) = this.Run (filter, getSeed)
         
         [<CLIEvent>]
-        member this.RunnerLifecycleEvent = RunnerLifecycleEvent.Publish
+        member _.RunnerLifecycleEvent = RunnerLifecycleEvent.Publish
 
-        member this.TestTags =
+        member _.TestTags =
             tests
             |> List.map (getTags >> Seq.toList)
             |> List.concat
