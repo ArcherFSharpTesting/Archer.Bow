@@ -7,9 +7,8 @@
 # Bow Execution Library for the Archer Test Framework #
 
 1. Overview: [Bow Library Overview](#bow-library-overview)
-2. Feature: [Using the Runner](#using-the-runner)
-3. Feature: [Runner Lifetime Events](#runner-lifetime-events)
-4. Feature: [Making Test Running Easier](#making-test-running-easier)
+2. Feature: [Runner Documentation](#runner-documentation)
+3. Feature: [Making Test Running Easier](#making-test-running-easier)
 
 ## Bow Library Overview ##
 
@@ -64,11 +63,16 @@ The runner emits events for test lifecycle stages, allowing integration with cus
 
 For more details, see the main README or source files in the `Lib/` directory.
 
-## Using the Runner ##
+## Runner Documentation ##
+
+1. Feature: [Using the Runner](#using-the-runner)
+2. Feature: [Runner Lifetime Events](#runner-lifetime-events)
+
+### Using the Runner ###
 
 The `Runner` in the Bow library is responsible for executing tests, handling test lifecycle events, and providing flexible filtering and execution options. Below are usage patterns and examples to help you get started.
 
-### Creating a Runner ###
+#### Creating a Runner ####
 
 You can create a runner instance using the `Bow` type:
 
@@ -78,7 +82,7 @@ open Archer.Bow
 let runner = Bow().Runner()
 ```
 
-### Adding Tests ###
+#### Adding Tests ####
 
 Add tests to the runner (typically discovered or defined elsewhere):
 
@@ -86,7 +90,7 @@ Add tests to the runner (typically discovered or defined elsewhere):
 runner.AddTests myTests
 ```
 
-### Running Tests ###
+#### Running Tests ####
 
 Run all tests (with default filtering and random seed):
 
@@ -115,7 +119,7 @@ Run tests with both a custom filter and seed:
 let report = runner.Run(onlyUnitTests, fun () -> 12345)
 ```
 
-### Subscribing to Events ###
+#### Subscribing to Events ####
 
 You can subscribe to runner lifecycle events for custom logging or integration:
 
@@ -129,7 +133,7 @@ runner.RunnerLifecycleEvent.Add(fun (sender, event) ->
 )
 ```
 
-### Interpreting the Report ###
+#### Interpreting the Report ####
 
 The result of `runner.Run` is a report object containing grouped results, execution times, and metadata. You can use this for custom reporting or analysis.
 
@@ -137,11 +141,11 @@ The result of `runner.Run` is a report object containing grouped results, execut
 
 For more details, see the Bow library documentation or the `Types.fs` source file.
 
-## Runner Lifetime Events ##
+### Runner Lifetime Events ###
 
 The `Runner` in the Bow library emits several lifecycle events that allow you to hook into and respond to different stages of test execution. These events are useful for custom logging, reporting, or integrating with other systems.
 
-### Runner Lifecycle Events ###
+#### Runner Lifecycle Events ####
 
 - **RunnerStartExecution**
   - Triggered before any tests are executed.
@@ -154,7 +158,7 @@ The `Runner` in the Bow library emits several lifecycle events that allow you to
   - Triggered for each test at various points in its lifecycle.
   - Provides the test instance, the event type, and a `CancelEventArgs` (for cancellable events).
 
-### Test Lifecycle Event Types ###
+#### Test Lifecycle Event Types ####
 
 - **TestStartExecution**
   - Fired before the test's execution phase begins. Can be cancelled.
@@ -171,7 +175,7 @@ The `Runner` in the Bow library emits several lifecycle events that allow you to
 - **TestEndExecution**
   - Fired after the test's execution phase completes.
 
-### Example: Subscribing to Runner Events ###
+#### Example: Subscribing to Runner Events ####
 
 ```fsharp
 let runner = Bow().Runner()
