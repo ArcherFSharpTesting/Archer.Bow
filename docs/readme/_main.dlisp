@@ -4,6 +4,7 @@
         (Overview ./Bow.md)
         (Feature ./UsingRunner.md)
         (Feature ./RunnerEvents.md)
+        (Feature ./RunningHelpers.md)
     )
 )
 
