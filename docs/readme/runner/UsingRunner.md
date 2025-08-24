@@ -4,8 +4,6 @@
 )
 ) -->
 
-The `Runner` in the Bow library is responsible for executing tests, handling test lifecycle events, and providing flexible filtering and execution options. Below are usage patterns and examples to help you get started.
-
 <!-- (dl (# Creating a Runner)) -->
 
 You can create a runner instance using the `Bow` type:

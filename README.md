@@ -7,7 +7,7 @@
 # Bow Execution Library for the Archer Test Framework #
 
 1. Overview: [Bow Library Overview](#bow-library-overview)
-2. Feature: [Runner Documentation](#runner-documentation)
+2. Feature: [The Runner](#the-runner)
 3. Feature: [Making Test Running Easier](#making-test-running-easier)
 
 ## Bow Library Overview ##
@@ -63,14 +63,11 @@ The runner emits events for test lifecycle stages, allowing integration with cus
 
 For more details, see the main README or source files in the `Lib/` directory.
 
-## Runner Documentation ##
-
-1. Feature: [Using the Runner](#using-the-runner)
-2. Feature: [Runner Lifetime Events](#runner-lifetime-events)
-
-### Using the Runner ###
+## The Runner ##
 
 The `Runner` in the Bow library is responsible for executing tests, handling test lifecycle events, and providing flexible filtering and execution options. Below are usage patterns and examples to help you get started.
+
+### Using the Runner ###
 
 #### Creating a Runner ####
 

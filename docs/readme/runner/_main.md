@@ -1,11 +1,13 @@
 <!-- (dl
 (section-meta
-    (title Runner Documentation)
+    (title The Runner)
     (include
         (Feature UsingRunner.md)
         (Feature RunnerEvents.md)
     )
 )
-(content (toc numbered-labeled))
-)
--->
+) -->
+
+The `Runner` in the Bow library is responsible for executing tests, handling test lifecycle events, and providing flexible filtering and execution options. Below are usage patterns and examples to help you get started.
+
+<!-- (dl (content) ) -->
