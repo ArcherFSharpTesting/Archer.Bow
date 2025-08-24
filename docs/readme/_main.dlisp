@@ -2,6 +2,8 @@
     (title Bow Execution Library for the Archer Test Framework)
     (include
         (Overview ./Bow.md)
+        (Feature ./UsingRunner.md)
+        (Feature ./RunnerEvents.md)
     )
 )
 

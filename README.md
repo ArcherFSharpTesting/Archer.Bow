@@ -7,6 +7,8 @@
 # Bow Execution Library for the Archer Test Framework #
 
 1. Overview: [Bow Library Overview](#bow-library-overview)
+2. Feature: [Using the Runner](#using-the-runner)
+3. Feature: [Runner Lifetime Events](#runner-lifetime-events)
 
 ## Bow Library Overview ##
 
@@ -60,6 +62,136 @@ The runner emits events for test lifecycle stages, allowing integration with cus
 ---
 
 For more details, see the main README or source files in the `Lib/` directory.
+
+## Using the Runner ##
+
+The `Runner` in the Bow library is responsible for executing tests, handling test lifecycle events, and providing flexible filtering and execution options. Below are usage patterns and examples to help you get started.
+
+### Creating a Runner ###
+
+You can create a runner instance using the `Bow` type:
+
+```fsharp
+open Archer.Bow
+
+let runner = Bow().Runner()
+```
+
+### Adding Tests ###
+
+Add tests to the runner (typically discovered or defined elsewhere):
+
+```fsharp
+runner.AddTests myTests
+```
+
+### Running Tests ###
+
+Run all tests (with default filtering and random seed):
+
+```fsharp
+let report = runner.Run()
+```
+
+Run tests with a custom random seed (for deterministic order):
+
+```fsharp
+let report = runner.Run(fun () -> 12345)
+```
+
+Run tests with a custom filter:
+
+```fsharp
+open Archer.Bow.Values
+
+let onlyUnitTests = filterByCategory "Unit"
+let report = runner.Run(onlyUnitTests)
+```
+
+Run tests with both a custom filter and seed:
+
+```fsharp
+let report = runner.Run(onlyUnitTests, fun () -> 12345)
+```
+
+### Subscribing to Events ###
+
+You can subscribe to runner lifecycle events for custom logging or integration:
+
+```fsharp
+runner.RunnerLifecycleEvent.Add(fun (sender, event) ->
+    match event with
+    | RunnerStartExecution _ -> printfn "Starting tests!"
+    | RunnerEndExecution -> printfn "All tests finished!"
+    | RunnerTestLifeCycle (test, eventType, _) ->
+        printfn $"Test {test.TestName} event: {eventType}"
+)
+```
+
+### Interpreting the Report ###
+
+The result of `runner.Run` is a report object containing grouped results, execution times, and metadata. You can use this for custom reporting or analysis.
+
+---
+
+For more details, see the Bow library documentation or the `Types.fs` source file.
+
+## Runner Lifetime Events ##
+
+The `Runner` in the Bow library emits several lifecycle events that allow you to hook into and respond to different stages of test execution. These events are useful for custom logging, reporting, or integrating with other systems.
+
+### Runner Lifecycle Events ###
+
+- **RunnerStartExecution**
+  - Triggered before any tests are executed.
+  - Carries a `CancelEventArgs` that can be set to cancel the entire test run.
+
+- **RunnerEndExecution**
+  - Triggered after all tests have finished executing (regardless of success, failure, or cancellation).
+
+- **RunnerTestLifeCycle**
+  - Triggered for each test at various points in its lifecycle.
+  - Provides the test instance, the event type, and a `CancelEventArgs` (for cancellable events).
+
+### Test Lifecycle Event Types ###
+
+- **TestStartExecution**
+  - Fired before the test's execution phase begins. Can be cancelled.
+- **TestStartSetup**
+  - Fired before the test's setup phase. Can be cancelled.
+- **TestEndSetup**
+  - Fired after the test's setup phase. Can be cancelled.
+- **TestStart**
+  - Fired before the test body runs. Can be cancelled.
+- **TestEnd**
+  - Fired after the test body completes.
+- **TestStartTeardown**
+  - Fired before the test's teardown phase.
+- **TestEndExecution**
+  - Fired after the test's execution phase completes.
+
+### Example: Subscribing to Runner Events ###
+
+```fsharp
+let runner = Bow().Runner()
+
+runner.RunnerLifecycleEvent.Add(fun (sender, event) ->
+  match event with
+  | RunnerTestLifeCycle (test, eventType, _) ->
+    match eventType with
+    | TestEnd ->
+      printfn $"Test '{test.TestName}' finished."
+    | _ -> ()
+  | RunnerStartExecution _ ->
+    printfn "Test run starting!"
+  | RunnerEndExecution ->
+    printfn "Test run finished!"
+)
+```
+
+---
+
+For more details, see the `Types.fs` source or the Bow library documentation.
 
 <!-- markdownlint-restore -->
 <!-- prettier-ignore-end -->
