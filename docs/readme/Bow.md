@@ -1,4 +1,8 @@
-# Bow Library Overview
+<!-- (dl
+(section-meta
+    (title Bow Library Overview)
+)
+) -->
 
 Bow is the core test execution library for the Archer F# testing framework. It provides the main engine for running, filtering, and reporting on tests written using Archer. Bow is designed to be flexible, supporting both serial and parallel test execution, test filtering, and event-driven test lifecycle management.
 
