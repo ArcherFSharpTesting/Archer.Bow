@@ -24,7 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\Lib\Archer.Bow.Lib.fsproj" />
+    <ProjectReference Include="..\Lib\Archer.Runner.Lib.fsproj" />
   </ItemGroup>
 
   <ItemGroup>
