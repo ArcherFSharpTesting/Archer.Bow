@@ -2,7 +2,8 @@
 
 open System
 open Archer.Arrows
-open Archer.Bow
+open Archer.Runner
+let runnerFactory = RunnerFactory ()
 open Archer
 open Archer.CoreTypes.InternalTypes
 open Archer.MicroLang
@@ -21,7 +22,7 @@ let ``return empty results when it has no tests`` =
     feature.Test (fun () ->
         let seed = 5
                 
-        let runner = bow.Runner ()
+    let runner = runnerFactory.Runner ()
         let result = runner.Run (fun () -> seed)
                 
         let expected = {
@@ -260,12 +261,12 @@ let ``run asynchronously`` =
 let ``run a test with the correct runner name`` =
     feature.Test(fun () env ->
         env.RunEnvironment.RunnerName
-        |> expects.ToBe "Archer.Bow"
+    |> expects.ToBe "Archer.Runner"
     )
     
 let ``run a test with the correct runner version`` =
     feature.Test(fun () env ->
-        let typeBow = bow.GetType ()
+    let typeBow = runnerFactory.GetType ()
         let version = typeBow.Assembly.GetName().Version
         
         env.RunEnvironment.RunnerVersion

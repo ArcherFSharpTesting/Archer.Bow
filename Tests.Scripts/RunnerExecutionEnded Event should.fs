@@ -1,7 +1,8 @@
 module Archer.Tests.Scripts.``RunnerExecutionEnded Event should``
 
 open Archer.Arrows
-open Archer.Bow
+open Archer.Runner
+let runnerFactory = RunnerFactory ()
 open Archer
 open Archer.CoreTypes.InternalTypes.RunnerTypes
 open Archer.MicroLang
@@ -18,7 +19,7 @@ let private feature = Arrow.NewFeature (
 
 let ``be raised when the runner is run`` =
     feature.Test (fun () ->
-        let runner = bow.Runner ()
+    let runner = runnerFactory.Runner ()
 
         let mutable result = "Not Called" |> newFailure.With.TestOtherExpectationFailure |> TestFailure
         

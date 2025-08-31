@@ -1,8 +1,8 @@
-﻿namespace Archer.Bow
+﻿namespace Archer.Runner
 
 open System.ComponentModel
 open Archer
-open Archer.Bow.Executor
+open Archer.Runner.Executor
 open Archer.CoreTypes.InternalTypes
 open Archer.CoreTypes.InternalTypes.RunnerTypes
 
@@ -187,9 +187,9 @@ type Runner (startingTests: ITest list) as this =
         
 /// <summary>
 /// Factory class for creating Runner instances. Provides a clean API entry point
-/// for consumers of the Archer.Bow testing framework.
+/// for consumers of the Archer.Runner testing framework.
 /// </summary>
-type Bow () =
+type RunnerFactory () =
     /// <summary>
     /// Creates a new Runner instance that implements the IRunner interface.
     /// This is the primary method for obtaining a test runner.

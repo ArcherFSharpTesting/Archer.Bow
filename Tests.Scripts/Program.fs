@@ -1,7 +1,8 @@
 ﻿module Archer.Tests.Scripts.Program
 
 open Archer
-open Archer.Bow
+open Archer.Runner
+let runnerFactory = RunnerFactory ()
 open Archer.CoreTypes.InternalTypes
 open Archer.CoreTypes.InternalTypes.RunnerTypes
 open Archer.Logger.Summaries
@@ -29,7 +30,7 @@ let reportWhileRunning (runner: IRunner) =
     
     runner
 
-bow.Runner ()
+runnerFactory.Runner ()
 |> addMany [
     ``Runner Run Should``.``Test Cases``
     ``RunnerExecutionStarted Event should``.``Test Cases``

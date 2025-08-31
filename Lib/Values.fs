@@ -1,10 +1,10 @@
 ﻿/// <summary>
-/// Auto-opened module containing convenience functions and values for working with the Archer.Bow test runner.
+/// Auto-opened module containing convenience functions and values for working with the Archer.Runner test runner.
 /// These functions provide a functional programming style API that simplifies common test execution scenarios.
 /// All functions in this module are automatically available without explicit module qualification.
 /// </summary>
 [<AutoOpen>]
-module Archer.Bow.Values
+module Archer.Runner.Values
 
 open Archer
 open Archer.CoreTypes.InternalTypes
@@ -98,15 +98,15 @@ let filterByCategory category =
     filterByCategories [category]
 
 /// <summary>
-/// A global instance of the Bow factory class, ready to create test runners.
-/// This provides convenient access to runner creation without needing to instantiate Bow() manually.
+/// A global instance of the RunnerFactory class, ready to create test runners.
+/// This provides convenient access to runner creation without needing to instantiate RunnerFactory() manually.
 /// Use this when you need a quick way to create runners in scripts or simple test scenarios.
 /// </summary>
 /// <example>
 /// <code>
-/// let runner = bow.Runner()
+/// let runner = runnerFactory.Runner()
 /// runner.AddTests [test1; test2; test3] |> ignore
 /// runner |> run
 /// </code>
 /// </example>
-let bow = Bow ()
+let runnerFactory = RunnerFactory ()

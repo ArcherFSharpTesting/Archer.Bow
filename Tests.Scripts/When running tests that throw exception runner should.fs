@@ -5,7 +5,8 @@ open Archer
 open Archer.Arrows
 open Archer.CoreTypes.InternalTypes
 open Archer.CoreTypes.InternalTypes.RunnerTypes
-open Archer.Bow.Values
+open Archer.Runner.Values
+let runnerFactory = RunnerFactory ()
 
 let private feature = Arrow.NewFeature (
     TestTags [
@@ -42,7 +43,7 @@ let ``Return ExceptionFailure`` =
         let containerName = "And Abound"
         let badTest = DummyTest (containerPath, containerName,  "Throws Exception", badThrowingTestAction, { FilePath = "BadFilePath"; FileName = "BadFileName.fs"; LineNumber = 32 })
         
-        let runner = bow.Runner ()
+    let runner = runnerFactory.Runner ()
         
         let result = 
             runner.AddTests [badTest]

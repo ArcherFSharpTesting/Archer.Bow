@@ -1,10 +1,10 @@
 /// <summary>
-/// Internal module containing the core test execution engine for Archer.Bow.
+/// Internal module containing the core test execution engine for Archer.Runner.
 /// Provides functions for running tests synchronously and asynchronously, managing test ordering,
 /// building execution reports, and handling test lifecycle management.
 /// This module contains implementation details that support the public Runner API.
 /// </summary>
-module Archer.Bow.Executor
+module Archer.Runner.Executor
 
 open System
 open System.Threading.Tasks
@@ -49,7 +49,7 @@ let ifOnlyFilter (tests: ITest list) =
 let getRunInfo (test: ITestExecutor) =
     let assembly = System.Reflection.Assembly.GetExecutingAssembly ()
     {
-        RunnerName = "Archer.Bow"
+        RunnerName = "Archer.Runner"
         RunnerVersion = assembly.GetName().Version
         TestInfo = test.Parent :> ITestInfo 
     }
