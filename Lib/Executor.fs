@@ -1,3 +1,9 @@
+/// <summary>
+/// Internal module containing the core test execution engine for Archer.Bow.
+/// Provides functions for running tests synchronously and asynchronously, managing test ordering,
+/// building execution reports, and handling test lifecycle management.
+/// This module contains implementation details that support the public Runner API.
+/// </summary>
 module Archer.Bow.Executor
 
 open System
@@ -6,8 +12,19 @@ open Archer
 open Archer.CoreTypes.InternalTypes
 open Archer.CoreTypes.InternalTypes.RunnerTypes
 
+/// <summary>
+/// Global random number generator used for test shuffling and seed generation.
+/// Provides a shared source of randomness across the execution engine.
+/// </summary>
 let globalRandom = Random ()
 
+/// <summary>
+/// Filters tests to run only those marked with the "Only" tag, if any exist.
+/// If no tests have the "Only" tag, returns all tests unchanged.
+/// This is useful for focused testing during development.
+/// </summary>
+/// <param name="tests">The list of tests to potentially filter</param>
+/// <returns>Either the subset of tests marked "Only" or all tests if none are marked</returns>
 let ifOnlyFilter (tests: ITest list) =
     let containsOnly (tags: TestTag seq) =
         let onlyTags =
@@ -23,6 +40,12 @@ let ifOnlyFilter (tests: ITest list) =
     if 0 < possible.Length then possible
     else tests
     
+/// <summary>
+/// Creates run information metadata for a test execution.
+/// Includes runner identification, version, and test context information.
+/// </summary>
+/// <param name="test">The test executor for which to create run information</param>
+/// <returns>RunInfo record containing runner metadata and test information</returns>
 let getRunInfo (test: ITestExecutor) =
     let assembly = System.Reflection.Assembly.GetExecutingAssembly ()
     {
@@ -31,6 +54,13 @@ let getRunInfo (test: ITestExecutor) =
         TestInfo = test.Parent :> ITestInfo 
     }
     
+/// <summary>
+/// Executes a single test synchronously in the current thread.
+/// Handles exceptions by converting them to test failure results.
+/// Used for serial test execution where tests must run one after another.
+/// </summary>
+/// <param name="test">The test executor to run</param>
+/// <returns>Tuple of (execution result, test instance)</returns>
 let runTestSynchronous (test: ITestExecutor) = 
     let info = getRunInfo test
     
@@ -40,6 +70,13 @@ let runTestSynchronous (test: ITestExecutor) =
     with
     | e -> (e |> TestExceptionFailure |> TestFailure |> TestExecutionResult, test.Parent)
 
+/// <summary>
+/// Executes a single test asynchronously using F# tasks for parallel execution.
+/// Handles exceptions by converting them to test failure results.
+/// Used for parallel test execution where multiple tests can run concurrently.
+/// </summary>
+/// <param name="test">The test executor to run</param>
+/// <returns>Task containing a tuple of (execution result, test instance)</returns>
 let runTestParallel (test: ITestExecutor) =
     let info = getRunInfo test
     
@@ -51,6 +88,18 @@ let runTestParallel (test: ITestExecutor) =
         | e -> return (e |> TestExceptionFailure |> TestFailure |> TestExecutionResult, test.Parent)
     }
     
+/// <summary>
+/// Builds a comprehensive test execution report from categorized test results.
+/// Organizes results by container path and name, creating a hierarchical structure
+/// that groups related tests together for clear reporting.
+/// </summary>
+/// <param name="startTm">The timestamp when test execution began</param>
+/// <param name="endTm">The timestamp when test execution completed</param>
+/// <param name="failures">List of failed tests with their failure types</param>
+/// <param name="ignored">List of ignored tests with optional reasons and locations</param>
+/// <param name="successes">List of successfully executed tests</param>
+/// <param name="seed">The seed value used for test ordering</param>
+/// <returns>A structured test report with timing, results, and execution metadata</returns>
 let buildReport startTm endTm (failures: (TestFailureType * ITest) list, ignored: (string option * CodeLocation * ITest) list, successes: ITest list, seed) =
     let failures =
         failures
@@ -109,6 +158,14 @@ let buildReport startTm endTm (failures: (TestFailureType * ITest) list, ignored
         End = endTm
     }
     
+/// <summary>
+/// Shuffles a sequence of items using the Fisher-Yates algorithm with a specific seed.
+/// Provides deterministic randomization - the same seed will always produce the same order.
+/// Used to randomize test execution order while maintaining reproducibility.
+/// </summary>
+/// <param name="seed">The seed value for the random number generator</param>
+/// <param name="items">The sequence of items to shuffle</param>
+/// <returns>A new list with items in randomized order</returns>
 let shuffle seed (items: 'a seq) =
     let random = Random seed
     let bucket = System.Collections.Generic.List<'a> items
@@ -126,6 +183,15 @@ let shuffle seed (items: 'a seq) =
             
     shuffle []
     
+/// <summary>
+/// Core test execution function that runs tests using a provided execution strategy.
+/// Handles shuffling, result categorization, and statistics collection.
+/// This is the foundation for both serial and parallel test execution.
+/// </summary>
+/// <param name="runner">Function that executes a list of test executors and returns results</param>
+/// <param name="seed">Seed for deterministic test ordering</param>
+/// <param name="tests">Sequence of test executors to run</param>
+/// <returns>Tuple of (failures, ignored tests, successes, seed used)</returns>
 let runTests (runner: ITestExecutor list -> (TestExecutionResult * ITest) list) seed (tests: ITestExecutor seq) =
     let shuffled = shuffle seed tests
     let results =
@@ -172,12 +238,28 @@ let runTests (runner: ITestExecutor list -> (TestExecutionResult * ITest) list) 
 
     (failures, ignored, successes, seed)
     
+/// <summary>
+/// Executes tests serially (one after another) in a single thread.
+/// Uses synchronous execution to ensure tests run sequentially without concurrency.
+/// Recommended for tests that are not thread-safe or need to run in isolation.
+/// </summary>
+/// <param name="seed">Seed for deterministic test ordering</param>
+/// <param name="tests">Sequence of test executors to run serially</param>
+/// <returns>Tuple of (failures, ignored tests, successes, seed used)</returns>
 let runTestsSerial seed (tests: ITestExecutor seq) =
     let runner (tests: ITestExecutor list) =
         tests |> List.map runTestSynchronous
         
     runTests runner seed tests
     
+/// <summary>
+/// Executes tests in parallel using F# tasks for concurrent execution.
+/// Uses asynchronous execution to run multiple tests simultaneously, improving performance.
+/// Recommended for independent tests that can safely run concurrently.
+/// </summary>
+/// <param name="seed">Seed for deterministic test ordering</param>
+/// <param name="tests">Sequence of test executors to run in parallel</param>
+/// <returns>Tuple of (failures, ignored tests, successes, seed used)</returns>
 let runTestsParallel seed (tests: ITestExecutor seq) =
     let runner (tests: ITestExecutor list) =
         let results = 
