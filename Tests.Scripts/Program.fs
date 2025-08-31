@@ -5,7 +5,7 @@ open Archer.Runner
 let runnerFactory = RunnerFactory ()
 open Archer.Types.InternalTypes
 open Archer.Types.InternalTypes.RunnerTypes
-open Archer.Logger.Summaries
+open Archer.Reporting.Summaries
 open Archer.MicroLang.Lang
 
 let reportWhileRunning (runner: IRunner) =

@@ -2,13 +2,14 @@
 
 open System
 open Archer
-open Archer.Arrows
+open Archer.Core
 open Archer.Types.InternalTypes
 open Archer.Types.InternalTypes.RunnerTypes
-open Archer.Runner.Values
+open Archer.Runner
+
 let runnerFactory = RunnerFactory ()
 
-let private feature = Arrow.NewFeature (
+let private feature = FeatureFactory.NewFeature (
     TestTags [
         Category "Runner"
         Category "Exception Handling"
@@ -43,7 +44,7 @@ let ``Return ExceptionFailure`` =
         let containerName = "And Abound"
         let badTest = DummyTest (containerPath, containerName,  "Throws Exception", badThrowingTestAction, { FilePath = "BadFilePath"; FileName = "BadFileName.fs"; LineNumber = 32 })
         
-    let runner = runnerFactory.Runner ()
+        let runner = runnerFactory.Runner ()
         
         let result = 
             runner.AddTests [badTest]

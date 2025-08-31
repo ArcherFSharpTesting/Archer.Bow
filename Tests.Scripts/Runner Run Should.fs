@@ -1,7 +1,7 @@
 ﻿module Archer.Tests.Scripts.``Runner Run Should``
 
 open System
-open Archer.Arrows
+open Archer.Core
 open Archer.Runner
 let runnerFactory = RunnerFactory ()
 open Archer
@@ -12,7 +12,7 @@ open Archer.Types.InternalTypes.RunnerTypes
 let private defaultSeed = 42
 let private getDefaultSeed () = defaultSeed
 
-let private feature = Arrow.NewFeature (
+let private feature = FeatureFactory.NewFeature (
     TestTags [
         Category "Runner"
     ]
@@ -22,7 +22,7 @@ let ``return empty results when it has no tests`` =
     feature.Test (fun () ->
         let seed = 5
                 
-    let runner = runnerFactory.Runner ()
+        let runner = runnerFactory.Runner ()
         let result = runner.Run (fun () -> seed)
                 
         let expected = {
@@ -40,8 +40,8 @@ let ``return empty results when it has no tests`` =
 let ``return empty results with different seed when it has no tests and provided a different seed`` =
     feature.Test (fun () ->
         let seed = 258
-                
-        let runner = bow.Runner ()
+
+        let runner = runnerFactory.Runner ()
         let result = runner.Run (fun () -> seed)
                 
         let expected = {
@@ -58,10 +58,10 @@ let ``return empty results with different seed when it has no tests and provided
     
 let ``return a successful result when one test passes`` =
     feature.Test (fun () ->
-        let runner = bow.Runner ()
+        let runner = runnerFactory.Runner ()
         let containerPath = "A Test Suite"
         let containerName = "with a passing test"
-        let testFeature = Arrow.NewFeature (containerPath, containerName)
+        let testFeature = FeatureFactory.NewFeature (containerPath, containerName)
         let test = testFeature.Test ("A Passing Test", fun () -> TestSuccess)
 
         
@@ -87,10 +87,10 @@ let ``return a successful result when one test passes`` =
     
 let ``return a successful result when two tests pass`` =
     feature.Test (fun () ->
-        let runner = bow.Runner ()
+        let runner = runnerFactory.Runner ()
         let containerPath = "A test Suite"
         let containerName = "with two passing tests"
-        let testFeature = Arrow.NewFeature (containerPath, containerName)
+        let testFeature = FeatureFactory.NewFeature (containerPath, containerName)
         
         let test1 = testFeature.Test ("Fist Passing Test", fun () -> TestSuccess)
         let test2 = testFeature.Test ("Second Passing Test", fun () -> TestSuccess)
@@ -117,7 +117,7 @@ let ``return a successful result when two tests pass`` =
     
 let ``return failure when a test fails`` =
     feature.Test (fun () -> 
-        let runner = bow.Runner ()
+        let runner = runnerFactory.Runner ()
         let containerPath = "A test Suite"
         let containerName = "to hold tests"
         let container = suite.Container (containerPath, containerName)
@@ -152,7 +152,7 @@ let ``return failure when a test fails`` =
     
 let ``return failure when second test fails`` =
     feature.Test (fun () -> 
-        let runner = bow.Runner ()
+        let runner = runnerFactory.Runner ()
         let containerPath = "A test Suite"
         let containerName = "to hold tests"
         let container = suite.Container (containerPath, containerName)
@@ -187,10 +187,10 @@ let ``return failure when second test fails`` =
     
 let ``return failure all second test fail`` =
     feature.Test (fun () -> 
-        let runner = bow.Runner ()
+        let runner = runnerFactory.Runner ()
         let containerPath = "A test Suite"
         let containerName = "to hold tests"
-        let testFeature = Arrow.NewFeature (containerPath, containerName)
+        let testFeature = FeatureFactory.NewFeature (containerPath, containerName)
 
         let failure1 = "Boom Again" |> newFailure.With.TestOtherExpectationFailure
         let failure2 = newFailure.With.TestExecutionWasNotRunValidationFailure ()
@@ -222,7 +222,7 @@ let ``run asynchronously`` =
         let monitor = obj ()
         let mutable isRunning = false
         
-        let runner = bow.Runner ()
+        let runner = runnerFactory.Runner ()
         let random = Random ()
         
         let mutable result = newFailure.With.TestExecutionWasNotRunValidationFailure () |> TestFailure
@@ -242,7 +242,7 @@ let ``run asynchronously`` =
             
             TestSuccess
             
-        let testFeature = Arrow.NewFeature ()
+        let testFeature = FeatureFactory.NewFeature ()
         let t1 = testFeature.Test ("Test A", testFunction)
         let t2 = testFeature.Test ("Test B", testFunction)
         let t3 = testFeature.Test ("Test C", testFunction)
@@ -261,13 +261,13 @@ let ``run asynchronously`` =
 let ``run a test with the correct runner name`` =
     feature.Test(fun () env ->
         env.RunEnvironment.RunnerName
-    |> expects.ToBe "Archer.Runner"
+        |> expects.ToBe "Archer.Runner"
     )
     
 let ``run a test with the correct runner version`` =
     feature.Test(fun () env ->
-    let typeBow = runnerFactory.GetType ()
-        let version = typeBow.Assembly.GetName().Version
+        let typeRunnerFactory = runnerFactory.GetType ()
+        let version = typeRunnerFactory.Assembly.GetName().Version
         
         env.RunEnvironment.RunnerVersion
         |> expects.ToBe version
@@ -278,7 +278,7 @@ let ``run a test with the correct test info`` =
         let containerPath = "The Path"
         let containerName = "My new container"
         let testName = "Testing the test info"
-        let c = Arrow.NewFeature (containerPath, containerName)
+        let c = FeatureFactory.NewFeature (containerPath, containerName)
         
         let test = c.Test (testName, fun () e ->
             let info = e.TestInfo
@@ -300,7 +300,7 @@ let ``run a test with the correct test info`` =
             |> andResult testNameResult
         )
         
-        let runner = bow.Runner ()
+        let runner = runnerFactory.Runner ()
         
         let result =
             runner.AddTests [test]
@@ -326,9 +326,9 @@ let ``run a test with the correct test info`` =
     
 let ``run only tests marked with Only Tag if no filter is given`` =
     feature.Test (fun () ->
-        let runner = bow.Runner ()
+        let runner = runnerFactory.Runner ()
         
-        let testFeature = Arrow.NewFeature ("a", "b")
+        let testFeature = FeatureFactory.NewFeature ("a", "b")
         
         let _a = testFeature.Test ("Successful test A", fun () -> TestSuccess)
         let b = testFeature.Test ("Successful test B", TestTags [Only],fun () -> TestSuccess)

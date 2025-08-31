@@ -1,13 +1,13 @@
 module Archer.Tests.Scripts.``TestStart Event should``
 
 open Archer
-open Archer.Arrows
-open Archer.Arrows.Helpers
+open Archer.Core
+open Archer.Core.Helpers
 open Archer.Types.InternalTypes
 open Archer.Types.InternalTypes.RunnerTypes
 open Archer.MicroLang
 
-let private container = Arrow.NewFeature (
+let private container = FeatureFactory.NewFeature (
     TestTags [
         Category "Runner"
         Category "RunnerLifecycleEvent"
