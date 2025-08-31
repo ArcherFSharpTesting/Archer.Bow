@@ -6,6 +6,12 @@ open Archer.Bow.Executor
 open Archer.CoreTypes.InternalTypes
 open Archer.CoreTypes.InternalTypes.RunnerTypes
 
+/// <summary>
+/// The main test runner class responsible for executing tests and managing test lifecycle events.
+/// Provides functionality to run tests in parallel or serial execution modes, filter tests,
+/// and track execution results with detailed reporting.
+/// </summary>
+/// <param name="startingTests">The initial list of tests to be managed by this runner instance</param>
 type Runner (startingTests: ITest list) as this =
     let mutable tests = startingTests
     let lockObj = obj()
@@ -37,19 +43,44 @@ type Runner (startingTests: ITest list) as this =
                 
         | _ -> ()
         
+    /// <summary>
+    /// Creates a new Runner instance with an empty test collection.
+    /// </summary>
     new () =
         let tests: ITest list = []
         Runner tests
         
+    /// <summary>
+    /// Runs all tests using a randomly generated seed for test ordering.
+    /// </summary>
+    /// <returns>A test execution report containing results, timing, and statistics</returns>
     member this.Run () =
         this.Run(fun () -> globalRandom.Next ())
         
+    /// <summary>
+    /// Runs all tests using a custom seed generation function for deterministic test ordering.
+    /// </summary>
+    /// <param name="getSeed">Function that generates a seed value for test ordering</param>
+    /// <returns>A test execution report containing results, timing, and statistics</returns>
     member this.Run (getSeed: unit -> int) =
         this.Run (ifOnlyFilter, getSeed)
         
+    /// <summary>
+    /// Runs tests after applying a filter function, using a randomly generated seed for ordering.
+    /// </summary>
+    /// <param name="filter">Function to filter which tests should be executed</param>
+    /// <returns>A test execution report containing results, timing, and statistics</returns>
     member this.Run (filter: ITest list -> ITest list) =
         this.Run (filter, fun () -> globalRandom.Next ())
     
+    /// <summary>
+    /// Runs tests after applying a filter function with a custom seed for deterministic ordering.
+    /// This is the main execution method that handles the complete test lifecycle including
+    /// parallel and serial execution modes, event handling, and result reporting.
+    /// </summary>
+    /// <param name="filter">Function to filter which tests should be executed</param>
+    /// <param name="getSeed">Function that generates a seed value for test ordering</param>
+    /// <returns>A test execution report containing results, timing, and statistics</returns>
     member this.Run (filter: ITest list -> ITest list, getSeed: unit -> int) =
         let seed = getSeed ()
         let startArgs = CancelEventArgs ()
@@ -96,6 +127,13 @@ type Runner (startingTests: ITest list) as this =
             executors |> List.iter unhookEvents
             RunnerLifecycleEvent.Trigger (this, RunnerEndExecution)
     
+    /// <summary>
+    /// Adds new tests to the runner's test collection. Validates that all test names are unique
+    /// across the entire collection to prevent conflicts during execution.
+    /// </summary>
+    /// <param name="newTests">The sequence of tests to add to the runner</param>
+    /// <returns>The current Runner instance for method chaining</returns>
+    /// <exception cref="System.Exception">Thrown when duplicate test names are detected</exception>
     member this.AddTests (newTests: ITest seq) =
         tests <-
             [
@@ -130,14 +168,31 @@ type Runner (startingTests: ITest list) as this =
         member this.Run (filter: ITest list -> ITest list) = this.Run filter
         member this.Run (filter, getSeed) = this.Run (filter, getSeed)
         
+        /// <summary>
+        /// Event that fires during various stages of runner and test execution lifecycle.
+        /// Subscribe to this event to monitor runner progress and handle test events.
+        /// </summary>
         [<CLIEvent>]
         member _.RunnerLifecycleEvent = RunnerLifecycleEvent.Publish
 
+        /// <summary>
+        /// Gets all unique test tags from all tests in the runner's collection.
+        /// Useful for filtering tests by tags or understanding test categorization.
+        /// </summary>
         member _.TestTags =
             tests
             |> List.map (getTags >> Seq.toList)
             |> List.concat
             |> List.distinct
         
+/// <summary>
+/// Factory class for creating Runner instances. Provides a clean API entry point
+/// for consumers of the Archer.Bow testing framework.
+/// </summary>
 type Bow () =
+    /// <summary>
+    /// Creates a new Runner instance that implements the IRunner interface.
+    /// This is the primary method for obtaining a test runner.
+    /// </summary>
+    /// <returns>A new IRunner instance ready to accept tests and execute them</returns>
     member _.Runner () = Runner () :> IRunner
