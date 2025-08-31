@@ -1,10 +1,10 @@
 <!-- (dl
 (section-meta
-    (title Bow Library Overview)
+    (title RunnerFactory Library Overview)
 )
 ) -->
 
-Bow is the core test execution library for the Archer F# testing framework. It provides the main engine for running, filtering, and reporting on tests written using Archer. Bow is designed to be flexible, supporting both serial and parallel test execution, test filtering, and event-driven test lifecycle management.
+RunnerFactory is the core test execution library for the Archer F# testing framework. It provides the main engine for running, filtering, and reporting on tests written using Archer. RunnerFactory is designed to be flexible, supporting both serial and parallel test execution, test filtering, and event-driven test lifecycle management.
 
 <!-- (dl (# Key Features)) -->
 
@@ -17,7 +17,7 @@ Bow is the core test execution library for the Archer F# testing framework. It p
 
 <!-- (dl (# Main Types & Modules)) -->
 
-- `Bow`: Entry point for creating a test runner (`IRunner`).
+- `RunnerFactory`: Entry point for creating a test runner (`IRunner`).
 - `Runner`: Manages test execution, filtering, and event handling.
 - `Executor`: Contains core logic for running tests, shuffling, and building reports.
 - `Values`: Provides helper functions for common test runner operations and filtering by category/tag.
@@ -26,9 +26,9 @@ Bow is the core test execution library for the Archer F# testing framework. It p
 <!-- (dl (# Example Usage)) -->
 
 ```fsharp
-open Archer.Bow
+open Archer.Runner
 
-let runner = Bow().Runner()
+let runner = RunnerFactory().Runner()
 // Add tests to the runner (from Archer test definitions)
 // runner.AddTests myTests
 let report = runner.Run()
@@ -40,7 +40,7 @@ let report = runner.Run()
 You can filter tests by category or custom logic:
 
 ```fsharp
-open Archer.Bow.Values
+open Archer.Runner.Values
 
 let onlyUnitTests = filterByCategory "Unit"
 let report = filterAndRun onlyUnitTests runner

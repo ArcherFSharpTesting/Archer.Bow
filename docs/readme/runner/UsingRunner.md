@@ -6,12 +6,12 @@
 
 <!-- (dl (# Creating a Runner)) -->
 
-You can create a runner instance using the `Bow` type:
+You can create a runner instance using the `RunnerFactory` type:
 
 ```fsharp
-open Archer.Bow
+open Archer.Runner
 
-let runner = Bow().Runner()
+let runner = RunnerFactory().Runner()
 ```
 
 <!-- (dl (# Adding Tests)) -->
@@ -39,7 +39,7 @@ let report = runner.Run(fun () -> 12345)
 Run tests with a custom filter:
 
 ```fsharp
-open Archer.Bow.Values
+open Archer.Runner.Values
 
 let onlyUnitTests = filterByCategory "Unit"
 let report = runner.Run(onlyUnitTests)
@@ -71,4 +71,4 @@ The result of `runner.Run` is a report object containing grouped results, execut
 
 ---
 
-For more details, see the Bow library documentation or the `Types.fs` source file.
+For more details, see the RunnerFactory library documentation or the `Types.fs` source file.

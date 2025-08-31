@@ -4,7 +4,7 @@
 )
 ) -->
 
-The `Runner` in the Bow library emits several lifecycle events that allow you to hook into and respond to different stages of test execution. These events are useful for custom logging, reporting, or integrating with other systems.
+The `Runner` in the RunnerFactory library emits several lifecycle events that allow you to hook into and respond to different stages of test execution. These events are useful for custom logging, reporting, or integrating with other systems.
 
 <!-- (dl (# Runner Lifecycle Events)) -->
 
@@ -39,7 +39,7 @@ The `Runner` in the Bow library emits several lifecycle events that allow you to
 <!-- (dl (# Example: Subscribing to Runner Events)) -->
 
 ```fsharp
-let runner = Bow().Runner()
+let runner = RunnerFactory().Runner()
 
 runner.RunnerLifecycleEvent.Add(fun (sender, event) ->
   match event with
@@ -57,4 +57,4 @@ runner.RunnerLifecycleEvent.Add(fun (sender, event) ->
 
 ---
 
-For more details, see the `Types.fs` source or the Bow library documentation.
+For more details, see the `Types.fs` source or the RunnerFactory library documentation.

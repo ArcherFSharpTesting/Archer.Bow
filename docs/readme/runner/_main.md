@@ -8,6 +8,6 @@
 )
 ) -->
 
-The `Runner` in the Bow library is responsible for executing tests, handling test lifecycle events, and providing flexible filtering and execution options. Below are usage patterns and examples to help you get started.
+The `Runner` in the RunnerFactory library is responsible for executing tests, handling test lifecycle events, and providing flexible filtering and execution options. Below are usage patterns and examples to help you get started.
 
 <!-- (dl (content) ) -->

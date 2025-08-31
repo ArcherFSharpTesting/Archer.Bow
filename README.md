@@ -4,15 +4,15 @@
 
 <!-- Compiled with doculisp https://www.npmjs.com/package/doculisp -->
 
-# Bow Execution Library for the Archer Test Framework #
+# RunnerFactory Execution Library for the Archer Test Framework #
 
-1. Overview: [Bow Library Overview](#bow-library-overview)
+1. Overview: [RunnerFactory Library Overview](#runnerfactory-library-overview)
 2. Feature: [The Runner](#the-runner)
 3. Feature: [Making Test Running Easier](#making-test-running-easier)
 
-## Bow Library Overview ##
+## RunnerFactory Library Overview ##
 
-Bow is the core test execution library for the Archer F# testing framework. It provides the main engine for running, filtering, and reporting on tests written using Archer. Bow is designed to be flexible, supporting both serial and parallel test execution, test filtering, and event-driven test lifecycle management.
+RunnerFactory is the core test execution library for the Archer F# testing framework. It provides the main engine for running, filtering, and reporting on tests written using Archer. RunnerFactory is designed to be flexible, supporting both serial and parallel test execution, test filtering, and event-driven test lifecycle management.
 
 ### Key Features ###
 
@@ -24,7 +24,7 @@ Bow is the core test execution library for the Archer F# testing framework. It p
 
 ### Main Types & Modules ###
 
-- `Bow`: Entry point for creating a test runner (`IRunner`).
+- `RunnerFactory`: Entry point for creating a test runner (`IRunner`).
 - `Runner`: Manages test execution, filtering, and event handling.
 - `Executor`: Contains core logic for running tests, shuffling, and building reports.
 - `Values`: Provides helper functions for common test runner operations and filtering by category/tag.
@@ -32,9 +32,9 @@ Bow is the core test execution library for the Archer F# testing framework. It p
 ### Example Usage ###
 
 ```fsharp
-open Archer.Bow
+open Archer.Runner
 
-let runner = Bow().Runner()
+let runner = RunnerFactory().Runner()
 // Add tests to the runner (from Archer test definitions)
 // runner.AddTests myTests
 let report = runner.Run()
@@ -45,7 +45,7 @@ let report = runner.Run()
 You can filter tests by category or custom logic:
 
 ```fsharp
-open Archer.Bow.Values
+open Archer.Runner.Values
 
 let onlyUnitTests = filterByCategory "Unit"
 let report = filterAndRun onlyUnitTests runner
@@ -65,18 +65,18 @@ For more details, see the main README or source files in the `Lib/` directory.
 
 ## The Runner ##
 
-The `Runner` in the Bow library is responsible for executing tests, handling test lifecycle events, and providing flexible filtering and execution options. Below are usage patterns and examples to help you get started.
+The `Runner` in the RunnerFactory library is responsible for executing tests, handling test lifecycle events, and providing flexible filtering and execution options. Below are usage patterns and examples to help you get started.
 
 ### Using the Runner ###
 
 #### Creating a Runner ####
 
-You can create a runner instance using the `Bow` type:
+You can create a runner instance using the `RunnerFactory` type:
 
 ```fsharp
-open Archer.Bow
+open Archer.Runner
 
-let runner = Bow().Runner()
+let runner = RunnerFactory().Runner()
 ```
 
 #### Adding Tests ####
@@ -104,7 +104,7 @@ let report = runner.Run(fun () -> 12345)
 Run tests with a custom filter:
 
 ```fsharp
-open Archer.Bow.Values
+open Archer.Runner.Values
 
 let onlyUnitTests = filterByCategory "Unit"
 let report = runner.Run(onlyUnitTests)
@@ -136,11 +136,11 @@ The result of `runner.Run` is a report object containing grouped results, execut
 
 ---
 
-For more details, see the Bow library documentation or the `Types.fs` source file.
+For more details, see the RunnerFactory library documentation or the `Types.fs` source file.
 
 ### Runner Lifetime Events ###
 
-The `Runner` in the Bow library emits several lifecycle events that allow you to hook into and respond to different stages of test execution. These events are useful for custom logging, reporting, or integrating with other systems.
+The `Runner` in the RunnerFactory library emits several lifecycle events that allow you to hook into and respond to different stages of test execution. These events are useful for custom logging, reporting, or integrating with other systems.
 
 #### Runner Lifecycle Events ####
 
@@ -175,7 +175,7 @@ The `Runner` in the Bow library emits several lifecycle events that allow you to
 #### Example: Subscribing to Runner Events ####
 
 ```fsharp
-let runner = Bow().Runner()
+let runner = RunnerFactory().Runner()
 
 runner.RunnerLifecycleEvent.Add(fun (sender, event) ->
   match event with
@@ -193,11 +193,11 @@ runner.RunnerLifecycleEvent.Add(fun (sender, event) ->
 
 ---
 
-For more details, see the `Types.fs` source or the Bow library documentation.
+For more details, see the `Types.fs` source or the RunnerFactory library documentation.
 
 ## Making Test Running Easier ##
 
-The Bow library provides a set of helper functions to simplify running tests with the runner. These helpers make it easier to filter, seed, and execute tests in a variety of ways, and are available by default.
+The RunnerFactory library provides a set of helper functions to simplify running tests with the runner. These helpers make it easier to filter, seed, and execute tests in a variety of ways, and are available by default.
 
 ### Helper Functions Overview ###
 
@@ -209,7 +209,7 @@ Below are the main helpers provided:
 - **filterAndRunWith**: Runs tests after applying a filter and using a specific seed.
 - **filterByCategories**: Returns a filter function that selects tests by a list of category names.
 - **filterByCategory**: Returns a filter function for a single category.
-- **bow**: Provides a default instance of the Bow runner.
+- **runnerFactory**: Provides a default instance of the RunnerFactory runner.
 
 ### Usage Examples ###
 
@@ -231,7 +231,7 @@ defaultRunner |> filterAndRunWith 123 (filterByCategories ["Unit"; "Integration"
 
 ---
 
-For more details, see the `Values.fs` source file or the Bow library documentation.
+For more details, see the `Values.fs` source file or the RunnerFactory library documentation.
 
 <!-- markdownlint-restore -->
 <!-- prettier-ignore-end -->

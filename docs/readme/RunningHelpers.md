@@ -5,7 +5,7 @@
 ) -->
 
 
-The Bow library provides a set of helper functions to simplify running tests with the runner. These helpers make it easier to filter, seed, and execute tests in a variety of ways, and are available by default.
+The RunnerFactory library provides a set of helper functions to simplify running tests with the runner. These helpers make it easier to filter, seed, and execute tests in a variety of ways, and are available by default.
 
 <!-- (dl (# Helper Functions Overview)) -->
 
@@ -17,7 +17,7 @@ Below are the main helpers provided:
 - **filterAndRunWith**: Runs tests after applying a filter and using a specific seed.
 - **filterByCategories**: Returns a filter function that selects tests by a list of category names.
 - **filterByCategory**: Returns a filter function for a single category.
-- **bow**: Provides a default instance of the Bow runner.
+- **runnerFactory**: Provides a default instance of the RunnerFactory runner.
 
 <!-- (dl (# Usage Examples)) -->
 
@@ -39,4 +39,4 @@ defaultRunner |> filterAndRunWith 123 (filterByCategories ["Unit"; "Integration"
 
 ---
 
-For more details, see the `Values.fs` source file or the Bow library documentation.
+For more details, see the `Values.fs` source file or the RunnerFactory library documentation.
