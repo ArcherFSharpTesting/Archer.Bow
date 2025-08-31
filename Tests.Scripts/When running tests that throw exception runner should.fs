@@ -3,8 +3,8 @@
 open System
 open Archer
 open Archer.Arrows
-open Archer.CoreTypes.InternalTypes
-open Archer.CoreTypes.InternalTypes.RunnerTypes
+open Archer.Types.InternalTypes
+open Archer.Types.InternalTypes.RunnerTypes
 open Archer.Runner.Values
 let runnerFactory = RunnerFactory ()
 

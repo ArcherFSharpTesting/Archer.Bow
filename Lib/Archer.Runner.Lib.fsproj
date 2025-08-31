@@ -5,6 +5,7 @@
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <RootNamespace>Archer.Runner</RootNamespace>
     <Title>Archer.Runner</Title>
+    <AssemblyName>Archer.Runner</AssemblyName>
   </PropertyGroup>
 
   <ItemGroup>

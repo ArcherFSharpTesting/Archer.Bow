@@ -9,8 +9,8 @@ module Archer.Runner.Executor
 open System
 open System.Threading.Tasks
 open Archer
-open Archer.CoreTypes.InternalTypes
-open Archer.CoreTypes.InternalTypes.RunnerTypes
+open Archer.Types.InternalTypes
+open Archer.Types.InternalTypes.RunnerTypes
 
 /// <summary>
 /// Global random number generator used for test shuffling and seed generation.

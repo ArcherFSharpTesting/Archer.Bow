@@ -3,8 +3,8 @@
 open System.ComponentModel
 open Archer
 open Archer.Runner.Executor
-open Archer.CoreTypes.InternalTypes
-open Archer.CoreTypes.InternalTypes.RunnerTypes
+open Archer.Types.InternalTypes
+open Archer.Types.InternalTypes.RunnerTypes
 
 /// <summary>
 /// The main test runner class responsible for executing tests and managing test lifecycle events.

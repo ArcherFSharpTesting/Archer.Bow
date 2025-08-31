@@ -7,8 +7,8 @@
 module Archer.Runner.Values
 
 open Archer
-open Archer.CoreTypes.InternalTypes
-open Archer.CoreTypes.InternalTypes.RunnerTypes
+open Archer.Types.InternalTypes
+open Archer.Types.InternalTypes.RunnerTypes
 
 /// <summary>
 /// Executes all tests in the runner using a randomly generated seed for test ordering.

@@ -2,8 +2,8 @@ module Archer.Tests.Scripts.``TestStartSetup Event should``
 
 open Archer.Arrows
 open Archer
-open Archer.CoreTypes.InternalTypes
-open Archer.CoreTypes.InternalTypes.RunnerTypes
+open Archer.Types.InternalTypes
+open Archer.Types.InternalTypes.RunnerTypes
 open Archer.MicroLang
 
 let private defaultSeed = 33

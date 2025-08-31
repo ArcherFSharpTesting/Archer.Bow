@@ -5,9 +5,9 @@ open Archer.Arrows
 open Archer.Runner
 let runnerFactory = RunnerFactory ()
 open Archer
-open Archer.CoreTypes.InternalTypes
+open Archer.Types.InternalTypes
 open Archer.MicroLang
-open Archer.CoreTypes.InternalTypes.RunnerTypes
+open Archer.Types.InternalTypes.RunnerTypes
 
 let private defaultSeed = 42
 let private getDefaultSeed () = defaultSeed
